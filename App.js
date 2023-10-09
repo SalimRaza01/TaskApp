@@ -1,144 +1,182 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Dimensions, Modal } from 'react-native';
-import colors from './Colors';
-import tempData from './tempData';
-import TaskList from './src/screens/TaskList';
-import AddTaskModal from './src/screens/AddTaskModal';
-// import Fire from './Fire';
-
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Modal,
+    Button,
+    StyleSheet,
+    Dimensions
+} from "react-native";
+import TaskList from "./components/TaskList";
+import TaskModal from "./components/TaskModel";
 
 const { width, height } = Dimensions.get('window');
 
-export default class App extends React.Component {
+const App = () => {
 
-  state = {
-    addTodoVisible: false,
-    lists: tempData,
-    user: {}
-  };
+    const [tasks, setTasks] = useState([]);
+    const [task, setTask] = useState({
+        title: "",
+        description: "",
+        status: "Pending",
+        deadline: "",
+        createdAt: "",
+    });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const [validationError, setValidationError] =
+        useState(false);
+    const handleAddTask = () => {
+        if (
+            task.title.trim() !== "" &&
+            task.deadline !== ""
+        ) {
+            const currentDate = new Date();
+            const formattedDate =
+                currentDate.toLocaleString();
+            if (editingTask) {
+                const updatedTasks = tasks.map((t) =>
+                    t.id === editingTask.id
+                        ? { ...t, ...task }
+                        : t
+                );
+                setTasks(updatedTasks);
+                setEditingTask(null);
+            } else {
+                const newTask = {
+                    id: Date.now(),
+                    ...task,
+                    createdAt: formattedDate,
+                };
+                setTasks([...tasks, newTask]);
+            }
+            setTask({
+                title: "",
+                description: "",
+                status: "Pending",
+                deadline: "",
+                createdAt: "",
+            });
+            setModalVisible(false);
+            setValidationError(false);
+        } else {
+            setValidationError(true);
+        }
+    };
+    const handleEditTask = (task) => {
+        setEditingTask(task);
+        setTask(task);
+        setModalVisible(true);
+    };
+    const handleDeleteTask = (taskId) => {
+        const updatedTasks = tasks.filter(
+            (t) => t.id !== taskId
+        );
+        setTasks(updatedTasks);
+    };
+    const handleToggleCompletion = (taskId) => {
+        const updatedTasks = tasks.map((t) =>
+            t.id === taskId
+                ? {
+                    ...t,
+                    status:
+                        t.status === "Pending"
+                            ? "Completed"
+                            : "Pending",
+                }
+                : t
+        );
+        setTasks(updatedTasks);
+    };
 
-  // componentDidMount() {
 
-  //   firebase = new Fire((error, user) => {
-  //     if (error) {
-  //       return alert("Something went wrong");
-  //     }
-
-  //     this.setState({ user });
-  //   });
-  // }
-toggleAddTodoModal = () => {
-  this.setState({ addTodoVisible: !this.state.addTodoVisible });
-}
-
-
-  renderList = list => {
-    return <TaskList list={list} updateList={this.updateList} />;
-  }
-
-  addList = list => {
-    this.setState({ list: [...this.state.lists, { ...list, id: this.state.lists.length + 1, todos: [] }] })
-  };
-
-  updateList = list => {
-    this.setState({
-      lists: this.state.lists.map(item => {
-        return item.id === list.id ? list : item;
-      })
-    })
-  }
-
-  render() {
     return (
-      <View style={styles.container}>
-        <Modal animationType="slide" visible={this.state.addTodoVisible} onRequestClose={() => this.toggleAddTodoModal()}>
-          <View>
-          <AddTaskModal closeModal={this.toggleAddTodoModal} addList={this.addList} />
+        <View style={styles.container}>
+            <Text style={styles.title}>Task Manager</Text>
+            <View style={styles.divider} />
+            <TaskList
+                tasks={tasks}
+                handleEditTask={handleEditTask}
+                handleToggleCompletion={
+                    handleToggleCompletion
+                }
+                handleDeleteTask={handleDeleteTask}
+            />
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => {
+                    setEditingTask(null);
+                    setTask({
+                        title: "",
+                        description: "",
+                        status: "Pending",
+                        deadline: "",
+                        createdAt: "",
+                    });
+                    setModalVisible(true);
+                    setValidationError(false);
+                }}>
+                <Text style={styles.addButtonText}>
+                    {editingTask ? "Edit Task" : "Add Task"}
+                </Text>
+            </TouchableOpacity>
 
-          </View>
-        </Modal>
-        <View>
-          <Text>User: {this.state.user.uid}</Text>
+            <TaskModal
+                modalVisible={modalVisible}
+                task={task}
+                setTask={setTask}
+                handleAddTask={handleAddTask}
+                handleCancel={() => {
+                    setEditingTask(null);
+                    setTask({
+                        title: "",
+                        description: "",
+                        status: "Pending",
+                        deadline: "",
+                        createdAt: "",
+                    });
+                    setModalVisible(false);
+                    setValidationError(false);
+                }}
+                validationError={validationError} />
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <View style={styles.divider} />
-          <Text style={styles.title}>
-            Task <Text style={{ fontWeight: "300", color: colors.blue }}>App</Text>
-          </Text>
-          <View style={styles.divider} />
-        </View>
-        <View style={styles.addTaskContainer}>
-        <TouchableOpacity style={styles.addtask} onPress={() => this.toggleAddTodoModal()} addList={this.addList}>
-
-            <Image style={styles.addtaskicon} source={require('./src/assets/img/addtaskblue.png')} />
-          </TouchableOpacity>
-          <Text style={styles.add}>Add Project</Text>
-        </View>
-
-        <View style={styles.flatListContainer}>
-          <FlatList
-            data={this.state.lists}
-            keyExtractor={item => item.name}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => this.renderList(item)}
-            keyboardShouldPersistTaps="always"
-          />
-        </View>
-      </View>
     );
-  }
-}
+};
 
-
+export default App;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  divider: {
-    marginTop: height * 0.04,
-    backgroundColor: colors.lightblue,
-    height: 1,
-    flex: 1,
-  },
-  title: {
-
-    fontSize: width * 0.1,
-    fontWeight: "800",
-    color: colors.black,
-    paddingHorizontal: width * 0.04,
-  },
-  addTaskContainer: {
-    marginTop: height * 0.05,
-    paddingHorizontal: width * 0.1,
-    alignItems: 'center',
-  },
-  addtask: {
-    borderWidth: 2,
-    borderColor: colors.lightblue,
-    borderRadius: 4,
-    padding: width * 0.05,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  addtaskicon: {
-    height: width * 0.05,
-    width: width * 0.05
-  },
-  add: {
-    color: colors.blue,
-    fontWeight: "600",
-    fontSize: width * 0.05,
-    marginTop: height * 0.05,
-    marginBottom: height * 0.02,
-  },
-  flatListContainer: {
-    height: height * 0.4,
-    paddingLeft: width * 0.1,
-
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: "#f7f7f7",
+    },
+    title: {
+        fontSize: width * 0.08,
+        fontWeight: "bold",
+        marginTop: height * 0.04,
+        marginBottom: -10,
+        color: "#333",
+        textAlign: "left",
+    },
+    divider: {
+        marginTop: height * 0.04,
+        backgroundColor: "#007BFF",
+        height: 2,
+    },
+    addButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#007BFF",
+        paddingVertical: height * 0.02,
+        borderRadius: width * 0.03,
+        marginTop: height * 0.04,
+        marginBottom: height * 0.02,
+    },
+    addButtonText: {
+        color: "#fff",
+        fontSize: width * 0.05,
+        fontWeight: "bold",
+    },
 });
