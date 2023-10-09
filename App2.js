@@ -1,89 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Button,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
-import axios from 'axios';
-import TaskList from './components/TaskList';
-import TaskModal from './components/TaskModel';
+    View,
+    Text,
+    TouchableOpacity,
+    Modal,
+    Button,
+    StyleSheet,
+    Dimensions
+} from "react-native";
+import TaskList from "./components/TaskList";
+import TaskModal from "./components/TaskModel";
 
 const { width, height } = Dimensions.get('window');
 
-
-const API_URL = 'http://localhost:3000/tasks'; // Assuming this is your API endpoint
-
 const App = () => {
-  const [tasks, setTasks] = useState([]);
-  const [task, setTask] = useState({
-    title: '',
-    description: '',
-    status: 'Pending',
-    deadline: '',
-    createdAt: '',
-  });
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-  const [validationError, setValidationError] = useState(false);
 
-  const fetchTasksFromServer = () => {
-    axios
-      .get(API_URL)
-      .then((response) => {
-        setTasks(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching tasks:', error);
-      });
-  };
+    const [tasks, setTasks] = useState([]);
+    const [task, setTask] = useState({
+        title: "",
+        description: "",
+        status: "Pending",
+        deadline: "",
+        createdAt: "",
+    });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const [validationError, setValidationError] = useState(false);
+    const handleAddTask = () => {
+        if (
+            task.title.trim() !== "" &&
+            task.deadline !== ""
+        ) {
+            const currentDate = new Date();
+            const formattedDate =
+                currentDate.toLocaleString();
+            if (editingTask) {
+                const updatedTasks = tasks.map((t) =>
+                    t.id === editingTask.id
+                        ? { ...t, ...task }
+                        : t
+                );
+                setTasks(updatedTasks);
+                setEditingTask(null);
+            } else {
+                const newTask = {
+                    id: Date.now(),
+                    ...task,
+                    createdAt: formattedDate,
+                };
+                setTasks([...tasks, newTask]);
+            }
+            setTask({
+                title: "",
+                description: "",
+                status: "Pending",
+                deadline: "",
+                createdAt: "",
+            });
+            setModalVisible(false);
+            setValidationError(false);
+        } else {
+            setValidationError(true);
+        }
+    };
+    const handleEditTask = (task) => {
+        setEditingTask(task);
+        setTask(task);
+        setModalVisible(true);
+    };
+    const handleDeleteTask = (taskId) => {
+        const updatedTasks = tasks.filter(
+            (t) => t.id !== taskId
+        );
+        setTasks(updatedTasks);
+    };
+    const handleToggleCompletion = (taskId) => {
+        const updatedTasks = tasks.map((t) =>
+            t.id === taskId
+                ? {
+                    ...t,
+                    status:
+                        t.status === "Pending"
+                            ? "Completed"
+                            : "Pending",
+                }
+                : t
+        );
+        setTasks(updatedTasks);
+    };
 
-  useEffect(() => {
-    fetchTasksFromServer();
-  }, []);
 
-  const fetchTasks = async () => {
-    // Fetch tasks directly from MongoDB using the appropriate MongoDB driver
-    // Replace with your MongoDB connection and query logic
-    // Example:
-    // const tasks = await mongodb.collection('tasks').find({}).toArray();
-    // setTasks(tasks);
-  };
-
-  const handleAddTask = async () => {
-    // Add a new task to MongoDB
-    // Replace with your MongoDB connection and insert logic
-    // Example:
-    // await mongodb.collection('tasks').insertOne(task);
-    // fetchTasks();
-  };
-
-  const handleEditTask = async (task) => {
-    // Edit a task in MongoDB
-    // Replace with your MongoDB connection and update logic
-    // Example:
-    // await mongodb.collection('tasks').updateOne({ _id: taskId }, { $set: updatedTask });
-    // fetchTasks();
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    // Delete a task from MongoDB
-    // Replace with your MongoDB connection and delete logic
-    // Example:
-    // await mongodb.collection('tasks').deleteOne({ _id: taskId });
-    // fetchTasks();
-  };
-
-  const handleToggleCompletion = async (taskId) => {
-    // Toggle task completion status in MongoDB
-    // Replace with your MongoDB connection and update logic
-    // Example:
-    // await mongodb.collection('tasks').updateOne({ _id: taskId }, { $set: { status: 'Completed' } });
-    // fetchTasks();
-  };
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Task Manager</Text>
