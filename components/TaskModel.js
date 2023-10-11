@@ -50,7 +50,7 @@ const TaskModal = ({
                 </Text>
                 <DatePicker
                     style={styles.datePicker}
-                    mode="date"
+                    mode="datepicker"
                     selected={task.deadline}
                     onDateChange={(date) =>
                         setTask({ ...task, deadline: date })

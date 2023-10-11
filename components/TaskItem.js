@@ -24,9 +24,9 @@ const TaskItem = ({
                     Description: {task.description}
                 </Text>
 
-                <Text style={styles.taskCreatedAt}>
+                {/* <Text style={styles.taskCreatedAt}>
                         Created: {task.createdAt}
-                    </Text>
+                    </Text> */}
                 <Text style={styles.taskStatus}>
                     Status: {task.status}
                 </Text>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     taskDescription: {
         fontSize: width * 0.03,
         color: "#666",
-        marginBottom: height * 0.002,
+        marginBottom: height * 0.04,
     },
     taskStatus: {
         fontSize: width * 0.03,
