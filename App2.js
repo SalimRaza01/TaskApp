@@ -66,6 +66,7 @@ const App = () => {
         setTask(task);
         setModalVisible(true);
     };
+    
     const handleDeleteTask = (taskId) => {
         const updatedTasks = tasks.filter(
             (t) => t.id !== taskId

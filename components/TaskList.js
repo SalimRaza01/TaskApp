@@ -9,7 +9,7 @@ const TaskList = ({
 	handleDeleteTask,
 }) => {
 	return (
-		<ScrollView style={styles.taskList}>
+		<ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
 
 			{tasks.map((t) => (
 				<TaskItem

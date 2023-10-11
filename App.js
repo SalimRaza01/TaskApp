@@ -59,7 +59,6 @@ const App = () => {
   }, []);
 
   const handleAddTask = () => {
-    // Add task to Realm
     realm.write(() => {
       const newTask = {
         id: Date.now(),
@@ -77,19 +76,19 @@ const App = () => {
       console.error('No task selected for editing');
       return;
     }
-  
-    // Edit task in Realm
     realm.write(() => {
-      const updatedTask = { ...editingTask, ...task };
-      realm.create('Task', updatedTask, 'modified');
+      const updatedTask = realm.objectForPrimaryKey('Task', editingTask.id);
+      updatedTask.title = task.title;
+      updatedTask.description = task.description;
+      updatedTask.status = task.status;
+      updatedTask.deadline = task.deadline;
+      updatedTask.createdAt = task.createdAt;
     });
-  
+
     setModalVisible(false);
   };
-  
 
   const handleDeleteTask = (taskId) => {
-    // Delete task from Realm
     realm.write(() => {
       const taskToDelete = realm.objectForPrimaryKey('Task', taskId);
       realm.delete(taskToDelete);
@@ -97,7 +96,6 @@ const App = () => {
   };
 
   const handleToggleCompletion = (taskId) => {
-    // Toggle task completion in Realm
     realm.write(() => {
       const taskToToggle = realm.objectForPrimaryKey('Task', taskId);
       taskToToggle.status = taskToToggle.status === 'Pending' ? 'Completed' : 'Pending';
@@ -106,91 +104,93 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Task Manager</Text>
-        <View style={styles.divider} />
-        <TaskList
-            tasks={tasks}
-            handleEditTask={handleEditTask}
-            handleToggleCompletion={
-                handleToggleCompletion
-            }
-            handleDeleteTask={handleDeleteTask}
-        />
-        <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => {
-                setEditingTask(null);
-                setTask({
-                    title: "",
-                    description: "",
-                    status: "Pending",
-                    deadline: "",
-                    createdAt: "",
-                });
-                setModalVisible(true);
-                setValidationError(false);
-            }}>
-            <Text style={styles.addButtonText}>
-                {editingTask ? "Edit Task" : "Add Task"}
-            </Text>
-        </TouchableOpacity>
+      <Text style={styles.title}>Task Manager</Text>
+      <View style={styles.divider} />
+      <TaskList
+        tasks={tasks}
+        handleEditTask={(task) => {
+          setEditingTask(task);
+          setTask(task);
+          setModalVisible(true);
+        }}
+        handleToggleCompletion={handleToggleCompletion}
+        handleDeleteTask={handleDeleteTask}
+      />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => {
+          setEditingTask(null);
+          setTask({
+            title: '',
+            description: '',
+            status: 'Pending',
+            deadline: '',
+            createdAt: '',
+          });
+          setModalVisible(true);
+          setValidationError(false);
+        }}>
+        <Text style={styles.addButtonText}>
+          {editingTask ? 'Edit Task' : 'Add Task'}
+        </Text>
+      </TouchableOpacity>
 
-        <TaskModal
-            modalVisible={modalVisible}
-            task={task}
-            setTask={setTask}
-            handleAddTask={handleAddTask}
-            handleCancel={() => {
-                setEditingTask(null);
-                setTask({
-                    title: "",
-                    description: "",
-                    status: "Pending",
-                    deadline: "",
-                    createdAt: "",
-                });
-                setModalVisible(false);
-                setValidationError(false);
-            }}
-            validationError={validationError} />
+      <TaskModal
+        modalVisible={modalVisible}
+        task={task}
+        setTask={setTask}
+        handleAddTask={handleAddTask}
+        handleCancel={() => {
+          setEditingTask(null);
+          setTask({
+            title: '',
+            description: '',
+            status: 'Pending',
+            deadline: '',
+            createdAt: '',
+          });
+          setModalVisible(false);
+          setValidationError(false);
+        }}
+        validationError={validationError}
+        handleEditTask={handleEditTask} // Pass handleEditTask to TaskModal
+      />
     </View>
-);
+  );
 };
-
-
 export default App;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: "#f7f7f7",
-    },
-    title: {
-        fontSize: width * 0.08,
-        fontWeight: "bold",
-        marginTop: height * 0.04,
-        marginBottom: -10,
-        color: "#333",
-        textAlign: "left",
-    },
-    divider: {
-        marginTop: height * 0.04,
-        backgroundColor: "#007BFF",
-        height: 2,
-    },
-    addButton: {
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#007BFF",
-        paddingVertical: height * 0.02,
-        borderRadius: width * 0.1,
-        marginTop: height * 0.04,
-        marginBottom: height * 0.02,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: width * 0.05,
-        fontWeight: "bold",
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f7f7f7",
+  },
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: "bold",
+    marginTop: height * 0.04,
+    marginBottom: -10,
+    color: "#333",
+    textAlign: "left",
+  },
+  divider: {
+    marginTop: height * 0.04,
+    backgroundColor: "#007BFF",
+    height: 2,
+  },
+  addButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#007BFF",
+    paddingVertical: height * 0.02,
+    borderRadius: width * 0.1,
+    marginTop: height * 0.04,
+    marginBottom: height * 0.02,
+  },
+  addButtonText: {
+    color: "#fff",
+    fontSize: width * 0.05,
+    fontWeight: "bold",
+  },
 });
