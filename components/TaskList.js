@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import TaskItem from "./TaskItem";
 
 const TaskList = ({

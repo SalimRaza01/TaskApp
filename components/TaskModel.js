@@ -3,7 +3,6 @@ import {
     View,
     Text,
     TextInput,
-    Button,
     Modal,
     StyleSheet,
     Dimensions,
@@ -91,12 +90,12 @@ const styles = StyleSheet.create({
         borderRadius: width * 0.03,
         marginTop: height * 0.01,
         alignItems: "center",
-      },
-      buttonText: {
+    },
+    buttonText: {
         color: "#fff",
         fontSize: width * 0.05,
         fontWeight: "bold",
-      },
+    },
     modalContainer: {
         flex: 1,
         padding: width * 0.05,
