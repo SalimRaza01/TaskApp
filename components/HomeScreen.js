@@ -20,13 +20,14 @@ const HomeScreen = () => {
   const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
 
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
     // Fetch tasks from the API
-    axios.get(`${BASE_URL}/tasks`)
+    axios.get(`${BASE_URL}/tasks`, task)
       .then(response => {
-        setTasks(response.data);
+        // setTasks(response.data);
+        setTasks([...tasks, response.data]);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -53,17 +54,6 @@ const HomeScreen = () => {
       })
       .catch(error => console.error('Error adding data:', error));
   };
-
-  // previous code 
-  // const handleAddTask = () => {
-  //   axios.post(`${BASE_URL}/tasks`, task)
-  //     .then(response => {
-  //       setModalVisible(false);
-  //       setValidationError(false);
-  //       setTasks([...tasks, response.data]);
-  //     })
-  //     .catch(error => console.error('Error adding task:', error));
-  // };
 
   const handleEditTask = () => {
     if (!editingTask || !editingTask._id) {
