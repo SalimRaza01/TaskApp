@@ -37,7 +37,7 @@ const TaskItem = ({
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    // onPress={() => handleEditTask(task)}
+                    onPress={() => handleEditTask(task)}
                     style={[styles.editButton]}>
                     <Text style={styles.buttonText}>
                         Edit
