@@ -28,7 +28,7 @@ const HomeScreen = () => {
       .then(response => {
         setTasks(response.data);
       })
-      .catch(error => console.error('Error fetching tasks:', error));
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   // updated code
@@ -51,7 +51,7 @@ const HomeScreen = () => {
         });
         setTasks([...tasks, response.data]);
       })
-      .catch(error => console.error('Error adding task:', error));
+      .catch(error => console.error('Error adding data:', error));
   };
 
   // previous code 
