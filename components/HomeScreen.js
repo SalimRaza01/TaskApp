@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import TaskList from './TaskList';
 import TaskModal from './TaskModel';
-import axios from 'axios'; // Import Axios
+import axios from 'axios'; 
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,10 +24,9 @@ const HomeScreen = () => {
 
   useEffect(() => {
     // Fetch tasks from the API
-    axios.get(`${BASE_URL}/tasks`, task)
+    axios.get(`${BASE_URL}/tasks`,)
       .then(response => {
-        // setTasks(response.data);
-        setTasks([...tasks, response.data]);
+        setTasks(response.data);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -40,6 +39,7 @@ const HomeScreen = () => {
       return;
     }
     setValidationError(false);
+    
     axios.post(`${BASE_URL}/tasks`, task)
       .then(response => {
         setModalVisible(false);
@@ -99,9 +99,7 @@ const HomeScreen = () => {
       <TaskList
         tasks={tasks}
         handleEditTask={handleEditTask}
-        handleToggleCompletion={
-          handleToggleCompletion
-        }
+        handleToggleCompletion={handleToggleCompletion}
         handleDeleteTask={handleDeleteTask}
       />
       <TouchableOpacity

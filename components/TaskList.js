@@ -12,7 +12,7 @@ const TaskList = ({
     <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
       {tasks.map((task) => (
         <TaskItem
-          key={task.id}  
+          key={task._id}  
           task={task}
           handleEditTask={handleEditTask}
           handleToggleCompletion={handleToggleCompletion}
