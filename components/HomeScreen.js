@@ -31,15 +31,39 @@ const HomeScreen = () => {
       .catch(error => console.error('Error fetching tasks:', error));
   }, []);
 
+  // updated code
   const handleAddTask = () => {
+    // Validation
+    if (!task.title || !task.description || !task.deadline) {
+      setValidationError(true);
+      return;
+    }
+    setValidationError(false);
     axios.post(`${BASE_URL}/tasks`, task)
       .then(response => {
         setModalVisible(false);
-        setValidationError(false);
+        setTask({
+          title: '',
+          description: '',
+          status: 'Pending',
+          deadline: '',
+          createdAt: '',
+        });
         setTasks([...tasks, response.data]);
       })
       .catch(error => console.error('Error adding task:', error));
   };
+
+  // previous code 
+  // const handleAddTask = () => {
+  //   axios.post(`${BASE_URL}/tasks`, task)
+  //     .then(response => {
+  //       setModalVisible(false);
+  //       setValidationError(false);
+  //       setTasks([...tasks, response.data]);
+  //     })
+  //     .catch(error => console.error('Error adding task:', error));
+  // };
 
   const handleEditTask = () => {
     if (!editingTask || !editingTask._id) {
@@ -92,7 +116,7 @@ const HomeScreen = () => {
       />
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => { 
+        onPress={() => {
           setEditingTask(null);
           setTask({
             title: "",
