@@ -1,6 +1,5 @@
 App Preview 
 
-![howtocloseapps1](https://github.com/SalimRaza01/TaskApp/assets/108859692/12686328-3945-4862-a420-65718d59352e)
 
 
 
