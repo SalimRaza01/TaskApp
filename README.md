@@ -1,3 +1,9 @@
+App Preview 
+
+![howtocloseapps1](https://github.com/SalimRaza01/TaskApp/assets/108859692/12686328-3945-4862-a420-65718d59352e)
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
