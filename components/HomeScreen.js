@@ -48,7 +48,7 @@ const TaskItem = ({
         </Text>
         <Text style={styles.taskStatus}>Status: {task.status}</Text>
         <Text style={styles.taskDeadline}>Deadline: {task.deadline}</Text>
-        <Text style={styles.taskCreatedAt}>Created: {task.createdAt}</Text>
+        {/* <Text style={styles.taskCreatedAt}>Created: {task.createdAt}</Text> */}
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -160,7 +160,6 @@ const HomeScreen = ({ route }) => {
       setTask(route.params.task);
     }
 
-    // Fetch tasks from MongoDB
     fetchTasks();
   }, [route.params]);
 
@@ -204,8 +203,8 @@ const HomeScreen = ({ route }) => {
       .catch(error => console.error('Error adding data:', error));
   };
 
-  const handleEditTask = () => {
-    console.log('Task being edited:', task); // Check the console for the task object
+  const handleEditTask = (taskId) => {
+    console.log('Task being edited:', task); 
     if (!task._id) {
       console.error('Task ID is missing.');
       return;
@@ -229,15 +228,6 @@ const HomeScreen = ({ route }) => {
       .catch(error => console.error('Error updating task:', error));
   };
   
-  
-  const handleDeleteTask = (taskId) => {
-    axios.delete(`${BASE_URL}/delete/${taskId}`)
-      .then(() => {
-        setTasks(tasks.filter(t => t._id !== taskId));
-      })
-      .catch(error => console.error('Error deleting task:', error));
-  };
-
   const handleToggleCompletion = (taskId) => {
     const updatedTasks = tasks.map(t => {
       if (t._id === taskId) {
@@ -252,6 +242,16 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error toggling task completion:', error));
   };
+
+  const handleDeleteTask = (taskId) => {
+    axios.delete(`${BASE_URL}/delete/${taskId}`)
+      .then(() => {
+        setTasks(tasks.filter(t => t._id !== taskId));
+      })
+      .catch(error => console.error('Error deleting task:', error));
+  };
+
+ 
 
   return (
     <View style={styles.container}>
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.05,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: height * 0.002,
+    marginBottom: height * 0.003,
   },
   completedTaskText: {
     textDecorationLine: "line-through",
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   taskDescription: {
     fontSize: width * 0.03,
     color: "#666",
-    marginBottom: height * 0.04,
+    marginBottom: height * 0.03,
   },
   taskStatus: {
     fontSize: width * 0.03,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   taskCreatedAt: {
     color: "#007BFF",
     fontSize: width * 0.028,
-    marginBottom: height * 0.025,
+    marginBottom: height * 0.02,
   },
   buttonContainer: {
     flexDirection: "column",
