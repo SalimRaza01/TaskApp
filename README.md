@@ -1,5 +1,6 @@
 App Preview 
 
+![Main](https://github.com/SalimRaza01/TaskApp/assets/108859692/4f472f30-8f2f-46a7-a231-e39656f72a8e)
 
 
 
