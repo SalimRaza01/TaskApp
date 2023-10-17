@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import Realm from 'realm';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import TaskList from './TaskList';
 import TaskModal from './TaskModel';
-import axios from 'axios'; // Import Axios
 
 const { width, height } = Dimensions.get('window');
+
+const TaskSchema = {
+  name: 'Task',
+  properties: {
+    _id: 'objectId',
+    title: 'string',
+    description: 'string',
+    status: 'string',
+    deadline: 'string',
+    createdAt: 'string',
+  },
+  primaryKey: '_id',
+};
 
 const HomeScreen = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,80 +28,86 @@ const HomeScreen = () => {
     deadline: '',
     createdAt: '',
   });
-
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
-
-  const BASE_URL = 'http://10.0.2.2:3000';
+  const [realm, setRealm] = useState(null);
 
   useEffect(() => {
-    // Fetch tasks from the API
-    axios.get(`${BASE_URL}/tasks`)
-      .then(response => {
-        setTasks(response.data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
+    (async () => {
+      const app = new Realm.App({ id: 'devicesync-danli' }); // Replace with your Realm app ID
+//last authenticated user 65278d98c4bf985fcce185d1
+      // Authenticate the user (e.g., using anonymous authentication)
+      const credentials = Realm.Credentials.anonymous();
+
+      try {
+        const user = await app.logIn(credentials);
+        console.log('Successfully authenticated as:', user.id);
+
+        // Proceed to set up sync configuration
+        const config = {
+          sync: {
+            user,
+            partitionValue: `user=${user.id}`, // Assuming user.id is a UUID
+          },
+          schema: [TaskSchema],
+        };
+
+        const realm = await Realm.open(config);
+        setRealm(realm);
+
+        const tasksFromRealm = realm.objects('Task');
+        setTasks([...tasksFromRealm]);
+
+        tasksFromRealm.addListener(() => {
+          setTasks([...tasksFromRealm]);
+        });
+      } catch (error) {
+        console.error('Error authenticating:', error);
+      }
+    })();
   }, []);
 
-  // updated code
   const handleAddTask = () => {
-    // Validation
-    if (!task.title || !task.description || !task.deadline) {
-      setValidationError(true);
-      return;
-    }
+    const newTask = {
+      _id: new Realm.BSON.ObjectId(),  // Generate a new ObjectId
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      deadline: task.deadline,
+      createdAt: task.createdAt,
+    };
+  
+    realm.write(() => {
+      realm.create('Task', newTask);
+    });
+    setModalVisible(false);
     setValidationError(false);
-    axios.post(`${BASE_URL}/tasks`, task)
-      .then(response => {
-        setModalVisible(false);
-        setTask({
-          title: '',
-          description: '',
-          status: 'Pending',
-          deadline: '',
-          createdAt: '',
-        });
-        setTasks([...tasks, response.data]);
-      })
-      .catch(error => console.error('Error adding data:', error));
   };
+  
 
   const handleEditTask = () => {
-    if (!editingTask || !editingTask._id) {
-      console.error('Invalid task or task _id.');
-      return;
-    }
+    const updatedTask = { ...editingTask, ...task, id: editingTask.id }; // Ensure id is set
 
-    axios.put(`${BASE_URL}/tasks/${editingTask._id}`, task)
-      .then(response => {
-        setModalVisible(false);
-        setTasks(tasks.map(t => (t._id === response.data._id ? response.data : t)));
-      })
-      .catch(error => console.error('Error editing task:', error));
+    realm.write(() => {
+      realm.create('Task', updatedTask, 'modified');
+    });
+    setModalVisible(false);
   };
 
+
   const handleDeleteTask = (taskId) => {
-    axios.delete(`${BASE_URL}/tasks/${taskId}`)
-      .then(() => {
-        setTasks(tasks.filter(t => t._id !== taskId));
-      })
-      .catch(error => console.error('Error deleting task:', error));
+    realm.write(() => {
+      const taskToDelete = realm.objectForPrimaryKey('Task', taskId);
+      realm.delete(taskToDelete);
+    });
   };
 
   const handleToggleCompletion = (taskId) => {
-    const updatedTasks = tasks.map(t => {
-      if (t._id === taskId) {
-        return { ...t, status: t.status === 'Pending' ? 'Completed' : 'Pending' };
-      }
-      return t;
+    realm.write(() => {
+      const taskToToggle = realm.objectForPrimaryKey('Task', taskId);
+      taskToToggle.status = taskToToggle.status === 'Pending' ? 'Completed' : 'Pending';
     });
-
-    axios.put(`${BASE_URL}/tasks/${taskId}`, updatedTasks.find(t => t._id === taskId))
-      .then(() => {
-        setTasks(updatedTasks);
-      })
-      .catch(error => console.error('Error toggling task completion:', error));
   };
 
   return (
@@ -144,7 +163,7 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen; 
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
