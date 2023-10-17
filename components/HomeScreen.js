@@ -205,16 +205,30 @@ const HomeScreen = ({ route }) => {
   };
 
   const handleEditTask = () => {
-    const taskId = task._id;
+    console.log('Task being edited:', task); // Check the console for the task object
+    if (!task._id) {
+      console.error('Task ID is missing.');
+      return;
+    }
+
+    const updatedTask = {
+      ...task,
+      _id: task._id,
+    };
   
-    axios.put(`${BASE_URL}/update/${taskId}`)
+    axios.put(`${BASE_URL}/update/${task._id}`, updatedTask, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then(response => {
         setModalVisible(false);
-        const updatedTasks = tasks.map(t => (t._id === taskId ? response.data : t));
+        const updatedTasks = tasks.map(t => (t._id === task._id ? response.data : t));
         setTasks(updatedTasks);
       })
       .catch(error => console.error('Error updating task:', error));
   };
+  
   
   const handleDeleteTask = (taskId) => {
     axios.delete(`${BASE_URL}/delete/${taskId}`)

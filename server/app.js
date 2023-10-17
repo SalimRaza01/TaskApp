@@ -48,13 +48,13 @@ app.get('/send-data', (req, res) => {
 });
 
 app.put('/update/:_id', (req, res) => {
-  const taskId = req.params.id;
+  const taskId = req.params._id;  
   const updatedTask = {
     title: req.body.title,
     description: req.body.description,
     status: req.body.status,
     deadline: req.body.deadline,
-    createdAt: req.body.createdAt
+    createdAt: req.body.createdAt,
   };
 
   Task.findByIdAndUpdate(taskId, updatedTask, { new: true })
@@ -66,8 +66,9 @@ app.put('/update/:_id', (req, res) => {
       res.status(500).send('Error updating task.');
     });
 });
+
 app.delete('/delete/:_id', (req, res) => {
-  const taskId = req.params.id;
+  const taskId = req.params._id;
 
   Task.findByIdAndDelete(taskId)
     .then(() => {
