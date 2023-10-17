@@ -1,25 +1,146 @@
 import React, { useState, useEffect } from 'react';
-import Realm from 'realm';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import TaskList from './TaskList';
-import TaskModal from './TaskModel';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal, TextInput } from 'react-native';
+import DatePicker from "react-native-modern-datepicker";
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
-const TaskSchema = {
-  name: 'Task',
-  properties: {
-    _id: 'objectId',
-    title: 'string',
-    description: 'string',
-    status: 'string',
-    deadline: 'string',
-    createdAt: 'string',
-  },
-  primaryKey: '_id',
+const TaskList = ({
+  tasks,
+  handleEditTask,
+  handleToggleCompletion,
+  handleDeleteTask,
+}) => {
+  return (
+    <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
+      {tasks.map((task) => (
+        <TaskItem
+          key={task._id}
+          task={task}
+          handleEditTask={handleEditTask}
+          handleToggleCompletion={handleToggleCompletion}
+          handleDeleteTask={handleDeleteTask}
+        />
+      ))}
+    </ScrollView>
+  );
 };
 
-const HomeScreen = () => {
+const TaskItem = ({
+  task,
+  handleEditTask,
+  handleToggleCompletion,
+  handleDeleteTask,
+}) => {
+  return (
+    <View style={styles.taskItem}>
+      <View style={styles.taskTextContainer}>
+        <Text
+          style={[
+            styles.taskText,
+            task.status === 'Completed' && styles.completedTaskText,
+          ]}>
+          {task.title}
+        </Text>
+        <Text style={styles.taskDescription}>
+          Description: {task.description}
+        </Text>
+        <Text style={styles.taskStatus}>Status: {task.status}</Text>
+        <Text style={styles.taskDeadline}>Deadline: {task.deadline}</Text>
+        <Text style={styles.taskCreatedAt}>Created: {task.createdAt}</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => handleEditTask(task)}
+          style={[styles.editButton]}>
+          <Text style={styles.buttonText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleToggleCompletion(task._id)}
+          style={[
+            styles.completeButton,
+            task.status === 'Completed' && styles.completedButton,
+          ]}>
+          <Text style={styles.buttonText}>
+            {task.status === 'Completed' ? 'Pending' : 'Completed'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleDeleteTask(task._id)}
+          style={[styles.deleteButton]}>
+          <Text style={styles.buttonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const TaskModal = ({
+  modalVisible,
+  task,
+  setTask,
+  handleAddTask,
+  handleCancel,
+  validationError,
+}) => {
+  return (
+    <Modal
+      visible={modalVisible}
+      animationType="slide"
+      transparent={false}>
+      <View style={styles.modalContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          value={task.title}
+          onChangeText={(text) =>
+            setTask({ ...task, title: text })
+          } />
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          value={task.description}
+          onChangeText={(text) =>
+            setTask({
+              ...task,
+              description: text,
+            })
+          } />
+        <Text style={styles.inputLabel}>
+          Deadline:
+        </Text>
+        <DatePicker
+          style={styles.datePicker}
+          mode="datepicker"
+          selected={task.deadline}
+          onDateChange={(date) =>
+            setTask({ ...task, deadline: date })
+          } />
+
+        {validationError && (
+          <Text style={styles.errorText}>
+          </Text>
+        )}
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#007BFF" }]}
+          onPress={handleAddTask}
+        >
+          <Text style={styles.buttonText}>{task._id ? "Update" : "Add"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#FF3B30" }]}
+          onPress={handleCancel}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+
+      </View>
+    </Modal>
+  );
+};
+
+const HomeScreen = ({ route }) => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
     title: '',
@@ -28,86 +149,97 @@ const HomeScreen = () => {
     deadline: '',
     createdAt: '',
   });
+
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
-  const [realm, setRealm] = useState(null);
+
+  const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
-    (async () => {
-      const app = new Realm.App({ id: 'devicesync-danli' }); // Replace with your Realm app ID
-//last authenticated user 65278d98c4bf985fcce185d1
-      // Authenticate the user (e.g., using anonymous authentication)
-      const credentials = Realm.Credentials.anonymous();
-
-      try {
-        const user = await app.logIn(credentials);
-        console.log('Successfully authenticated as:', user.id);
-
-        // Proceed to set up sync configuration
-        const config = {
-          sync: {
-            user,
-            partitionValue: `user=${user.id}`, // Assuming user.id is a UUID
-          },
-          schema: [TaskSchema],
-        };
-
-        const realm = await Realm.open(config);
-        setRealm(realm);
-
-        const tasksFromRealm = realm.objects('Task');
-        setTasks([...tasksFromRealm]);
-
-        tasksFromRealm.addListener(() => {
-          setTasks([...tasksFromRealm]);
-        });
-      } catch (error) {
-        console.error('Error authenticating:', error);
-      }
-    })();
-  }, []);
+    if (route.params && route.params.task) {
+      setTask(route.params.task);
+    }
+  }, [route.params]);
 
   const handleAddTask = () => {
-    const newTask = {
-      _id: new Realm.BSON.ObjectId(),  // Generate a new ObjectId
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      deadline: task.deadline,
-      createdAt: task.createdAt,
+
+    const updatedTask = {
+      ...task,
+      ...route.params,
     };
-  
-    realm.write(() => {
-      realm.create('Task', newTask);
-    });
-    setModalVisible(false);
-    setValidationError(false);
-  };
-  
 
+    const updatedTaskStringified = JSON.stringify(updatedTask);
+
+    axios.post(`${BASE_URL}/send-data`, updatedTaskStringified, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        setModalVisible(false);
+        setTask({
+          title: '',
+          description: '',
+          status: 'Pending',
+          deadline: '',
+          createdAt: '',
+        });
+        setTasks([...tasks, response.data]);
+      })
+      .catch(error => console.error('Error adding data:', error));
+  };
   const handleEditTask = () => {
-    const updatedTask = { ...editingTask, ...task, id: editingTask.id }; // Ensure id is set
+    console.log(tasks);
+    // Assuming you want to edit a task based on its title
+    const taskToEdit = tasks.find(t => t._id);
 
-    realm.write(() => {
-      realm.create('Task', updatedTask, 'modified');
-    });
-    setModalVisible(false);
+    if (!taskToEdit) {
+      console.error('Task not found for editing.');
+      return;
+    }
+
+    const updatedTask = {
+      ...taskToEdit,
+      ...route.params,
+    };
+
+    const updatedTaskStringified = JSON.stringify(updatedTask);
+
+    axios.put(`${BASE_URL}/update/:id`, updatedTaskStringified, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        setModalVisible(false);
+        const updatedTasks = tasks.map(t => tasks._id === taskToEdit._id ? response.data : t);
+        setTasks(updatedTasks);
+      })
+      .catch(error => console.error('Error updating data:', error));
   };
-
 
   const handleDeleteTask = (taskId) => {
-    realm.write(() => {
-      const taskToDelete = realm.objectForPrimaryKey('Task', taskId);
-      realm.delete(taskToDelete);
-    });
+    axios.delete(`${BASE_URL}/delete/${taskId}`)
+      .then(() => {
+        setTasks(tasks.filter(t => t._id !== taskId));
+      })
+      .catch(error => console.error('Error deleting task:', error));
   };
 
   const handleToggleCompletion = (taskId) => {
-    realm.write(() => {
-      const taskToToggle = realm.objectForPrimaryKey('Task', taskId);
-      taskToToggle.status = taskToToggle.status === 'Pending' ? 'Completed' : 'Pending';
+    const updatedTasks = tasks.map(t => {
+      if (t._id === taskId) {
+        return { ...t, status: t.status === 'Pending' ? 'Completed' : 'Pending' };
+      }
+      return t;
     });
+
+    axios.put(`${BASE_URL}/update/${taskId}`, updatedTasks.find(t => t._id === taskId))
+      .then(() => {
+        setTasks(updatedTasks);
+      })
+      .catch(error => console.error('Error toggling task completion:', error));
   };
 
   return (
@@ -165,6 +297,7 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -197,5 +330,128 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: width * 0.05,
     fontWeight: "bold",
+  },
+  taskItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    marginTop: height * 0.015,
+    marginBottom: height * 0.007,
+    padding: width * 0.04,
+    borderRadius: width * 0.03,
+    elevation: 5,
+    shadowColor: '#000000',
+  },
+  taskTextContainer: {
+    flex: 1,
+  },
+  taskText: {
+    fontSize: width * 0.05,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: height * 0.002,
+  },
+  completedTaskText: {
+    textDecorationLine: "line-through",
+    color: "gray",
+  },
+  taskDescription: {
+    fontSize: width * 0.03,
+    color: "#666",
+    marginBottom: height * 0.04,
+  },
+  taskStatus: {
+    fontSize: width * 0.03,
+    color: "#666",
+  },
+  taskDeadline: {
+    color: "#FF3B12",
+    fontSize: width * 0.03,
+  },
+  taskCreatedAt: {
+    color: "#007BFF",
+    fontSize: width * 0.028,
+    marginBottom: height * 0.025,
+  },
+
+  buttonContainer: {
+    flexDirection: "column",
+    marginVertical: height * 0.001,
+  },
+
+  editButton: {
+    backgroundColor: "#007BFF",
+    alignItems: "center",
+    width: width * 0.25,
+    borderRadius: width * 0.015,
+    padding: width * 0.022,
+    marginRight: width * 0.03,
+    marginBottom: height * 0.002,
+  },
+
+  completeButton: {
+    backgroundColor: "#4CAF50",
+    borderRadius: width * 0.015,
+    padding: width * 0.022,
+    marginBottom: height * 0.002,
+    marginRight: width * 0.03,
+    alignItems: "center",
+    width: width * 0.25,
+  },
+  completedButton: {
+    backgroundColor: "#808080",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: width * 0.035,
+  },
+  deleteButton: {
+    backgroundColor: "#FF9500",
+    borderRadius: width * 0.015,
+    padding: width * 0.022,
+    alignItems: "center",
+    width: width * 0.25,
+  },
+  taskList: {
+    flex: 1,
+
+  },
+  taskTime: {
+    fontSize: width * 0.04,
+    color: "#666",
+  },
+  button: {
+    padding: width * 0.028,
+    borderRadius: width * 0.03,
+    marginTop: height * 0.01,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: width * 0.03,
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    padding: width * 0.05,
+    backgroundColor: "#FFFFFF",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: width * 0.03,
+    marginBottom: height * 0.02,
+    borderRadius: width * 0.02,
+    fontSize: width * 0.04,
+  },
+  inputLabel: {
+    fontSize: width * 0.04,
+    fontWeight: "bold",
+  },
+  errorText: {
+    color: "#FF3B30",
+    fontSize: width * 0.04,
+    marginBottom: height * 0.02,
   },
 });
