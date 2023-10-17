@@ -21,30 +21,6 @@ mongoose.connection.on("error", (err) => {
   console.log("error", err);
 });
 
-app.post('/delete', (req, res) => {
-  Task.findByIdAndRemove(req.body.id).then(data => {
-    console.log(data);
-    res.send(data);
-  }).catch(err => {
-    console.log("error", err);
-  });
-});
-
-app.post('/update', (req, res) => {
-  Task.findByIdAndUpdate(req.body.id, {
-    title: req.body.title,
-    description: req.body.description,
-    status: req.body.status,
-    deadline: req.body.deadline,
-    createdAt: req.body.createdAt
-  }).then(data => {
-    console.log(data)
-    res.send(data)
-  }).catch(err => {
-    console.log("error", err)
-  })
-})
-
 app.post('/send-data', (req, res) => {
   const task = new Task({
     title: req.body.title,
@@ -53,23 +29,56 @@ app.post('/send-data', (req, res) => {
     deadline: req.body.deadline,
     createdAt: req.body.createdAt
   });
-  task.save().then(data => { 
+  task.save().then(data => {
     console.log(data);
     res.send(data);
   }).catch(err => {
     console.log(err);
   });
 });
-
-app.get('/', (req, res) => {
+app.get('/send-data', (req, res) => {
   Task.find({})
-  .then(data=>{
-    console.log(data)
-    res.send("Get List")
-  }).catch(err => {
-    console.log(err)
-  })
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      console.error('Error fetching tasks:', err);
+      res.status(500).send('Error fetching tasks.');
+    });
 });
+
+app.put('/update/:_id', (req, res) => {
+  const taskId = req.params.id;
+  const updatedTask = {
+    title: req.body.title,
+    description: req.body.description,
+    status: req.body.status,
+    deadline: req.body.deadline,
+    createdAt: req.body.createdAt
+  };
+
+  Task.findByIdAndUpdate(taskId, updatedTask, { new: true })
+    .then(updatedTask => {
+      res.json(updatedTask);
+    })
+    .catch(err => {
+      console.error('Error updating task:', err);
+      res.status(500).send('Error updating task.');
+    });
+});
+app.delete('/delete/:_id', (req, res) => {
+  const taskId = req.params.id;
+
+  Task.findByIdAndDelete(taskId)
+    .then(() => {
+      res.send('Task deleted successfully.');
+    })
+    .catch(err => {
+      console.error('Error deleting task:', err);
+      res.status(500).send('Error deleting task.');
+    });
+});
+
 
 app.listen(3000, () => {
   console.log("Server Running on 3000");

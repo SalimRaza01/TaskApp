@@ -31,6 +31,7 @@ const TaskItem = ({
   handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
+  onEdit
 }) => {
   return (
     <View style={styles.taskItem}>
@@ -116,7 +117,6 @@ const TaskModal = ({
           onDateChange={(date) =>
             setTask({ ...task, deadline: date })
           } />
-
         {validationError && (
           <Text style={styles.errorText}>
           </Text>
@@ -134,7 +134,6 @@ const TaskModal = ({
         >
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
-
       </View>
     </Modal>
   );
@@ -160,9 +159,24 @@ const HomeScreen = ({ route }) => {
     if (route.params && route.params.task) {
       setTask(route.params.task);
     }
+
+    // Fetch tasks from MongoDB
+    fetchTasks();
   }, [route.params]);
 
+  const fetchTasks = () => {
+    axios.get(`${BASE_URL}/send-data`)
+      .then(response => {
+        setTasks(response.data);
+      })
+      .catch(error => console.error('Error fetching tasks:', error));
+  };
   const handleAddTask = () => {
+
+    if (!task.title || !task.deadline) {
+      setValidationError(true);
+      return;
+    }
 
     const updatedTask = {
       ...task,
@@ -179,46 +193,29 @@ const HomeScreen = ({ route }) => {
       .then(response => {
         setModalVisible(false);
         setTask({
-          title: '',
-          description: '',
-          status: 'Pending',
-          deadline: '',
-          createdAt: '',
+          title: "",
+          description: "",
+          status: "Pending",
+          deadline: "",
+          createdAt: "",
         });
         setTasks([...tasks, response.data]);
       })
       .catch(error => console.error('Error adding data:', error));
   };
+
   const handleEditTask = () => {
-    console.log(tasks);
-    // Assuming you want to edit a task based on its title
-    const taskToEdit = tasks.find(t => t._id);
-
-    if (!taskToEdit) {
-      console.error('Task not found for editing.');
-      return;
-    }
-
-    const updatedTask = {
-      ...taskToEdit,
-      ...route.params,
-    };
-
-    const updatedTaskStringified = JSON.stringify(updatedTask);
-
-    axios.put(`${BASE_URL}/update/:id`, updatedTaskStringified, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const taskId = task._id;
+  
+    axios.put(`${BASE_URL}/update/${taskId}`)
       .then(response => {
         setModalVisible(false);
-        const updatedTasks = tasks.map(t => tasks._id === taskToEdit._id ? response.data : t);
+        const updatedTasks = tasks.map(t => (t._id === taskId ? response.data : t));
         setTasks(updatedTasks);
       })
-      .catch(error => console.error('Error updating data:', error));
+      .catch(error => console.error('Error updating task:', error));
   };
-
+  
   const handleDeleteTask = (taskId) => {
     axios.delete(`${BASE_URL}/delete/${taskId}`)
       .then(() => {
@@ -297,7 +294,6 @@ const HomeScreen = ({ route }) => {
 
 export default HomeScreen;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -374,12 +370,10 @@ const styles = StyleSheet.create({
     fontSize: width * 0.028,
     marginBottom: height * 0.025,
   },
-
   buttonContainer: {
     flexDirection: "column",
     marginVertical: height * 0.001,
   },
-
   editButton: {
     backgroundColor: "#007BFF",
     alignItems: "center",
@@ -389,7 +383,6 @@ const styles = StyleSheet.create({
     marginRight: width * 0.03,
     marginBottom: height * 0.002,
   },
-
   completeButton: {
     backgroundColor: "#4CAF50",
     borderRadius: width * 0.015,
@@ -415,7 +408,6 @@ const styles = StyleSheet.create({
   },
   taskList: {
     flex: 1,
-
   },
   taskTime: {
     fontSize: width * 0.04,
