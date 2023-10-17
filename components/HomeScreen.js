@@ -31,7 +31,6 @@ const TaskItem = ({
   handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
-  onEdit
 }) => {
   return (
     <View style={styles.taskItem}>
@@ -90,15 +89,17 @@ const TaskModal = ({
       animationType="slide"
       transparent={false}>
       <View style={styles.modalContainer}>
-        <TextInput
-          style={styles.input}
+         <TextInput
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
+          placeholderTextColor="#999" // Adjust placeholder text color
           placeholder="Title"
           value={task.title}
           onChangeText={(text) =>
             setTask({ ...task, title: text })
           } />
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
+          placeholderTextColor="#999" // Adjust placeholder text color
           placeholder="Description"
           value={task.description}
           onChangeText={(text) =>
@@ -332,7 +333,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#007BFF",
     paddingVertical: height * 0.02,
-    borderRadius: width * 0.1,
+    borderRadius: width * 0.02,
     marginTop: height * 0.04,
     marginBottom: height * 0.02,
   },
@@ -428,14 +429,14 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   button: {
-    padding: width * 0.028,
+    padding: width * 0.040,
     borderRadius: width * 0.03,
     marginTop: height * 0.01,
     alignItems: "center",
   },
   buttonText: {
     color: "#fff",
-    fontSize: width * 0.03,
+    fontSize: width * 0.035,
     fontWeight: "bold",
   },
   modalContainer: {
