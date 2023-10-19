@@ -9,7 +9,14 @@ const taskSchema = new mongoose.Schema({
   description: String,
   status: String,
   deadline: String,
-  createdAt: String
+  createdAt: Date,
+  // day: String,
+  // date: String
+});
+
+taskSchema.virtual('creationDate').get(function() {
+  const day = ('0' + this.createdAt.getDate()).slice(-2); // Get day of the month
+  return day;
 });
 
 const Task = mongoose.model('Task', taskSchema);
@@ -31,7 +38,11 @@ mongoose.connection.on("error", (err) => {
 });
 
 app.post('/send-data', (req, res) => {
-  const newTask = new Task(req.body);
+  // Parse the createdAt field as a Date
+  const newTaskData = req.body;
+  newTaskData.createdAt = new Date(newTaskData.createdAt);
+
+  const newTask = new Task(newTaskData);
   newTask.save()
     .then(data => {
       console.log("Task saved successfully:", data);
@@ -42,6 +53,19 @@ app.post('/send-data', (req, res) => {
       res.status(500).send('Error saving task.');
     });
 });
+
+// app.post('/send-data', (req, res) => {
+//   const newTask = new Task(req.body);
+//   newTask.save()
+//     .then(data => {
+//       console.log("Task saved successfully:", data);
+//       res.json(data);
+//     })
+//     .catch(err => {
+//       console.error("Error saving task:", err);
+//       res.status(500).send('Error saving task.');
+//     });
+// });
 
 app.get('/send-data', (req, res) => {
   Task.find({})

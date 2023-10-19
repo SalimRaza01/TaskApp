@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal
 import DatePicker from "react-native-modern-datepicker";
 import axios from 'axios';
 
+
 const { width, height } = Dimensions.get('window');
+
 
 const TaskList = ({
   tasks,
@@ -26,12 +28,14 @@ const TaskList = ({
   );
 };
 
+
 const TaskItem = ({
   task,
   handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
 }) => {
+
   return (
     <View style={styles.taskItem}>
       <View style={styles.taskTextContainer}>
@@ -47,7 +51,7 @@ const TaskItem = ({
         </Text>
         <Text style={styles.taskStatus}>Status: {task.status}</Text>
         <Text style={styles.taskDeadline}>Deadline: {task.deadline}</Text>
-        {/* <Text style={styles.taskCreatedAt}>Created: {task.createdAt}</Text> */}
+        {/* <Text style={styles.taskDeadline}>createdAt: {task.createdAt}</Text> */}
       </View>
       <View style={styles.buttonContainer}>
         {/* <TouchableOpacity
@@ -89,17 +93,17 @@ const TaskModal = ({
       animationType="slide"
       transparent={false}>
       <View style={styles.modalContainer}>
-         <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
-          placeholderTextColor="#999" 
+        <TextInput
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
+          placeholderTextColor="#999" // Adjust placeholder text color
           placeholder="Title"
           value={task.title}
           onChangeText={(text) =>
             setTask({ ...task, title: text })
           } />
         <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
-          placeholderTextColor="#999" 
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
+          placeholderTextColor="#999" // Adjust placeholder text color
           placeholder="Description"
           value={task.description}
           onChangeText={(text) =>
@@ -171,6 +175,7 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error fetching tasks:', error));
   };
+
   const handleAddTask = () => {
 
     if (!task.title || !task.deadline) {
@@ -180,6 +185,7 @@ const HomeScreen = ({ route }) => {
 
     const updatedTask = {
       ...task,
+      createdAt: new Date().toLocaleString(),
       ...route.params,
     };
 
@@ -205,7 +211,7 @@ const HomeScreen = ({ route }) => {
   };
 
   const handleEditTask = (taskId) => {
-    console.log('Task being edited:', task); 
+    console.log('Task being edited:', task);
     if (!task._id) {
       console.error('Task ID is missing.');
       return;
@@ -215,7 +221,7 @@ const HomeScreen = ({ route }) => {
       ...task,
       _id: task._id,
     };
-  
+
     axios.put(`${BASE_URL}/update/${task._id}`, updatedTask, {
       headers: {
         'Content-Type': 'application/json',
@@ -228,7 +234,7 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error updating task:', error));
   };
-  
+
   const handleToggleCompletion = (taskId) => {
     const updatedTasks = tasks.map(t => {
       if (t._id === taskId) {
@@ -252,12 +258,36 @@ const HomeScreen = ({ route }) => {
       .catch(error => console.error('Error deleting task:', error));
   };
 
- 
+  const formatCreatedAt = (createdAt) => {
+    const date = new Date(createdAt);
+    const day = date.getDate().toString().padStart(2, '0');
+    const options = { weekday: 'short' };
+    const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
+    return { day, dayName };
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Task Manager</Text>
       <View style={styles.divider} />
+
+      <View style={{ marginBottom: width * 0.03 }}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
+          {tasks.map((task) => (
+            <View key={task._id} style={styles.tasksdatelist}>
+              <View style={styles.taskdaystyle}>
+                <Text style={styles.taskDay}>
+                  {formatCreatedAt(task.createdAt).dayName}
+                </Text>
+              </View>
+              <Text style={styles.taskDate}>
+                {formatCreatedAt(task.createdAt).day}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
       <TaskList
         tasks={tasks}
         handleEditTask={handleEditTask}
@@ -460,5 +490,39 @@ const styles = StyleSheet.create({
     color: "#FF3B30",
     fontSize: width * 0.04,
     marginBottom: height * 0.02,
+  },
+  tasksdatelist: {
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    height: height * 0.095,
+    width: width * 0.16,
+    backgroundColor: "#fff",
+    marginTop: height * 0.015,
+    marginBottom: height * 0.002,
+    marginHorizontal: width * 0.02,
+    borderRadius: width * 0.03,
+    elevation: 5,
+    shadowColor: '#000000',
+  },
+  taskDay: {
+    color: "#FFFFFF",
+    fontSize: width * 0.03,
+    alignSelf: "center",
+    fontWeight: "600",
+  },
+  taskDate: {
+    color: "#007BFF",
+    marginBottom: height * 0.009,
+    fontSize: width * 0.08,
+    fontWeight: "600",
+    alignSelf: "center",
+  },
+  taskdaystyle: {
+    alignContent: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF3B30",
+    height: height * 0.03,
+    borderTopLeftRadius: width * 0.03,
+    borderTopRightRadius: width * 0.03,
   },
 });

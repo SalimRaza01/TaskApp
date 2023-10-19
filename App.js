@@ -11,8 +11,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="TaskScreen" component={TaskScreen} />
+      <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      <Stack.Screen name="TaskScreen" component={TaskScreen} />
+    
+      
+     
       </Stack.Navigator>
     </NavigationContainer>
   );
