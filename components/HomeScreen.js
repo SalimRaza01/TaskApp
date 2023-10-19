@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal, TextInput } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal, TextInput } from 'react-native';
 import DatePicker from "react-native-modern-datepicker";
+import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -150,7 +152,9 @@ const TaskModal = ({
   );
 };
 
-const HomeScreen = ({ route }) => {
+const HomeScreen = ({ route, props }) => {
+  const navigation = useNavigation();
+
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
     title: '',
@@ -163,6 +167,9 @@ const HomeScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const [markedDates, setMarkedDates] = useState({});
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
@@ -177,7 +184,14 @@ const HomeScreen = ({ route }) => {
   const fetchTasks = () => {
     axios.get(`${BASE_URL}/send-data`)
       .then(response => {
+        const markedDates = response.data.reduce((dates, task) => {
+          const date = new Date(task.createdAt).toISOString().split('T')[0];
+          dates[date] = { selected: true, selectedColor: "#0A79DF" };
+          return dates;
+        }, {});
+
         setTasks(response.data);
+        setMarkedDates(markedDates);
       })
       .catch(error => console.error('Error fetching tasks:', error));
   };
@@ -283,10 +297,25 @@ const HomeScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+
       <Text style={styles.title}>Task Manager</Text>
+
+      <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
+        <Image style={styles.logo} source={require('../assets/profile.png')} />
+      </TouchableOpacity>
+
       <View style={styles.divider} />
 
+<ScrollView showsVerticalScrollIndicator={false}>
+
       <View style={{ marginBottom: width * 0.03 }}>
+
+        <Calendar
+          current={selectedDate}
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={markedDates}
+        />
+
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
           {tasks.map((task) => (
             <View key={task._id} style={styles.tasksdatelist}>
@@ -314,6 +343,7 @@ const HomeScreen = ({ route }) => {
         }
         handleDeleteTask={handleDeleteTask}
       />
+            </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
@@ -351,6 +381,7 @@ const HomeScreen = ({ route }) => {
           setValidationError(false);
         }}
         validationError={validationError} />
+      
     </View>
   );
 };
@@ -529,7 +560,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   taskDate: {
-    color: "#007BFF",
+    color: "#0A79DF",
     marginBottom: height * 0.003,
     fontSize: width * 0.08,
     fontWeight: "600",
@@ -546,8 +577,27 @@ const styles = StyleSheet.create({
   taskDeadlinebottom: {
     color: "#707070",
     marginBottom: height * 0.008,
-    fontSize: width * 0.02,
+    fontSize: width * 0.021,
     fontWeight: "600",
     alignSelf: "center",
-  }
+  },
+  logo: {
+    alignSelf: "flex-end",
+    width: width * 0.11,
+    height: width * 0.11,
+    marginBottom: height * -0.012,
+    marginTop: height * -0.04,
+  },
+  openCalendarButton: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  openCalendarButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
 });
