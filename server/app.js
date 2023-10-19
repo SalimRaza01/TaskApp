@@ -8,10 +8,9 @@ const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
   status: String,
-  deadline: String,
+  deadline: Date,
   createdAt: Date,
-  // day: String,
-  // date: String
+
 });
 
 taskSchema.virtual('creationDate').get(function() {
@@ -53,19 +52,6 @@ app.post('/send-data', (req, res) => {
       res.status(500).send('Error saving task.');
     });
 });
-
-// app.post('/send-data', (req, res) => {
-//   const newTask = new Task(req.body);
-//   newTask.save()
-//     .then(data => {
-//       console.log("Task saved successfully:", data);
-//       res.json(data);
-//     })
-//     .catch(err => {
-//       console.error("Error saving task:", err);
-//       res.status(500).send('Error saving task.');
-//     });
-// });
 
 app.get('/send-data', (req, res) => {
   Task.find({})

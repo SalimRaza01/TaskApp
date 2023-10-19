@@ -3,9 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal
 import DatePicker from "react-native-modern-datepicker";
 import axios from 'axios';
 
-
 const { width, height } = Dimensions.get('window');
-
 
 const TaskList = ({
   tasks,
@@ -28,13 +26,21 @@ const TaskList = ({
   );
 };
 
-
 const TaskItem = ({
   task,
   handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
 }) => {
+  const formatDeadline = (deadline) => {
+    const date = new Date(deadline);
+    const day = date.getDate().toString().padStart(2, '0');
+    const options = { month: 'short' };
+    const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
+    const year = date.getFullYear(); // Get the year
+    const formattedDeadline = `${day} ${monthName} ${year}`;
+    return { day, monthName, year, formattedDeadline };
+  };
 
   return (
     <View style={styles.taskItem}>
@@ -50,7 +56,7 @@ const TaskItem = ({
           Description: {task.description}
         </Text>
         <Text style={styles.taskStatus}>Status: {task.status}</Text>
-        <Text style={styles.taskDeadline}>Deadline: {task.deadline}</Text>
+        <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
         {/* <Text style={styles.taskDeadline}>createdAt: {task.createdAt}</Text> */}
       </View>
       <View style={styles.buttonContainer}>
@@ -258,10 +264,19 @@ const HomeScreen = ({ route }) => {
       .catch(error => console.error('Error deleting task:', error));
   };
 
+  const formatDeadline = (deadline) => {
+    const date = new Date(deadline);
+    const day = date.getDate().toString().padStart(2, '0');
+    const options = { month: 'short' };
+    const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
+    const formattedDeadline = `${day} ${monthName}`;
+    return { day, monthName, formattedDeadline };
+  };
+
   const formatCreatedAt = (createdAt) => {
     const date = new Date(createdAt);
     const day = date.getDate().toString().padStart(2, '0');
-    const options = { weekday: 'short' };
+    const options = { month: 'short' };
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
     return { day, dayName };
   };
@@ -282,6 +297,9 @@ const HomeScreen = ({ route }) => {
               </View>
               <Text style={styles.taskDate}>
                 {formatCreatedAt(task.createdAt).day}
+              </Text>
+              <Text style={styles.taskDeadlinebottom}>
+                End: {formatDeadline(task.deadline).formattedDeadline}
               </Text>
             </View>
           ))}
@@ -494,8 +512,8 @@ const styles = StyleSheet.create({
   tasksdatelist: {
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    height: height * 0.095,
-    width: width * 0.16,
+    height: height * 0.11,
+    width: width * 0.18,
     backgroundColor: "#fff",
     marginTop: height * 0.015,
     marginBottom: height * 0.002,
@@ -512,7 +530,7 @@ const styles = StyleSheet.create({
   },
   taskDate: {
     color: "#007BFF",
-    marginBottom: height * 0.009,
+    marginBottom: height * 0.003,
     fontSize: width * 0.08,
     fontWeight: "600",
     alignSelf: "center",
@@ -525,4 +543,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: width * 0.03,
     borderTopRightRadius: width * 0.03,
   },
+  taskDeadlinebottom: {
+    color: "#707070",
+    marginBottom: height * 0.008,
+    fontSize: width * 0.02,
+    fontWeight: "600",
+    alignSelf: "center",
+  }
 });
