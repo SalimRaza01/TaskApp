@@ -5,10 +5,14 @@ import { Calendar } from 'react-native-calendars';
 
 const { width, height } = Dimensions.get('window');
 
-const TaskDetails = () => {
+const TaskDetails = ({ route }) => {
 
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [markedDates, setMarkedDates] = useState({});
+  const { task } = route.params;
+  const { deadline, createdAt } = task;
+  const markedDates = {
+    [deadline]: { selected: true, selectedColor: '#0A79DF' },
+  };
 
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
@@ -40,7 +44,7 @@ const TaskDetails = () => {
           <Text style={styles.TaskPriorityText}>Priority: High</Text>
         </View>
         <View style={styles.Deadlinebox}>
-          <Text style={styles.DeadlineText}>Deadline: 20 Oct 2023</Text>
+          <Text style={styles.DeadlineText}>Deadline: {task.deadline}</Text>
         </View>
       </View>
       <Calendar style={{
@@ -52,9 +56,8 @@ const TaskDetails = () => {
         elevation: 5,
         shadowColor: '#000000',
       }}
-        current={selectedDate}
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={markedDates}
+      current={deadline} 
+      markedDates={markedDates}
       />
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}

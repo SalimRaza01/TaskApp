@@ -62,7 +62,6 @@ const TaskItem = ({
         </Text>
         <Text style={styles.taskStatus}>Status: {task.status}</Text>
         <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
-        {/* <Text style={styles.taskDeadline}>createdAt: {task.createdAt}</Text> */}
       </View>
       <View style={styles.buttonContainer}>
         {/* <TouchableOpacity
@@ -86,7 +85,7 @@ const TaskItem = ({
           <Text style={styles.buttonText}>Delete</Text>
         </TouchableOpacity> */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('TaskDetails')}
+          onPress={() => navigation.navigate('TaskDetails', { task: task })}
           style={[styles.ViewTaskButton]}>
           <Text style={styles.buttonText}>View Task</Text>
         </TouchableOpacity>
@@ -111,17 +110,16 @@ const TaskModal = ({
       transparent={false}>
       <View style={styles.modalContainer}>
         <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
-          placeholderTextColor="#999" // Adjust placeholder text color
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
+          placeholderTextColor="#999"
           placeholder="Title"
           value={task.title}
           onChangeText={(text) =>
             setTask({ ...task, title: text })
           } />
         <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} // Adjust text color and background color
-          placeholderTextColor="#999" // Adjust placeholder text color
-          placeholder="Description"
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
+          placeholderTextColor="#999" 
           value={task.description}
           onChangeText={(text) =>
             setTask({
@@ -304,9 +302,6 @@ const HomeScreen = ({ route }) => {
     return { day, dayName };
   };
 
-  const toggleCalendar = () => {
-    setCalendarVisible(!isCalendarVisible);
-  };
 
   return (
     <View style={styles.container}>
@@ -321,35 +316,9 @@ const HomeScreen = ({ route }) => {
 
       <View style={styles.divider} />
 
-      {/* <TouchableOpacity style={styles.ViewCalender} onPress={toggleCalendar}>
-
-            <Text style={styles.ViewCalenderText}  >View Calender </Text>   
-            <Image style={styles.ViewCalenderIcon} source={require('../assets/calender.png')} />
-
-          </TouchableOpacity> */}
-
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-
-          {/* // TaskCreatedDates */}
-          {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
-            {tasks.map((task) => (
-              <TouchableOpacity onPress={toggleCalendar}  key={task._id} style={styles.tasksdatelist}>
-                <View style={styles.taskdaystyle}>
-                  <Text style={styles.taskDay}>
-                    {formatCreatedAt(task.createdAt).dayName}
-                  </Text>
-                </View>
-                <Text style={styles.taskDate}>
-                  {formatCreatedAt(task.createdAt).day}
-                </Text>
-                <Text style={styles.taskDeadlinebottom}>
-                  End: {formatDeadline(task.deadline).formattedDeadline}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView> */}
 
         </View>
 
@@ -370,25 +339,6 @@ const HomeScreen = ({ route }) => {
           handleDeleteTask={handleDeleteTask}
         />
       </ScrollView>
-      {/* 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          setEditingTask(null);
-          setTask({
-            title: "",
-            description: "",
-            status: "Pending",
-            deadline: "",
-            createdAt: "",
-          });
-          setModalVisible(true);
-          setValidationError(false);
-        }}>
-        <Text style={styles.addButtonText}>
-          {editingTask ? "Edit Task" : "Add Task"}
-        </Text>
-      </TouchableOpacity> */}
 
       <TaskModal
         modalVisible={modalVisible}
@@ -632,28 +582,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: width * 0.25,
   },
-  // ViewCalender: {
-  //   backgroundColor: "#007BFF",
-  //   borderRadius: 5,
-  //   width: width * 0.3,
-  //   height: width * 0.11,
-  //   verticalAlign:"middle",
-  //   justifyContent:"center"
-  // },
-  // // openCalendarButtonText: {
-  // //   color: "#fff",
-  // //   fontWeight: "bold",
-  // // },
-  // ViewCalenderIcon: {
-  //   alignSelf: "flex-end",
-  //   width: width * 0.11,
-  //   height: width * 0.11,
 
-  //   marginTop: height * -0.023,
-  // },
-  // ViewCalenderText: {
-  //   color: "#000000",
-  //   fontSize: width * 0.025,
-  //   fontWeight: "600",
-  // },
 });
