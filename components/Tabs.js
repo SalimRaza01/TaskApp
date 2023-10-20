@@ -5,6 +5,7 @@ import HomeScreen from './HomeScreen';
 import Profile from './Profile';
 import CalenderModal from './CalenderModal';
 import TaskDetails from './TaskDetails';
+import Settings from './Settings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -93,7 +94,7 @@ const Tabs = () => {
                 )
             }} />
 
-            <Tab.Screen name="Settings" component={TaskDetails} options={{
+            <Tab.Screen name="Settings" component={Settings} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image

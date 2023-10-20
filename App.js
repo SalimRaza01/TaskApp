@@ -3,6 +3,8 @@ import { Image, StyleSheet, Dimensions, TouchableOpacity, View } from 'react-nat
 import SplashScreen from './components/SplashScreen';
 import Profile from './components/Profile';
 import TaskDetails from './components/TaskDetails';
+import Settings from './components/Settings';
+
 import Tabs from './components/Tabs';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -64,6 +66,7 @@ export default function App() {
           }}
         />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="TaskDetails" component={TaskDetails} options={{
           headerCenter: () => (
