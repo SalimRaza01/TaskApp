@@ -1,11 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
-import DatePicker from "react-native-modern-datepicker";
+import { Calendar } from 'react-native-calendars';
 
 
 const { width, height } = Dimensions.get('window');
 
 const TaskDetails = () => {
+
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [markedDates, setMarkedDates] = useState({});
+
+  const formatDeadline = (deadline) => {
+    const date = new Date(deadline);
+    const day = date.getDate().toString().padStart(2, '0');
+    const options = { month: 'short' };
+    const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
+    const formattedDeadline = `${day} ${monthName}`;
+    return { day, monthName, formattedDeadline };
+  };
+
+  const formatCreatedAt = (createdAt) => {
+    const date = new Date(createdAt);
+    const day = date.getDate().toString().padStart(2, '0');
+    const options = { month: 'short' };
+    const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
+    return { day, dayName };
+  };
 
   return (
     <View style={styles.container}>
@@ -23,9 +43,19 @@ const TaskDetails = () => {
           <Text style={styles.DeadlineText}>Deadline: 20 Oct 2023</Text>
         </View>
       </View>
-      <DatePicker
-        style={styles.datePicker}
-        mode="datepicker" />
+      <Calendar style={{
+        backgroundColor: "#fff",
+        marginTop: height * 0.015,
+        marginBottom: height * 0.006,
+        borderRadius: width * 0.03,
+        height: height * 0.42,
+        elevation: 5,
+        shadowColor: '#000000',
+      }}
+        current={selectedDate}
+        onDayPress={(day) => setSelectedDate(day.dateString)}
+        markedDates={markedDates}
+      />
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
         placeholderTextColor="#999"
