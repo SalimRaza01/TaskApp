@@ -34,6 +34,9 @@ const TaskItem = ({
   handleToggleCompletion,
   handleDeleteTask,
 }) => {
+
+  const navigation = useNavigation();
+
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
@@ -67,7 +70,7 @@ const TaskItem = ({
           style={[styles.editButton]}>
           <Text style={styles.buttonText}>Edit</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => handleToggleCompletion(task._id)}
           style={[
             styles.completeButton,
@@ -81,7 +84,13 @@ const TaskItem = ({
           onPress={() => handleDeleteTask(task._id)}
           style={[styles.deleteButton]}>
           <Text style={styles.buttonText}>Delete</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('TaskDetails')}
+          style={[styles.ViewTaskButton]}>
+          <Text style={styles.buttonText}>View Task</Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -302,49 +311,55 @@ const HomeScreen = ({ route }) => {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.title}>Task Manager</Text>
+      <Text style={styles.WelcomeText}>Welcome,</Text>
 
-      <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
-        <Image style={styles.logo} source={require('../assets/profile.png')} />
+      <Text style={styles.UserName}>Salim Raza</Text>
+
+      <TouchableOpacity >
+        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
       </TouchableOpacity>
 
       <View style={styles.divider} />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {/* <TouchableOpacity style={styles.ViewCalender} onPress={toggleCalendar}>
+
+            <Text style={styles.ViewCalenderText}  >View Calender </Text>   
+            <Image style={styles.ViewCalenderIcon} source={require('../assets/calender.png')} />
+
+          </TouchableOpacity> */}
+
+      <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
 
-          <TouchableOpacity onPress={toggleCalendar}>
-            <Image style={styles.calenderButton} source={require('../assets/calender.png')} />
-          </TouchableOpacity>
-
-
-          {isCalendarVisible && (
-
-            <Calendar
-              current={selectedDate}
-              onDayPress={(day) => setSelectedDate(day.dateString)}
-              markedDates={markedDates}
-            />
-          )}
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
+          {/* // TaskCreatedDates */}
+          {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
             {tasks.map((task) => (
-              <View key={task._id} style={styles.tasksdatelist}>
-                <TouchableOpacity onPress={toggleCalendar} style={styles.taskdaystyle}>
+              <TouchableOpacity onPress={toggleCalendar}  key={task._id} style={styles.tasksdatelist}>
+                <View style={styles.taskdaystyle}>
                   <Text style={styles.taskDay}>
                     {formatCreatedAt(task.createdAt).dayName}
                   </Text>
-                </TouchableOpacity>
+                </View>
                 <Text style={styles.taskDate}>
                   {formatCreatedAt(task.createdAt).day}
                 </Text>
                 <Text style={styles.taskDeadlinebottom}>
                   End: {formatDeadline(task.deadline).formattedDeadline}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
-          </ScrollView>
+          </ScrollView> */}
+
         </View>
+
+        {isCalendarVisible && (
+          <Calendar
+            current={selectedDate}
+            onDayPress={(day) => setSelectedDate(day.dateString)}
+            markedDates={markedDates}
+          />
+        )}
 
         <TaskList
           tasks={tasks}
@@ -355,6 +370,7 @@ const HomeScreen = ({ route }) => {
           handleDeleteTask={handleDeleteTask}
         />
       </ScrollView>
+      {/* 
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
@@ -372,7 +388,7 @@ const HomeScreen = ({ route }) => {
         <Text style={styles.addButtonText}>
           {editingTask ? "Edit Task" : "Add Task"}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TaskModal
         modalVisible={modalVisible}
@@ -404,11 +420,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f7f7f7",
+
   },
-  title: {
-    fontSize: width * 0.08,
+  WelcomeText: {
+    fontSize: width * 0.04,
     fontWeight: "bold",
-    marginTop: height * 0.04,
+    marginTop: height * -0.01,
+    marginBottom: -10,
+    color: "#333",
+    textAlign: "left",
+  },
+  UserName: {
+    fontSize: width * 0.06,
+    fontWeight: "bold",
+    marginTop: height * 0.01,
     marginBottom: -10,
     color: "#333",
     textAlign: "left",
@@ -438,7 +463,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     marginTop: height * 0.015,
-    marginBottom: height * 0.007,
+    marginBottom: height * 0.006,
     padding: width * 0.04,
     borderRadius: width * 0.03,
     elevation: 5,
@@ -513,6 +538,7 @@ const styles = StyleSheet.create({
   },
   taskList: {
     flex: 1,
+    height: height * 0.67,
   },
   taskTime: {
     fontSize: width * 0.04,
@@ -592,30 +618,42 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignSelf: "center",
   },
-  logo: {
+  UserProfileImage: {
     alignSelf: "flex-end",
     width: width * 0.11,
     height: width * 0.11,
     marginBottom: height * -0.012,
-    marginTop: height * -0.04,
+    marginTop: height * -0.05,
   },
-  openCalendarButton: {
+  ViewTaskButton: {
     backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 5,
+    borderRadius: width * 0.015,
+    padding: width * 0.022,
     alignItems: "center",
-    justifyContent: "center",
+    width: width * 0.25,
   },
+  // ViewCalender: {
+  //   backgroundColor: "#007BFF",
+  //   borderRadius: 5,
+  //   width: width * 0.3,
+  //   height: width * 0.11,
+  //   verticalAlign:"middle",
+  //   justifyContent:"center"
+  // },
+  // // openCalendarButtonText: {
+  // //   color: "#fff",
+  // //   fontWeight: "bold",
+  // // },
+  // ViewCalenderIcon: {
+  //   alignSelf: "flex-end",
+  //   width: width * 0.11,
+  //   height: width * 0.11,
 
-  openCalendarButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  calenderButton: {
-    alignSelf: "flex-end",
-    width: width * 0.11,
-    height: width * 0.11,
-    marginBottom: height * 0.012,
-    marginTop: height * 0.04,
-  },
+  //   marginTop: height * -0.023,
+  // },
+  // ViewCalenderText: {
+  //   color: "#000000",
+  //   fontSize: width * 0.025,
+  //   fontWeight: "600",
+  // },
 });

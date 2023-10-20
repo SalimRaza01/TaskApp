@@ -10,7 +10,6 @@ const taskSchema = new mongoose.Schema({
   status: String,
   deadline: Date,
   createdAt: Date,
-
 });
 
 taskSchema.virtual('creationDate').get(function() {
