@@ -152,7 +152,7 @@ const TaskModal = ({
   );
 };
 
-const HomeScreen = ({ route, props }) => {
+const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const [tasks, setTasks] = useState([]);
@@ -168,8 +168,8 @@ const HomeScreen = ({ route, props }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
   const [markedDates, setMarkedDates] = useState({});
+  const [isCalendarVisible, setCalendarVisible] = useState(false);
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
@@ -295,6 +295,10 @@ const HomeScreen = ({ route, props }) => {
     return { day, dayName };
   };
 
+  const toggleCalendar = () => {
+    setCalendarVisible(!isCalendarVisible);
+  };
+
   return (
     <View style={styles.container}>
 
@@ -306,44 +310,51 @@ const HomeScreen = ({ route, props }) => {
 
       <View style={styles.divider} />
 
-<ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
 
-      <View style={{ marginBottom: width * 0.03 }}>
+        <View style={{ marginBottom: width * 0.03 }}>
 
-        <Calendar
-          current={selectedDate}
-          onDayPress={(day) => setSelectedDate(day.dateString)}
-          markedDates={markedDates}
-        />
+          <TouchableOpacity onPress={toggleCalendar}>
+            <Image style={styles.calenderButton} source={require('../assets/calender.png')} />
+          </TouchableOpacity>
 
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
-          {tasks.map((task) => (
-            <View key={task._id} style={styles.tasksdatelist}>
-              <View style={styles.taskdaystyle}>
-                <Text style={styles.taskDay}>
-                  {formatCreatedAt(task.createdAt).dayName}
+
+          {isCalendarVisible && (
+
+            <Calendar
+              current={selectedDate}
+              onDayPress={(day) => setSelectedDate(day.dateString)}
+              markedDates={markedDates}
+            />
+          )}
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
+            {tasks.map((task) => (
+              <View key={task._id} style={styles.tasksdatelist}>
+                <TouchableOpacity onPress={toggleCalendar} style={styles.taskdaystyle}>
+                  <Text style={styles.taskDay}>
+                    {formatCreatedAt(task.createdAt).dayName}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={styles.taskDate}>
+                  {formatCreatedAt(task.createdAt).day}
+                </Text>
+                <Text style={styles.taskDeadlinebottom}>
+                  End: {formatDeadline(task.deadline).formattedDeadline}
                 </Text>
               </View>
-              <Text style={styles.taskDate}>
-                {formatCreatedAt(task.createdAt).day}
-              </Text>
-              <Text style={styles.taskDeadlinebottom}>
-                End: {formatDeadline(task.deadline).formattedDeadline}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+            ))}
+          </ScrollView>
+        </View>
 
-      <TaskList
-        tasks={tasks}
-        handleEditTask={handleEditTask}
-        handleToggleCompletion={
-          handleToggleCompletion
-        }
-        handleDeleteTask={handleDeleteTask}
-      />
-            </ScrollView>
+        <TaskList
+          tasks={tasks}
+          handleEditTask={handleEditTask}
+          handleToggleCompletion={
+            handleToggleCompletion
+          }
+          handleDeleteTask={handleDeleteTask}
+        />
+      </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
@@ -381,7 +392,7 @@ const HomeScreen = ({ route, props }) => {
           setValidationError(false);
         }}
         validationError={validationError} />
-      
+
     </View>
   );
 };
@@ -599,5 +610,12 @@ const styles = StyleSheet.create({
   openCalendarButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  calenderButton: {
+    alignSelf: "flex-end",
+    width: width * 0.11,
+    height: width * 0.11,
+    marginBottom: height * 0.012,
+    marginTop: height * 0.04,
   },
 });

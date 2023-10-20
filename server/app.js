@@ -37,7 +37,7 @@ mongoose.connection.on("error", (err) => {
 });
 
 app.post('/send-data', (req, res) => {
-  // Parse the createdAt field as a Date
+
   const newTaskData = req.body;
   newTaskData.createdAt = new Date(newTaskData.createdAt);
   newTaskData.deadline = new Date(newTaskData.deadline + "Z");
