@@ -44,7 +44,7 @@ const TaskDetails = ({ route }) => {
           <Text style={styles.TaskPriorityText}>Priority: High</Text>
         </View>
         <View style={styles.Deadlinebox}>
-          <Text style={styles.DeadlineText}>Deadline: {task.deadline}</Text>
+          <Text style={styles.DeadlineText}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
         </View>
       </View>
       <Calendar style={{
