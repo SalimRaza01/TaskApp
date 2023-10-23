@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
+import TaskList from './TaskList';
+import TaskItem from './TaskItem'
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import Swipeout from 'react-native-swipeout';
@@ -9,92 +11,92 @@ import Swipeout from 'react-native-swipeout';
 
 const { width, height } = Dimensions.get('window');
 
-const TaskList = ({
-  tasks,
-  handleEditTask,
-  handleToggleCompletion,
-  handleDeleteTask,
-}) => {
-  return (
-    <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
-      {tasks.map((task) => (
-        <TaskItem
-          key={task._id}
-          task={task}
-          handleEditTask={handleEditTask}
-          handleToggleCompletion={handleToggleCompletion}
-          handleDeleteTask={handleDeleteTask}
-        />
-      ))}
-    </ScrollView>
-  );
-};
+// const TaskList = ({
+//   tasks,
+//   handleEditTask,
+//   handleToggleCompletion,
+//   handleDeleteTask,
+// }) => {
+//   return (
+//     <View style={styles.taskList} >
+//       {tasks.map((task) => (
+//         <TaskItem
+//           key={task._id}
+//           task={task}
+//           handleEditTask={handleEditTask}
+//           handleToggleCompletion={handleToggleCompletion}
+//           handleDeleteTask={handleDeleteTask}
+//         />
+//       ))}
+//     </View>
+//   );
+// };
 
-const TaskItem = ({
-  task,
-  handleToggleCompletion,
-  handleDeleteTask,
-}) => {
+// const TaskItem = ({
+//   task,
+//   handleToggleCompletion,
+//   handleDeleteTask,
+// }) => {
 
-  const navigation = useNavigation();
+//   const navigation = useNavigation();
 
-  const formatDeadline = (deadline) => {
-    const date = new Date(deadline);
-    const day = date.getDate().toString().padStart(2, '0');
-    const options = { month: 'short' };
-    const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const year = date.getFullYear();
-    const formattedDeadline = `${day} ${monthName} ${year}`;
-    return { day, monthName, year, formattedDeadline };
-  };
+//   const formatDeadline = (deadline) => {
+//     const date = new Date(deadline);
+//     const day = date.getDate().toString().padStart(2, '0');
+//     const options = { month: 'short' };
+//     const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
+//     const year = date.getFullYear();
+//     const formattedDeadline = `${day} ${monthName} ${year}`;
+//     return { day, monthName, year, formattedDeadline };
+//   };
 
-  const swipeoutBtns = [
-    {
-      text: 'Delete',
-      backgroundColor: 'red',
-      onPress: () => handleDeleteTask(task._id),
-    },
-  ];
+//   const swipeoutBtns = [
+//     {
+//       text: 'Delete',
+//       backgroundColor: 'red',
+//       onPress: () => handleDeleteTask(task._id),
+//     },
+//   ];
 
-  return (
-    <Swipeout right={swipeoutBtns} autoClose={true}>
-    <View style={styles.taskItem}>
-      <View style={styles.taskTextContainer}>
-        <Text
-          style={[
-            styles.taskText,
-            task.status === 'Completed' && styles.completedTaskText,
-          ]}>
-          {task.title}
-        </Text>
-        <Text style={styles.taskDescription}>
-          Description: {task.description}
-        </Text>
-        <Text style={styles.taskStatus}>Status: {task.status}</Text>
-        <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        {/* <TouchableOpacity
-          onPress={() => handleToggleCompletion(task._id)}
-          style={[
-            styles.completeButton,
-            task.status === 'Completed' && styles.completedButton,
-          ]}>
-          <Text style={styles.buttonText}>
-            {task.status === 'Completed' ? 'Pending' : 'Completed'}
-          </Text>
-        </TouchableOpacity>*/}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('TaskDetails', { task: task })}
-          style={[styles.ViewTaskButton]}>
-          <Text style={styles.buttonText}>View Task</Text>
-        </TouchableOpacity>
+//   return (
+//     <Swipeout right={swipeoutBtns} autoClose={true} style={styles.swipeoutContainer}>
+//     <View style={styles.taskItem}>
+//       <View style={styles.taskTextContainer}>
+//         <Text
+//           style={[
+//             styles.taskText,
+//             task.status === 'Completed' && styles.completedTaskText,
+//           ]}>
+//           {task.title}
+//         </Text>
+//         <Text style={styles.taskDescription}>
+//           Description: {task.description}
+//         </Text>
+//         <Text style={styles.taskStatus}>Status: {task.status}</Text>
+//         <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
+//       </View>
+//       <View style={styles.buttonContainer}>
+//         {/* <TouchableOpacity
+//           onPress={() => handleToggleCompletion(task._id)}
+//           style={[
+//             styles.completeButton,
+//             task.status === 'Completed' && styles.completedButton,
+//           ]}>
+//           <Text style={styles.buttonText}>
+//             {task.status === 'Completed' ? 'Pending' : 'Completed'}
+//           </Text>
+//         </TouchableOpacity>*/}
+//         <TouchableOpacity
+//           onPress={() => navigation.navigate('TaskDetails', { task: task })}
+//           style={[styles.ViewTaskButton]}>
+//           <Text style={styles.buttonText}>View Task</Text>
+//         </TouchableOpacity>
 
-      </View>
-    </View>
-    </Swipeout>
-  );
-};
+//       </View>
+//     </View>
+//     </Swipeout>
+//   );
+// };
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -220,14 +222,18 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error deleting task:', error));
   };
-
   const handleCancel = () => {
-    // Implement the cancel logic here
-    setModalVisible(false); // Close the modal or perform any other necessary actions
-    // You can also reset the task or perform other actions as needed
+    if (task._id) {
+
+      setTask({ title: '', description: '', status: 'Pending', deadline: '', createdAt: '' });
+    } else {
+
+      setModalVisible(false);
+      setValidationError(false); 
+    }
+    navigation.goBack();
   };
-
-
+  
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
@@ -340,15 +346,11 @@ const styles = StyleSheet.create({
   },
   taskItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
-    marginTop: height * 0.015,
-    marginBottom: height * 0.006,
+    backgroundColor: "#FFFFFF",
     padding: width * 0.04,
     borderRadius: width * 0.03,
     elevation: 5,
-    shadowColor: '#000000',
   },
   taskTextContainer: {
     flex: 1,
@@ -384,15 +386,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "column",
     marginVertical: height * 0.001,
-  },
-  editButton: {
-    backgroundColor: "#007BFF",
-    alignItems: "center",
-    width: width * 0.25,
-    borderRadius: width * 0.015,
-    padding: width * 0.022,
-    marginRight: width * 0.03,
-    marginBottom: height * 0.01,
   },
   completeButton: {
     backgroundColor: "#4CAF50",
@@ -458,19 +451,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     marginBottom: height * 0.02,
   },
-  tasksdatelist: {
-    justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
-    height: height * 0.11,
-    width: width * 0.18,
-    backgroundColor: "#fff",
-    marginTop: height * 0.015,
-    marginBottom: height * 0.002,
-    marginHorizontal: width * 0.02,
-    borderRadius: width * 0.03,
-    elevation: 5,
-    shadowColor: '#000000',
-  },
   taskDay: {
     color: "#FFFFFF",
     fontSize: width * 0.03,
@@ -513,5 +493,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: width * 0.25,
   },
-
+  swipeoutContainer: {
+    backgroundColor: 'lightgray',
+    height: width * 0.37,
+  },
 });

@@ -60,7 +60,6 @@ const Tabs = ({ navigation }) => {
                 ...styles.shadow
             }
         }}>
-
             <Tab.Screen name="Home" component={HomeScreen} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
@@ -104,7 +103,6 @@ const Tabs = ({ navigation }) => {
                     <CustonTabBarButton {...props} navigation={navigation} />
                 )
             }} />
-
             <Tab.Screen name="Settings" component={Settings} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
@@ -141,7 +139,6 @@ export default Tabs;
 
 const styles = StyleSheet.create({
     shadow: {
-        shadowColor: 'grey',
         shadowOffset: {
             width: width * 0,
             height: height * 1,
