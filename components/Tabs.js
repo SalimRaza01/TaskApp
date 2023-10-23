@@ -14,9 +14,9 @@ const Tab = createBottomTabNavigator();
 const CustonTabBarButton = ({ children }) => {
     const navigation = useNavigation();
 
-    const handlePress = () => {
-        navigation.navigate('Add Task', { task: newTask, setTask: setNewTask });
-    };
+    // const handlePress = () => {
+    //     navigation.navigate('Add Task', { task: newTask, setTask: setNewTask });
+    // };
 
     return (
         <TouchableOpacity

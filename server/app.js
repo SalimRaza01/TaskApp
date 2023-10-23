@@ -10,10 +10,11 @@ const taskSchema = new mongoose.Schema({
   status: String,
   deadline: Date,
   createdAt: Date,
+  comments: String
 });
 
 taskSchema.virtual('creationDate').get(function() {
-  const day = ('0' + this.createdAt.getDate()).slice(-2); // Get day of the month
+  const day = ('0' + this.createdAt.getDate()).slice(-2); 
   return day;
 });
 
@@ -94,6 +95,29 @@ app.delete('/delete/:id', (req, res) => {
     .catch(err => {
       console.error('Error deleting task:', err);
       res.status(500).send('Error deleting task.');
+    });
+});
+
+app.post('/save-comment', (req, res) => {
+  const { taskId, comment } = req.body;
+
+  Task.findById(taskId)
+    .then(task => {
+      if (!task) {
+        return res.status(404).send('Task not found.');
+      }
+
+      task.comments = task.comments || [];
+      task.comments.push(comment);
+
+      return task.save();
+    })
+    .then(updatedTask => {
+      res.json(updatedTask);
+    })
+    .catch(err => {
+      console.error('Error saving comment:', err);
+      res.status(500).send('Error saving comment.');
     });
 });
 

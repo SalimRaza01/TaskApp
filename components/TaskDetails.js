@@ -1,12 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, Button, Image } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-
+import axios from 'axios';
 const { width, height } = Dimensions.get('window');
 
 const TaskDetails = ({ route }) => {
+
+  const BASE_URL = 'http://10.0.2.2:3000';
+
   const { task } = route.params;
   const { deadline, createdAt } = task;
+  const [comment, setComment] = useState('');
+
+  const handleCommentChange = (text) => {
+    setComment(text);
+  };
+  const handleCommentSubmit = () => {
+    const commentData = {
+      taskId: task._id,
+      comment: comment,
+    };
+
+    task.comments = task.comments || [];
+    task.comments.push(comment);
+
+    axios.post(`${BASE_URL}/save-comment`, commentData)
+      .then(response => {
+        console.log('Comment saved:', response.data);
+
+        setComment('');
+      })
+      .catch(error => {
+        console.error('Error saving comment:', error);
+      });
+  };
 
   const rangeDates = {};
   let currentDate = new Date(createdAt);
@@ -20,10 +47,9 @@ const TaskDetails = ({ route }) => {
   };
 
   LocaleConfig.defaultLocale = 'en';
-
   while (currentDate <= endDate) {
     const date = currentDate.toISOString().split('T')[0];
-    rangeDates[date] = { color: "#007BFF" };
+    rangeDates[date] = { color: "#43BE31" };
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
@@ -42,6 +68,17 @@ const TaskDetails = ({ route }) => {
     const options = { month: 'short' };
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
     return { day, dayName };
+  };
+
+  const customDayRenderer = (date) => {
+    const dateString = date.dateString;
+    if (rangeDates[dateString]) {
+      return (
+        <View style={styles.customDayContainer}>
+          <Text style={styles.customDayText}>{date.day}</Text>
+        </View>
+      );
+    }
   };
 
   return (
@@ -75,15 +112,24 @@ const TaskDetails = ({ route }) => {
         current={deadline}
         markingType={'period'}
         markedDates={rangeDates}
+        renderDay={(date) => customDayRenderer(date)}
       />
+
+      {comment.length > 0 && (
+        <Text style={styles.commentText}>{comment}</Text>
+      )}
+      <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
         placeholderTextColor="#999"
-        placeholder=" Comment" />
+        placeholder=" Comment"
+        onChangeText={handleCommentChange} />
+
+      <Button title="Save Comment" onPress={handleCommentSubmit} />
     </View>
   );
 }
-
 export default TaskDetails;
 
 const styles = StyleSheet.create({
@@ -92,7 +138,27 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f7f7f7",
   },
-
+  commentText: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: height * 0.01,
+    borderRadius: width * 0.02,
+    width: width * 0.9,
+    height: height * 0.06,
+    marginTop: height * 0.02,
+    marginBottom: height * 0.01,
+    padding: width * 0.04,
+    borderRadius: width * 0.03,
+    elevation: 2,
+  },
+  UserProfileImage: {
+    alignSelf: "flex-start",
+    width: width * 0.08,
+    height: width * 0.08,
+    marginTop: height * -0.06,
+    marginLeft: 8,
+  },
   divider: {
     marginTop: height * 0.02,
     backgroundColor: "#007BFF",
@@ -136,7 +202,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     padding: width * 0.025,
-    marginTop: height * 0.02,
+    marginTop: height * 0.03,
     marginBottom: height * 0.02,
     borderRadius: width * 0.02,
     fontSize: width * 0.04,
@@ -162,5 +228,17 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "left",
   },
-
+  customDayContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 35,
+    height: 35,
+    backgroundColor: '#007BFF',
+    borderRadius: 17.5,
+  },
+  customDayText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 })

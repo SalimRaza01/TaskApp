@@ -3,100 +3,10 @@ import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView
 import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
 import TaskList from './TaskList';
-import TaskItem from './TaskItem'
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import Swipeout from 'react-native-swipeout';
-
 
 const { width, height } = Dimensions.get('window');
-
-// const TaskList = ({
-//   tasks,
-//   handleEditTask,
-//   handleToggleCompletion,
-//   handleDeleteTask,
-// }) => {
-//   return (
-//     <View style={styles.taskList} >
-//       {tasks.map((task) => (
-//         <TaskItem
-//           key={task._id}
-//           task={task}
-//           handleEditTask={handleEditTask}
-//           handleToggleCompletion={handleToggleCompletion}
-//           handleDeleteTask={handleDeleteTask}
-//         />
-//       ))}
-//     </View>
-//   );
-// };
-
-// const TaskItem = ({
-//   task,
-//   handleToggleCompletion,
-//   handleDeleteTask,
-// }) => {
-
-//   const navigation = useNavigation();
-
-//   const formatDeadline = (deadline) => {
-//     const date = new Date(deadline);
-//     const day = date.getDate().toString().padStart(2, '0');
-//     const options = { month: 'short' };
-//     const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
-//     const year = date.getFullYear();
-//     const formattedDeadline = `${day} ${monthName} ${year}`;
-//     return { day, monthName, year, formattedDeadline };
-//   };
-
-//   const swipeoutBtns = [
-//     {
-//       text: 'Delete',
-//       backgroundColor: 'red',
-//       onPress: () => handleDeleteTask(task._id),
-//     },
-//   ];
-
-//   return (
-//     <Swipeout right={swipeoutBtns} autoClose={true} style={styles.swipeoutContainer}>
-//     <View style={styles.taskItem}>
-//       <View style={styles.taskTextContainer}>
-//         <Text
-//           style={[
-//             styles.taskText,
-//             task.status === 'Completed' && styles.completedTaskText,
-//           ]}>
-//           {task.title}
-//         </Text>
-//         <Text style={styles.taskDescription}>
-//           Description: {task.description}
-//         </Text>
-//         <Text style={styles.taskStatus}>Status: {task.status}</Text>
-//         <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
-//       </View>
-//       <View style={styles.buttonContainer}>
-//         {/* <TouchableOpacity
-//           onPress={() => handleToggleCompletion(task._id)}
-//           style={[
-//             styles.completeButton,
-//             task.status === 'Completed' && styles.completedButton,
-//           ]}>
-//           <Text style={styles.buttonText}>
-//             {task.status === 'Completed' ? 'Pending' : 'Completed'}
-//           </Text>
-//         </TouchableOpacity>*/}
-//         <TouchableOpacity
-//           onPress={() => navigation.navigate('TaskDetails', { task: task })}
-//           style={[styles.ViewTaskButton]}>
-//           <Text style={styles.buttonText}>View Task</Text>
-//         </TouchableOpacity>
-
-//       </View>
-//     </View>
-//     </Swipeout>
-//   );
-// };
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();

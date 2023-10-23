@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Image, StyleSheet, Dimensions, TouchableOpacity, View } from 'react-native';
 import SplashScreen from './components/SplashScreen';
