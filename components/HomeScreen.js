@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import Swipeout from 'react-native-swipeout';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +32,6 @@ const TaskList = ({
 
 const TaskItem = ({
   task,
-  handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
 }) => {
@@ -42,12 +43,21 @@ const TaskItem = ({
     const day = date.getDate().toString().padStart(2, '0');
     const options = { month: 'short' };
     const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const year = date.getFullYear(); 
+    const year = date.getFullYear();
     const formattedDeadline = `${day} ${monthName} ${year}`;
     return { day, monthName, year, formattedDeadline };
   };
 
+  const swipeoutBtns = [
+    {
+      text: 'Delete',
+      backgroundColor: 'red',
+      onPress: () => handleDeleteTask(task._id),
+    },
+  ];
+
   return (
+    <Swipeout right={swipeoutBtns} autoClose={true}>
     <View style={styles.taskItem}>
       <View style={styles.taskTextContainer}>
         <Text
@@ -65,11 +75,6 @@ const TaskItem = ({
       </View>
       <View style={styles.buttonContainer}>
         {/* <TouchableOpacity
-          onPress={() => handleEditTask(task)}
-          style={[styles.editButton]}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity
           onPress={() => handleToggleCompletion(task._id)}
           style={[
             styles.completeButton,
@@ -78,12 +83,7 @@ const TaskItem = ({
           <Text style={styles.buttonText}>
             {task.status === 'Completed' ? 'Pending' : 'Completed'}
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleDeleteTask(task._id)}
-          style={[styles.deleteButton]}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>*/}
         <TouchableOpacity
           onPress={() => navigation.navigate('TaskDetails', { task: task })}
           style={[styles.ViewTaskButton]}>
@@ -92,6 +92,7 @@ const TaskItem = ({
 
       </View>
     </View>
+    </Swipeout>
   );
 };
 
@@ -108,7 +109,6 @@ const HomeScreen = ({ route }) => {
   });
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
   const [validationError, setValidationError] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [markedDates, setMarkedDates] = useState({});
@@ -221,6 +221,13 @@ const HomeScreen = ({ route }) => {
       .catch(error => console.error('Error deleting task:', error));
   };
 
+  const handleCancel = () => {
+    // Implement the cancel logic here
+    setModalVisible(false); // Close the modal or perform any other necessary actions
+    // You can also reset the task or perform other actions as needed
+  };
+
+
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
@@ -237,7 +244,6 @@ const HomeScreen = ({ route }) => {
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
     return { day, dayName };
   };
-
 
   return (
     <View style={styles.container}>
@@ -281,20 +287,9 @@ const HomeScreen = ({ route }) => {
         task={task}
         setTask={setTask}
         handleAddTask={handleAddTask}
-        handleCancel={() => {
-          setEditingTask(null);
-          setTask({
-            title: "",
-            description: "",
-            status: "Pending",
-            deadline: "",
-            createdAt: "",
-          });
-          setModalVisible(false);
-          setValidationError(false);
-        }}
-        validationError={validationError} />
-
+        handleCancel={handleCancel}
+        validationError={validationError}
+      />
     </View>
   );
 };

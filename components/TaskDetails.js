@@ -43,7 +43,7 @@ const TaskDetails = ({ route }) => {
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
     return { day, dayName };
   };
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.Tasktitle}>Task: {task.title}</Text>

@@ -23,14 +23,13 @@ const TaskModal = ({
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholderTextColor="#999"
                     placeholder="Title"
-                    value={task.title} 
-                    onChangeText={(text) => setTask({ ...task, title: text })} 
+                    value={task && task.title ? task.title : ""}
+                    onChangeText={(text) => setTask({ ...task, title: text })}
                 />
-
                 <TextInput
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholderTextColor="#999"
-                    value={task.description}
+                    value={task && task.description ? task.description : ""}
                     onChangeText={(text) =>
                         setTask({
                             ...task,
@@ -43,7 +42,7 @@ const TaskModal = ({
                 <DatePicker
                     style={styles.datePicker}
                     mode="datepicker"
-                    selected={task.deadline}
+                    selected={task && task.deadline ? task.deadline : ""}
                     onDateChange={(date) =>
                         setTask({ ...task, deadline: date })
                     } />
@@ -53,15 +52,12 @@ const TaskModal = ({
                 )}
                 <TouchableOpacity
                     style={[styles.button, { backgroundColor: "#007BFF" }]}
-                    onPress={handleAddTask}
-                >
-                    <Text style={styles.buttonText}>{task._id ? "Update" : "Add"}</Text>
+                    onPress={handleAddTask}>
+                    <Text style={styles.buttonText}>{task && task._id ? "Update" : "Add"}</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                     style={[styles.button, { backgroundColor: "#FF3B30" }]}
-                    onPress={handleCancel}
-                >
+                    onPress={handleCancel}>
                     <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
             </View>
