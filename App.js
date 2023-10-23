@@ -78,7 +78,7 @@ export default function App() {
               </View>
             
             ),
-            headerTitle: 'AgVa',
+            headerTitle: 'Task Details',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               fontSize: 25,

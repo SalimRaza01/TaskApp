@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
-import { Calendar } from 'react-native-calendars';
-
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 const { width, height } = Dimensions.get('window');
 
 const TaskDetails = ({ route }) => {
-
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { task } = route.params;
   const { deadline, createdAt } = task;
-  const markedDates = {
-    [deadline]: { selected: true, selectedColor: '#0A79DF' },
+
+  const rangeDates = {};
+  let currentDate = new Date(createdAt);
+  const endDate = new Date(deadline);
+
+  LocaleConfig.locales['en'] = {
+    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    monthNamesShort: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
+    dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   };
+
+  LocaleConfig.defaultLocale = 'en';
+
+  while (currentDate <= endDate) {
+    const date = currentDate.toISOString().split('T')[0];
+    rangeDates[date] = { color: "#007BFF" };
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
 
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
@@ -33,8 +46,10 @@ const TaskDetails = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.TaskDetailsText}>Task Details</Text>
+      <Text style={styles.Tasktitle}>Task: {task.title}</Text>
+      <Text style={styles.Taskdecription}>Description: {task.description}</Text>
       <View style={styles.divider} />
+
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
@@ -47,24 +62,26 @@ const TaskDetails = ({ route }) => {
           <Text style={styles.DeadlineText}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
         </View>
       </View>
-      <Calendar style={{
-        backgroundColor: "#fff",
-        marginTop: height * 0.015,
-        marginBottom: height * 0.006,
-        borderRadius: width * 0.03,
-        height: height * 0.42,
-        elevation: 5,
-        shadowColor: '#000000',
-      }}
-      current={deadline} 
-      markedDates={markedDates}
+      <Calendar
+        style={{
+          backgroundColor: "#fff",
+          marginTop: height * 0.015,
+          marginBottom: height * 0.006,
+          borderRadius: width * 0.03,
+          height: height * 0.42,
+          elevation: 5,
+          shadowColor: '#000000',
+        }}
+        current={deadline}
+        markingType={'period'}
+        markedDates={rangeDates}
       />
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
         placeholderTextColor="#999"
         placeholder=" Comment" />
     </View>
-  )
+  );
 }
 
 export default TaskDetails;
@@ -75,16 +92,9 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f7f7f7",
   },
-  TaskDetailsText: {
-    fontSize: width * 0.06,
-    fontWeight: "bold",
-    marginTop: height * -0.01,
-    marginBottom: -10,
-    color: "#333",
-    textAlign: "left",
-  },
+
   divider: {
-    marginTop: height * 0.04,
+    marginTop: height * 0.02,
     backgroundColor: "#007BFF",
     height: 2,
   },
@@ -138,6 +148,19 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.03,
     elevation: 5,
     shadowColor: '#000000',
-  }
+  },
+  Taskdecription: {
+    fontSize: width * 0.04,
+    color: "#333",
+    textAlign: "left",
+  },
+  Tasktitle: {
+    fontSize: width * 0.06,
+    fontWeight: "bold",
+    marginBottom: 7,
+    marginTop: 2,
+    color: "#333",
+    textAlign: "left",
+  },
 
 })
