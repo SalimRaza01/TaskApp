@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal, TextInput } from 'react-native';
-import DatePicker from "react-native-modern-datepicker";
+import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import TaskModal from './TaskModal';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
@@ -42,7 +42,7 @@ const TaskItem = ({
     const day = date.getDate().toString().padStart(2, '0');
     const options = { month: 'short' };
     const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const year = date.getFullYear(); // Get the year
+    const year = date.getFullYear(); 
     const formattedDeadline = `${day} ${monthName} ${year}`;
     return { day, monthName, year, formattedDeadline };
   };
@@ -92,70 +92,6 @@ const TaskItem = ({
 
       </View>
     </View>
-  );
-};
-
-const TaskModal = ({
-  modalVisible,
-  task,
-  setTask,
-  handleAddTask,
-  handleCancel,
-  validationError,
-}) => {
-  return (
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={false}>
-      <View style={styles.modalContainer}>
-        <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
-          placeholderTextColor="#999"
-          placeholder="Title"
-          value={task.title}
-          onChangeText={(text) =>
-            setTask({ ...task, title: text })
-          } />
-        <TextInput
-          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]} 
-          placeholderTextColor="#999" 
-          value={task.description}
-          onChangeText={(text) =>
-            setTask({
-              ...task,
-              description: text,
-            })
-          } />
-        <Text style={styles.inputLabel}>
-          Deadline:
-        </Text>
-        <DatePicker
-          style={styles.datePicker}
-          mode="datepicker"
-          selected={task.deadline}
-          onDateChange={(date) =>
-            setTask({ ...task, deadline: date })
-          } />
-        {validationError && (
-          <Text style={styles.errorText}>
-          </Text>
-        )}
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#007BFF" }]}
-          onPress={handleAddTask}
-        >
-          <Text style={styles.buttonText}>{task._id ? "Update" : "Add"}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#FF3B30" }]}
-          onPress={handleCancel}
-        >
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
   );
 };
 

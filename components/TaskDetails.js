@@ -43,7 +43,7 @@ const TaskDetails = ({ route }) => {
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
     return { day, dayName };
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.Tasktitle}>Task: {task.title}</Text>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   Deadlinebox: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#007BFF",
+    backgroundColor: "red",
     paddingVertical: height * 0.01,
     borderRadius: width * 0.02,
     width: width * 0.43,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   Prioritybox: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FF9500",
     paddingVertical: height * 0.01,
     borderRadius: width * 0.02,
     width: width * 0.43,
@@ -150,12 +150,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
   },
   Taskdecription: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.03,
     color: "#333",
     textAlign: "left",
   },
   Tasktitle: {
-    fontSize: width * 0.06,
+    fontSize: width * 0.05,
     fontWeight: "bold",
     marginBottom: 7,
     marginTop: 2,

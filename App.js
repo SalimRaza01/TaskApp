@@ -4,6 +4,7 @@ import SplashScreen from './components/SplashScreen';
 import Profile from './components/Profile';
 import TaskDetails from './components/TaskDetails';
 import Settings from './components/Settings';
+import TaskModal from './components/TaskModal';
 
 import Tabs from './components/Tabs';
 
@@ -68,6 +69,7 @@ export default function App() {
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="TaskModal" component={TaskModal} />
         <Stack.Screen name="TaskDetails" component={TaskDetails} options={{
           headerCenter: () => (
               <View>
