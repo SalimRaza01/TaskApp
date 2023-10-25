@@ -64,7 +64,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: width * 0.06,
                                 height: width * 0.06,
-                                tintColor: focused ? '#007BFF' : '#000000',
+                                tintColor: focused ? 'rgb(0, 123, 255)' : 'black',
                             }}
                             source={require('../assets/Home.png')}
                         />
@@ -78,7 +78,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: width * 0.06,
                                 height: width * 0.06,
-                                tintColor: focused ? '#007BFF' : '#000000',
+                                tintColor: focused ? 'rgb(0, 123, 255)' : 'black',
                             }}
                             source={require('../assets/ProfileIcon.png')}
                         />
@@ -107,7 +107,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: width * 0.06,
                                 height: width * 0.06,
-                                tintColor: focused ? '#007BFF' : '#000000',
+                                tintColor: focused ? 'rgb(0, 123, 255)' : 'black',
                             }}
                             source={require('../assets/Setting.png')}
                         />
@@ -121,7 +121,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: width * 0.06,
                                 height: width * 0.06,
-                                tintColor: focused ? '#007BFF' : '#000000',
+                                tintColor: focused ? 'rgb(0, 123, 255)' : 'black',
                             }}
                             source={require('../assets/star.png')}
                         />

@@ -21,7 +21,7 @@ export default function Login(props) {
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log('Response:', response);
+      // console.log('Response:', response);
       if (response.ok) {
         const userData = await response.json();
         console.log('Login successful'); 
@@ -47,7 +47,7 @@ export default function Login(props) {
       <View style={styles.LoginContainer}>
         <Text style={styles.LoginText}>Login</Text>
 
-        {/* <View style={styles.divider} /> */}
+        <View style={styles.divider} />
 
         <Text style={styles.inputLabel}>Email</Text>
         <TextInput
@@ -65,7 +65,6 @@ export default function Login(props) {
           value={password}
           onChangeText={text => setPassword(text)}
           secureTextEntry />
-
 
         <View style={{ alignContent: "center", alignItems: "center" }}>
 
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     marginTop: height * -0.06,
     marginBottom: height * -0.15,
-    marginLeft: width * 0.6
+    marginLeft: width * 0.55
   },
   AppName: {
     marginTop: height * -0.15,
@@ -119,10 +118,10 @@ const styles = StyleSheet.create({
     fontSize: width * 0.08,
     fontWeight: "bold",
     color: "#FFFFFF",
-    marginLeft: width * 0.6
+    marginLeft: width * 0.55
   },
   LoginImage: {
-    marginLeft: width * 0.05,
+    marginLeft: width * 0.08,
     width: width * 0.45,
     height: width * 0.45,
     marginTop: height * 0.04,
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
     width: width * 0.5,
     padding: width * 0.030,
     borderRadius: width * 1,
-    marginTop: height * 0.03,
+    marginTop: height * 0.06,
     alignItems: "center",
   },
   buttonText: {
@@ -182,7 +181,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginTop: height * 0.04,
-    backgroundColor: "#000000",
+    marginBottom: width * 0.04,
+    backgroundColor: "#007BFF",
     height: 1,
   },
   divider2: {
