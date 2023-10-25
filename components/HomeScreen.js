@@ -320,10 +320,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: width * 0.25,
   },
-  taskList: {
-    flex: 1,
-    height: height * 0.67,
-  },
   taskTime: {
     fontSize: width * 0.04,
     color: "#666",

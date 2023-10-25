@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     taskList: {
         flex: 1,
-        height: height * 0.67,
+        // height: height * 0.67,
     },
     taskTime: {
         fontSize: width * 0.04,

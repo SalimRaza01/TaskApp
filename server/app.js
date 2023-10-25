@@ -3,14 +3,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-// Define the Task schema
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
   status: String,
   deadline: Date,
   createdAt: Date,
-  comments: String
+  comments: [String],
 });
 
 taskSchema.virtual('creationDate').get(function() {

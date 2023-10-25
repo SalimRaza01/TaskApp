@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Image, StyleSheet, Dimensions, TouchableOpacity, View } from 'react-native';
 import SplashScreen from './components/SplashScreen';
@@ -6,6 +5,8 @@ import Profile from './components/Profile';
 import TaskDetails from './components/TaskDetails';
 import Settings from './components/Settings';
 import TaskModal from './components/TaskModal';
+import Login from './components/authScreens/Login';
+import SignUp from './components/authScreens/SignUp';
 
 import Tabs from './components/Tabs';
 
@@ -28,6 +29,8 @@ export default function App() {
                 backgroundColor: '#FFFFFF',
                 borderRadius: 15,
                 height: 90 } }} >
+                    <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+                    <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} />
        <Stack.Screen 
           name="Tabs"
           component={Tabs}

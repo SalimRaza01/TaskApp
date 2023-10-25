@@ -1,11 +1,12 @@
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
+import TaskModal from './TaskModal';
 import HomeScreen from './HomeScreen';
 import Profile from './Profile';
 import TaskDetails from './TaskDetails';
 import Settings from './Settings';
-import TaskModal from './TaskModal';
+// import TaskModal from './TaskModal';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,10 +14,6 @@ const Tab = createBottomTabNavigator();
 
 const CustonTabBarButton = ({ children }) => {
     const navigation = useNavigation();
-
-    // const handlePress = () => {
-    //     navigation.navigate('Add Task', { task: newTask, setTask: setNewTask });
-    // };
 
     return (
         <TouchableOpacity

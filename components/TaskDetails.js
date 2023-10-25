@@ -18,7 +18,7 @@ const TaskDetails = ({ route }) => {
   const handleCommentSubmit = () => {
     const commentData = {
       taskId: task._id,
-      comment: comment,
+      comments: comment,
     };
 
     task.comments = task.comments || [];

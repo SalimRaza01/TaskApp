@@ -124,11 +124,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         marginVertical: height * 0.001,
     },
-
-    buttonText: {
-        color: "#fff",
-        fontSize: width * 0.035,
-    },
     button: {
         padding: width * 0.040,
         borderRadius: width * 0.03,
