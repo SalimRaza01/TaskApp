@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, Button, Image, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import axios from 'axios';
 const { width, height } = Dimensions.get('window');
@@ -114,11 +114,10 @@ const TaskDetails = ({ route }) => {
         markedDates={rangeDates}
         renderDay={(date) => customDayRenderer(date)}
       />
-
-      {comment.length > 0 && (
+      <View style={styles.commentBox}>
         <Text style={styles.commentText}>{comment}</Text>
-      )}
-      <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+      </View>
 
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
@@ -126,7 +125,10 @@ const TaskDetails = ({ route }) => {
         placeholder=" Comment"
         onChangeText={handleCommentChange} />
 
-      <Button title="Save Comment" onPress={handleCommentSubmit} />
+      <TouchableOpacity style={styles.CommentSendBtn} onPress={handleCommentSubmit}>
+        <Image style={styles.SendIcon} source={require('../assets/Send.png')} />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -138,9 +140,23 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f7f7f7",
   },
-  commentText: {
+  CommentSendBtn: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#007BFF",
+    paddingVertical: height * 0.02,
+    borderRadius: width * 1,
+    marginTop: height * -0.075,
+    marginBottom: height * 0.02,
+    width: width * 0.09,
+    height: height * 0.045,
+    marginLeft:width * 0.78,
+  },
+  SendIcon: {
+    width: width * 0.05,
+    height: width * 0.05,
+  },
+  commentBox: {
     backgroundColor: "#FFFFFF",
     paddingVertical: height * 0.01,
     borderRadius: width * 0.02,
@@ -153,12 +169,16 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   UserProfileImage: {
-    alignSelf: "flex-start",
+    marginLeft: width * 0.001,
     width: width * 0.08,
     height: width * 0.08,
-    marginTop: height * -0.06,
-    marginLeft: 8,
+    marginTop: height * -0.033,
   },
+  commentText: {
+    marginTop: height * 0.008,
+    marginLeft: width * 0.1,
+  },
+
   divider: {
     marginTop: height * 0.02,
     backgroundColor: "#007BFF",

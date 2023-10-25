@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Swipeout from 'react-native-swipeout';
-
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,7 +9,6 @@ const TaskItem = ({
     handleToggleCompletion,
     handleDeleteTask,
 }) => {
-
     const navigation = useNavigation();
 
     const formatDeadline = (deadline) => {
@@ -23,34 +20,24 @@ const TaskItem = ({
         const formattedDeadline = `${day} ${monthName} ${year}`;
         return { day, monthName, year, formattedDeadline };
     };
-
-    const swipeoutBtns = [
-        {
-            text: 'Delete',
-            backgroundColor: 'red',
-            onPress: () => handleDeleteTask(task._id),
-        },
-    ];
-
     return (
-        <Swipeout right={swipeoutBtns} autoClose={true} style={styles.swipeoutContainer}>
-            <View style={styles.taskItem}>
-                <View style={styles.taskTextContainer}>
-                    <Text
-                        style={[
-                            styles.taskText,
-                            task.status === 'Completed' && styles.completedTaskText,
-                        ]}>
-                        {task.title}
-                    </Text>
-                    <Text style={styles.taskDescription}>
-                        Description: {task.description}
-                    </Text>
-                    <Text style={styles.taskStatus}>Status: {task.status}</Text>
-                    <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                    {/* <TouchableOpacity
+        <View style={styles.taskItem}>
+            <View style={styles.taskTextContainer}>
+                <Text
+                    style={[
+                        styles.taskText,
+                        task.status === 'Completed' && styles.completedTaskText,
+                    ]}>
+                    {task.title}
+                </Text>
+                <Text style={styles.taskDescription}>
+                    Description: {task.description}
+                </Text>
+                <Text style={styles.taskStatus}>Status: {task.status}</Text>
+                <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+                {/* <TouchableOpacity
             onPress={() => handleToggleCompletion(task._id)}
             style={[
               styles.completeButton,
@@ -60,15 +47,14 @@ const TaskItem = ({
               {task.status === 'Completed' ? 'Pending' : 'Completed'}
             </Text>
           </TouchableOpacity>*/}
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('TaskDetails', { task: task })}
-                        style={[styles.ViewTaskButton]}>
-                        <Text style={styles.buttonText}>View Task</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('TaskDetails', { task: task })}
+                    style={[styles.ViewTaskButton]}>
+                    <Text style={styles.buttonText}>View Task</Text>
+                </TouchableOpacity>
 
-                </View>
             </View>
-        </Swipeout>
+        </View>
     );
 };
 
@@ -88,6 +74,7 @@ const styles = StyleSheet.create({
         padding: width * 0.04,
         borderRadius: width * 0.03,
         elevation: 5,
+        marginTop: height * 0.013,
     },
     taskTextContainer: {
         flex: 1,
@@ -164,8 +151,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: width * 0.25,
     },
-    swipeoutContainer: {
-        backgroundColor: 'lightgray',
-        height: width * 0.37,
-    },
+
 });

@@ -106,10 +106,8 @@ app.post('/save-comment', (req, res) => {
       if (!task) {
         return res.status(404).send('Task not found.');
       }
-
       task.comments = task.comments || [];
       task.comments.push(comment);
-
       return task.save();
     })
     .then(updatedTask => {
