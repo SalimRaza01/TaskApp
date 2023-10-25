@@ -20,9 +20,7 @@ taskSchema.virtual('creationDate').get(function () {
   const day = ('0' + this.createdAt.getDate()).slice(-2);
   return day;
 });
-
 const Task = mongoose.model('Task', taskSchema);
-
 app.use(bodyParser.json());
 
 const mongURL = "mongodb+srv://Salim2017:OeMdsO7TpVBLVrP1@cluster0.apqm1pu.mongodb.net/taskapp?retryWrites=true&w=majority";
@@ -62,7 +60,6 @@ app.post('/send-data', (req, res) => {
   const newTaskData = req.body;
   newTaskData.createdAt = new Date(newTaskData.createdAt);
   newTaskData.deadline = new Date(newTaskData.deadline + "Z");
-
 
   const newTask = new Task(newTaskData);
   newTask.save()

@@ -50,7 +50,6 @@ export default function App() {
               source={require('./assets/AgVa.png')}
               />
               </View>
-            
             ),
             headerTitle: 'AgVa',
             headerTitleAlign: 'center',
@@ -66,7 +65,6 @@ export default function App() {
                   source={require('./assets/bellIcon.png')}
                 />
               </TouchableOpacity>
-
             ),
           }}
         />
@@ -82,7 +80,6 @@ export default function App() {
               source={require('./assets/AgVa.png')}
               />
               </View>
-            
             ),
             headerTitle: 'Task Details',
             headerTitleAlign: 'center',
