@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput, ScrollView } from 'react-native'
 import React from 'react'
 
 const { width, height } = Dimensions.get('window');
@@ -7,25 +7,33 @@ export default function Login(props) {
   return (
     <View style={styles.container}>
 
-      <View style={{}}>
-
+      <View >
         <Image style={styles.LoginImage} source={require('../../assets/LoginImage.png')} />
         <Text style={styles.AppName}>TaskApp</Text>
         <Text style={styles.WelcomeText}>Welcome to</Text>
       </View>
 
-      <View style={styles.LoginContainer}>
+      <ScrollView style={styles.LoginContainer}>
         <Text style={styles.LoginText}>Sign Up</Text>
 
         {/* <View style={styles.divider} /> */}
 
+        <Text style={styles.inputLabel}>Name</Text>
+        <TextInput
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
+          placeholderTextColor="#999"
+          placeholder="Email" />
         <Text style={styles.inputLabel}>Email</Text>
         <TextInput
           style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
           placeholderTextColor="#999"
           placeholder="Email" />
-
         <Text style={styles.inputLabel}>Password</Text>
+        <TextInput
+          style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
+          placeholder="Password"
+          placeholderTextColor="#999" />    
+           <Text style={styles.inputLabel}>Confirm Password</Text>
         <TextInput
           style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
           placeholder="Password"
@@ -57,7 +65,7 @@ export default function Login(props) {
           style={[styles.button, { backgroundColor: "#FFFFFF" }]}
           onPress={''}>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
     </View>
   )
