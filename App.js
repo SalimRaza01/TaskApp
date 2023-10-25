@@ -6,7 +6,7 @@ import TaskDetails from './components/TaskDetails';
 import Settings from './components/Settings';
 import TaskModal from './components/TaskModal';
 import Login from './components/authScreens/Login';
-import SignUp from './components/authScreens/SignUp';
+// import SignUp from './components/authScreens/SignUp';
 
 import Tabs from './components/Tabs';
 
@@ -30,7 +30,7 @@ export default function App() {
                 borderRadius: 15,
                 height: 90 } }} >
                     <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-                    <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} />
+                    {/* <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} /> */}
        <Stack.Screen 
           name="Tabs"
           component={Tabs}

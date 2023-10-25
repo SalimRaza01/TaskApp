@@ -1,5 +1,6 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
 import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -8,24 +9,31 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigation = useNavigation();
+
   const handleLogin = async () => {
+    console.log('Login button pressed'); 
     try {
-      const response = await fetch('10.0.2.2:3000/login', {
+      const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
+      console.log('Response:', response);
       if (response.ok) {
         const userData = await response.json();
+        console.log('Login successful'); 
+        navigation.navigate('Tabs');
       } else {
-
+        console.error('Authentication failed');
       }
     } catch (error) {
+      console.error('Network error:', error);
     }
   };
+
   return (
     <View style={styles.container}>
 

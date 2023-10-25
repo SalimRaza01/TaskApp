@@ -39,24 +39,21 @@ mongoose.connection.on("error", (err) => {
   console.error("Error connecting to MongoDB:", err);
 });
 
-const bcrypt = require('bcrypt');
-
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).send('Invalid email or password');
+      return res.status(401).json({ message: 'User not found' });
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).send('Invalid email or password');
+    if (user.password === password) {
+      return res.json({ message: 'Login successful', user });
+    } else {
+      return res.status(401).json({ message: 'Incorrect password' });
     }
-    const token = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key');
-    res.json({ token });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal server error');
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
