@@ -1,9 +1,31 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 
 const { width, height } = Dimensions.get('window');
 
 export default function Login(props) {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('10.0.2.2:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+      } else {
+
+      }
+    } catch (error) {
+    }
+  };
   return (
     <View style={styles.container}>
 
@@ -23,38 +45,47 @@ export default function Login(props) {
         <TextInput
           style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
           placeholderTextColor="#999"
-          placeholder="Email" />
+          placeholder="Email"
+          value={email}
+          onChangeText={text => setEmail(text)} />
 
         <Text style={styles.inputLabel}>Password</Text>
         <TextInput
           style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
           placeholder="Password"
-          placeholderTextColor="#999" />
+          placeholderTextColor="#999"
+          value={password}
+          onChangeText={text => setPassword(text)}
+          secureTextEntry />
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+
+        <View style={{ alignContent: "center", alignItems: "center" }}>
+
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "#007BFF" }]}
-            onPress={''}>
+            onPress={handleLogin}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
-
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        {/* <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={styles.divider2} />
-          <Text style={{ marginTop: height * 0.02 }}>i don't have account!</Text>
+          <Text style={{ marginTop: height * 0.02 }}>i don't have account! </Text>
+          <TouchableOpacity onPress={() => props.navigation.navigate('SignUp')}>
+            <Text style={{ marginTop: height * 0.02, color: "#007BFF" }} >Create New</Text>
+          </TouchableOpacity>
           <View style={styles.divider2} />
-        </View>
+        </View> */}
 
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#007BFF" }]}
-          onPress={() => props.navigation.navigate('SignUp')}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        {/* <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#FFFFFF" }]}
+          onPress={''}>
+               <Image style={styles.GoogleImage} source={require('../../assets/GoogleLogin.png')} />
         </TouchableOpacity>
-
         <TouchableOpacity
           style={[styles.button, { backgroundColor: "#FFFFFF" }]}
           onPress={''}>
-        </TouchableOpacity>
+               <Image style={styles.GoogleImage} source={require('../../assets/GoogleLogin.png')} />
+        </TouchableOpacity> */}
       </View>
 
     </View>
@@ -88,6 +119,12 @@ const styles = StyleSheet.create({
     height: width * 0.45,
     marginTop: height * 0.04,
   },
+  GoogleImage: {
+    marginLeft: width * 0.05,
+    width: width * 0.07,
+    height: width * 0.07,
+    marginTop: height * 0.04,
+  },
   LoginContainer: {
     padding: 20,
     borderTopLeftRadius: 30,
@@ -103,7 +140,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.001,
     marginBottom: width * -0.001,
     color: "#333",
-    textAlign: "left",
+    marginLeft: width * 0.05
   },
   inputLabel: {
     fontSize: width * 0.03,
@@ -114,16 +151,18 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.045,
   },
   input: {
-    borderWidth: 1,
+    marginLeft: width * 0.04,
+    borderWidth: 0.5,
     borderColor: "#ccc",
-    padding: width * 0.03,
+    padding: width * 0.02,
     marginBottom: height * 0.001,
-    borderRadius: width * 1,
+    borderRadius: width * 0.02,
     fontSize: width * 0.03,
+    width: width * 0.8
   },
   button: {
-    width: width * 0.9,
-    padding: width * 0.040,
+    width: width * 0.5,
+    padding: width * 0.030,
     borderRadius: width * 1,
     marginTop: height * 0.03,
     alignItems: "center",
@@ -141,8 +180,8 @@ const styles = StyleSheet.create({
   divider2: {
     marginTop: height * 0.035,
     backgroundColor: "#000000",
-    height: 0.5,
-    width: width * 0.15
+    height: 0.6,
+    width: width * 0.17
   },
 
 })

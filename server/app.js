@@ -11,9 +11,13 @@ const taskSchema = new mongoose.Schema({
   createdAt: Date,
   comments: [String],
 });
+const User = mongoose.model('User', {
+  email: String,
+  password: String,
+});
 
-taskSchema.virtual('creationDate').get(function() {
-  const day = ('0' + this.createdAt.getDate()).slice(-2); 
+taskSchema.virtual('creationDate').get(function () {
+  const day = ('0' + this.createdAt.getDate()).slice(-2);
   return day;
 });
 
@@ -33,6 +37,27 @@ mongoose.connection.on("connected", () => {
 
 mongoose.connection.on("error", (err) => {
   console.error("Error connecting to MongoDB:", err);
+});
+
+const bcrypt = require('bcrypt');
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).send('Invalid email or password');
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send('Invalid email or password');
+    }
+    const token = jwt.sign({ userId: user._id, email: user.email }, 'your-secret-key');
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.post('/send-data', (req, res) => {
