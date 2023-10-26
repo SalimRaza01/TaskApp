@@ -6,7 +6,6 @@ import HomeScreen from './HomeScreen';
 import Profile from './Profile';
 import TaskDetails from './TaskDetails';
 import Settings from './Settings';
-// import TaskModal from './TaskModal';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,28 +14,35 @@ const Tab = createBottomTabNavigator();
 const CustonTabBarButton = ({ children }) => {
     const navigation = useNavigation();
 
+    const [taskModalVisible, setTaskModalVisible] = useState(false);
+
     return (
-        <TouchableOpacity
-            style={{
-                top: -30,
-                justifyContent: 'center',
-                alignItems: 'center',
-                ...styles.shadow,
-            }}
-            onPress={() => {
-                navigation.navigate('TaskModal');
-            }}
-        >
-            <View style={{
-                width: width * 0.16,
-                height: width * 0.16,
-                borderRadius: 35,
-                backgroundColor: '#000000',
-                ...styles.shadow
-            }}>
-                {children}
-            </View>
-        </TouchableOpacity>
+        <>
+            <TaskModal
+                modalVisible={taskModalVisible}
+                setTaskModalVisible={setTaskModalVisible}
+            />
+            <TouchableOpacity
+                style={{
+                    top: -30,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    ...styles.shadow,
+                }}
+                onPress={() => {
+                    setTaskModalVisible(true);
+                }}>
+                <View style={{
+                    width: width * 0.16,
+                    height: width * 0.16,
+                    borderRadius: 35,
+                    backgroundColor: '#000000',
+                    ...styles.shadow
+                }}>
+                    {children}
+                </View>
+            </TouchableOpacity>
+        </>
     );
 };
 
@@ -57,7 +63,7 @@ const Tabs = ({ navigation, route }) => {
                 ...styles.shadow
             }
         }}>
-            <Tab.Screen name="Home" component={ HomeScreen } initialParams={{ username: route.params.username }} options={{
+            <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
@@ -97,7 +103,7 @@ const Tabs = ({ navigation, route }) => {
                     />
                 ),
                 tabBarButton: (props) => (
-                    <CustonTabBarButton {...props} navigation={navigation} />
+                    <CustonTabBarButton {...props} />
                 )
             }} />
             <Tab.Screen name="Settings" component={Settings} options={{

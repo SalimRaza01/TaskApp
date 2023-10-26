@@ -18,6 +18,7 @@ const HomeScreen = ({ route }) => {
     status: 'Pending',
     deadline: '',
     createdAt: '',
+    priority: 'medium',
   });
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -188,6 +189,18 @@ const HomeScreen = ({ route }) => {
             markedDates={markedDates}
           />
         )}
+
+        <Picker
+          selectedValue={task.priority}
+          onValueChange={(itemValue, itemIndex) =>
+            setTask({ ...task, priority: itemValue })
+          }
+        >
+          <Picker.Item label="High" value="high" />
+          <Picker.Item label="Medium" value="medium" />
+          <Picker.Item label="Low" value="low" />
+        </Picker>
+
         <TaskList
           tasks={tasks}
           handleEditTask={handleEditTask}
