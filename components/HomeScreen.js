@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Button } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
 import TaskList from './TaskList';
@@ -13,7 +13,7 @@ const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const yourAuthTokenHere = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM4ZjIxMmE3ZDUwODgxMzY2ZjE4MTQiLCJpYXQiOjE2OTgzMTc5NDUsImV4cCI6MTY5OTYxMzk0NX0.S_Q47z4EBwcV4FaAKXTLAo4o-nmZ8ZKEMlU66OqupIE';
-  
+
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
     title: '',
@@ -173,6 +173,10 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
@@ -206,7 +210,7 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-
+        <Button title="Open Modal" onPress={openModal} />
         </View>
         {isCalendarVisible && (
           <Calendar
@@ -237,6 +241,8 @@ const HomeScreen = ({ route }) => {
         handleCancel={handleCancel}
         validationError={validationError}
       />
+
+<Button title="Open Modal" onPress={openModal} />
     </View>
   );
 };

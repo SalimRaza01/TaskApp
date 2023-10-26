@@ -6,7 +6,7 @@ const TaskSchema = new mongoose.Schema({
     status: String,
     deadline: String,
     createdAt: String,
-    comments: [String],
+    priority: String,
 })
 
 mongoose.model("task",TaskSchema)

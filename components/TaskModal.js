@@ -75,12 +75,6 @@ const TaskModal = ({
                     <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
 
-    <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#007BFF' }]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>Add Task</Text>
-      </TouchableOpacity>
-
             </View>
         </Modal>
     );
