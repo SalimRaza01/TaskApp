@@ -37,7 +37,7 @@ const HomeScreen = ({ route }) => {
     fetchTasks();
   }, [route.params]);
 
-  const { username } = route.params;
+  // const { username } = route.params;
 
   const fetchTasks = () => {
     axios.get(`${BASE_URL}/send-data`)
@@ -82,6 +82,7 @@ const HomeScreen = ({ route }) => {
           status: "Pending",
           deadline: "",
           createdAt: "",
+          priority: "",
         });
         setTasks([...tasks, response.data]);
       })
@@ -169,7 +170,7 @@ const HomeScreen = ({ route }) => {
 
       <Text style={styles.WelcomeText}>Welcome,</Text>
 
-      <Text style={styles.UserName}>{username}</Text>
+      <Text style={styles.UserName}>salim</Text>
 
       <TouchableOpacity >
         <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
@@ -189,26 +190,18 @@ const HomeScreen = ({ route }) => {
             markedDates={markedDates}
           />
         )}
-
-        <Picker
-          selectedValue={task.priority}
-          onValueChange={(itemValue, itemIndex) =>
-            setTask({ ...task, priority: itemValue })
-          }
-        >
-          <Picker.Item label="High" value="high" />
-          <Picker.Item label="Medium" value="medium" />
-          <Picker.Item label="Low" value="low" />
-        </Picker>
-
-        <TaskList
-          tasks={tasks}
-          handleEditTask={handleEditTask}
-          handleToggleCompletion={
-            handleToggleCompletion
-          }
-          handleDeleteTask={handleDeleteTask}
-        />
+        {tasks.length === 0 ? (
+          <Image
+            source={require('../assets/NoTask.png')}
+            style={styles.noTasksImage}/>
+        ) : (
+          <TaskList
+            tasks={tasks}
+            handleEditTask={handleEditTask}
+            handleToggleCompletion={handleToggleCompletion}
+            handleDeleteTask={handleDeleteTask}
+          />
+        )}
       </ScrollView>
 
       <TaskModal
@@ -229,7 +222,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#FFFFFF",
 
   },
   WelcomeText: {
@@ -416,4 +409,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
     height: width * 0.37,
   },
+  noTasksImage: {
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    resizeMode:"contain",
+    width: width * 0.75,
+    height: width * 0.75,
+    marginTop: height * 0.02,
+  }
 });

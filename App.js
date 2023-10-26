@@ -29,8 +29,8 @@ export default function App() {
                 backgroundColor: '#FFFFFF',
                 borderRadius: 15,
                 height: 90 } }} >
-                    <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} /> 
-                  <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
+                    {/* <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} /> 
+                  <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} /> */}
             
                     {/* <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} /> */}
        <Stack.Screen 

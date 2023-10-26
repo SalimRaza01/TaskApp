@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, TextInput } from 'react-native';
 import DatePicker from "react-native-modern-datepicker";
+import { Picker } from '@react-native-picker/picker';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ const TaskModal = ({
     handleCancel,
     validationError,
 }) => {
-
+    const priority = task && task.priority ? task.priority :"medium";
     return (
         <Modal
             visible={modalVisible}
@@ -39,6 +40,16 @@ const TaskModal = ({
                 <Text style={styles.inputLabel}>
                     Deadline:
                 </Text>
+                <Picker
+                    selectedValue={priority}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setTask({ ...task, priority: itemValue })
+                    }
+                >
+                    <Picker.Item label="High" value="high" />
+                    <Picker.Item label="Medium" value="medium" />
+                    <Picker.Item label="Low" value="low" />
+                </Picker>
                 <DatePicker
                     style={styles.datePicker}
                     mode="datepicker"

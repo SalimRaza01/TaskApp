@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
@@ -63,7 +64,8 @@ const Tabs = ({ navigation, route }) => {
                 ...styles.shadow
             }
         }}>
-            <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username }} options={{
+            {/* initialParams={{ username: route.params.username }} */}
+            <Tab.Screen name="Home" component={HomeScreen}  options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
