@@ -12,7 +12,7 @@ export default function Login(props) {
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    console.log('Login button pressed'); 
+    console.log('Login button pressed');
     try {
       const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',
@@ -21,11 +21,17 @@ export default function Login(props) {
         },
         body: JSON.stringify({ email, password }),
       });
-      // console.log('Response:', response);
+      console.log('Response:', email, password );
       if (response.ok) {
         const userData = await response.json();
-        console.log('Login successful'); 
-        navigation.navigate('Tabs');
+        if (userData.user) {
+          console.log('Login successful. Welcome, ' + userData.user.username);
+          // navigation.navigate('Tabs');
+          navigation.navigate('Tabs', { username: userData.user.username });
+
+        } else {
+          console.error('Authentication succeeded, but no username received.');
+        }
       } else {
         console.error('Authentication failed');
       }

@@ -36,6 +36,8 @@ const HomeScreen = ({ route }) => {
     fetchTasks();
   }, [route.params]);
 
+  const { username } = route.params;
+
   const fetchTasks = () => {
     axios.get(`${BASE_URL}/send-data`)
       .then(response => {
@@ -139,11 +141,11 @@ const HomeScreen = ({ route }) => {
     } else {
 
       setModalVisible(false);
-      setValidationError(false); 
+      setValidationError(false);
     }
     navigation.goBack();
   };
-  
+
   const formatDeadline = (deadline) => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
@@ -166,7 +168,7 @@ const HomeScreen = ({ route }) => {
 
       <Text style={styles.WelcomeText}>Welcome,</Text>
 
-      <Text style={styles.UserName}>{user.name}</Text>
+      <Text style={styles.UserName}>{username}</Text>
 
       <TouchableOpacity >
         <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
@@ -179,7 +181,6 @@ const HomeScreen = ({ route }) => {
         <View style={{ marginBottom: width * 0.03 }}>
 
         </View>
-
         {isCalendarVisible && (
           <Calendar
             current={selectedDate}
@@ -187,7 +188,6 @@ const HomeScreen = ({ route }) => {
             markedDates={markedDates}
           />
         )}
-
         <TaskList
           tasks={tasks}
           handleEditTask={handleEditTask}

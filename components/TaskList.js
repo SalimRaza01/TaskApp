@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, } from 'react-native';
 import TaskItem from './TaskItem';
 
 const { width, height } = Dimensions.get('window');
@@ -11,7 +11,7 @@ const TaskList = ({
   handleDeleteTask,
 }) => {
   return (
-    <View style={styles.taskList} >
+    <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}  >
       {tasks.map((task) => (
         <TaskItem
           key={task._id}
@@ -21,7 +21,7 @@ const TaskList = ({
           handleDeleteTask={handleDeleteTask}
         />
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

@@ -40,7 +40,7 @@ const CustonTabBarButton = ({ children }) => {
     );
 };
 
-const Tabs = ({ navigation }) => {
+const Tabs = ({ navigation, route }) => {
     return (
         <Tab.Navigator screenOptions={{
             tabBarShowLabel: false,
@@ -57,7 +57,7 @@ const Tabs = ({ navigation }) => {
                 ...styles.shadow
             }
         }}>
-            <Tab.Screen name="Home" component={HomeScreen} options={{
+            <Tab.Screen name="Home" component={ HomeScreen } initialParams={{ username: route.params.username }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image

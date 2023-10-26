@@ -14,6 +14,7 @@ const taskSchema = new mongoose.Schema({
 const User = mongoose.model('User', {
   email: String,
   password: String,
+  username: String,
 });
 
 taskSchema.virtual('creationDate').get(function () {
@@ -45,7 +46,7 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
     if (user.password === password) {
-      return res.json({ message: 'Login successful', user });
+      return res.json({ message: 'Login successful', user: { email: user.email, username: user.username } });
     } else {
       return res.status(401).json({ message: 'Incorrect password' });
     }
