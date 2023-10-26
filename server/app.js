@@ -14,7 +14,7 @@ const taskSchema = new mongoose.Schema({
   userId: String,
   priority: {
     type: String,
-    enum: ['high', 'medium', 'low'],
+    enum: ['High', 'Medium', 'Low'],
   },
 });
 const Task = mongoose.model('Task', taskSchema);

@@ -21,7 +21,7 @@ const HomeScreen = ({ route }) => {
     status: 'Pending',
     deadline: '',
     createdAt: '',
-    priority: 'medium',
+    priority: '',
   });
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -210,8 +210,11 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
+
           <Button title="Open Modal" onPress={openModal} />
+
         </View>
+
         {isCalendarVisible && (
           <Calendar
             current={selectedDate}
@@ -241,7 +244,7 @@ const HomeScreen = ({ route }) => {
         handleCancel={handleCancel}
         validationError={validationError}
       />
-      
+
     </View>
   );
 };
