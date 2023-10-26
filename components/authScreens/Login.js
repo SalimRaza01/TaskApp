@@ -1,11 +1,11 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Login(props) {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,14 +21,17 @@ export default function Login(props) {
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log('Response:', email, password );
+
+      console.log('Response:', email, password);
+
       if (response.ok) {
         const userData = await response.json();
         if (userData.user) {
           console.log('Login successful. Welcome, ' + userData.user.username);
-          // navigation.navigate('Tabs');
-          navigation.navigate('Tabs', { username: userData.user.username });
 
+          await AsyncStorage.setItem('authToken', userData.token);
+
+          navigation.navigate('Tabs', { username: userData.user.username });
         } else {
           console.error('Authentication succeeded, but no username received.');
         }
@@ -36,10 +39,10 @@ export default function Login(props) {
         console.error('Authentication failed');
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error('An error occurred: ', error);
     }
   };
-
+    
   return (
     <View style={styles.container}>
 
@@ -80,27 +83,7 @@ export default function Login(props) {
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         </View>
-        {/* <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={styles.divider2} />
-          <Text style={{ marginTop: height * 0.02 }}>i don't have account! </Text>
-          <TouchableOpacity onPress={() => props.navigation.navigate('SignUp')}>
-            <Text style={{ marginTop: height * 0.02, color: "#007BFF" }} >Create New</Text>
-          </TouchableOpacity>
-          <View style={styles.divider2} />
-        </View> 
-
-      <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#FFFFFF" }]}
-          onPress={''}>
-               <Image style={styles.GoogleImage} source={require('../../assets/GoogleLogin.png')} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#FFFFFF" }]}
-          onPress={''}>
-               <Image style={styles.GoogleImage} source={require('../../assets/GoogleLogin.png')} />
-        </TouchableOpacity> */}
       </View>
-
     </View>
   )
 }

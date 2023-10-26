@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React,{ useState} from 'react';
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
@@ -12,44 +12,45 @@ const { width, height } = Dimensions.get('window');
 
 const Tab = createBottomTabNavigator();
 
-const CustonTabBarButton = ({ children }) => {
+const CustonTabBarButton = ({ children, toggleModal }) => {
     const navigation = useNavigation();
 
-    const [taskModalVisible, setTaskModalVisible] = useState(false);
-
     return (
-        <>
-            <TaskModal
-                modalVisible={taskModalVisible}
-                setTaskModalVisible={setTaskModalVisible}
-            />
-            <TouchableOpacity
+        <TouchableOpacity
+            style={{
+                top: -30,
+                justifyContent: 'center',
+                alignItems: 'center',
+                ...styles.shadow,
+            }}
+            onPress={() => toggleModal(true)}>
+            <View
                 style={{
-                    top: -30,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    ...styles.shadow,
-                }}
-                onPress={() => {
-                    setTaskModalVisible(true);
-                }}>
-                <View style={{
                     width: width * 0.16,
                     height: width * 0.16,
                     borderRadius: 35,
                     backgroundColor: '#000000',
                     ...styles.shadow
-                }}>
-                    {children}
-                </View>
-            </TouchableOpacity>
-        </>
+                }}
+            >
+                {children}
+            </View>
+        </TouchableOpacity>
     );
 };
 
-const Tabs = ({ navigation, route }) => {
+const Tabs = ({ navigation, route, setTask }) => {
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [activeTab, setActiveTab] = useState('Home');
+
+    const toggleModal = (open) => {
+        setModalVisible(open);
+    };
     return (
-        <Tab.Navigator screenOptions={{
+
+        <Tab.Navigator
+        screenOptions={{
             tabBarShowLabel: false,
             headerShown: false,
             tabBarStyle: {
@@ -63,9 +64,19 @@ const Tabs = ({ navigation, route }) => {
                 height: 75,
                 ...styles.shadow
             }
-        }}>
-            {/* initialParams={{ username: route.params.username }} */}
-            <Tab.Screen name="Home" component={HomeScreen}  options={{
+        }}
+        tabBarOptions={{
+            activeTintColor: 'rgb(0, 123, 255)',
+            inactiveTintColor: 'black',
+        }}
+        tabBarLabelStyle={{ display: 'none' }}
+        screenListeners={({ navigation, route }) => ({
+            tabPress: e => {
+                setActiveTab(route.name);
+            }
+        })}
+    >
+            <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
@@ -105,7 +116,7 @@ const Tabs = ({ navigation, route }) => {
                     />
                 ),
                 tabBarButton: (props) => (
-                    <CustonTabBarButton {...props} />
+                    <CustonTabBarButton {...props} toggleModal={toggleModal}  />
                 )
             }} />
             <Tab.Screen name="Settings" component={Settings} options={{

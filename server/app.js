@@ -11,7 +11,7 @@ const taskSchema = new mongoose.Schema({
   deadline: Date,
   createdAt: Date,
   comments: [String],
-  userId: String, 
+  userId: String,
   priority: {
     type: String,
     enum: ['high', 'medium', 'low'],
@@ -50,7 +50,8 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
     if (user.password === password) {
-      const token = jwt.sign({ userId: user._id }, 'your_secret_key_here');
+      const token = jwt.sign({ userId: user._id }, '7*56:ASDWxc09scniasheb5454', {expiresIn: '15d'});
+      console.log('Generated token:', token);
       return res.json({
         message: 'Login successful',
         user: { email: user.email, username: user.username },
@@ -65,31 +66,68 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.use((req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Authorization token is missing' });
+  }
+  const tokenParts = token.split(' ');
+  if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
+    return res.status(401).json({ message: 'Invalid authorization header' });
+  }
+  const tokenValue = tokenParts[1];
+  jwt.verify(tokenValue, '7*56:ASDWxc09scniasheb5454', (error, decoded) => {
+    if (error) {
+      console.error(error);
+      return res.status(401).json({ message: 'Invalid token or token expired' });
+    }
+    req.userId = decoded.userId;
+    next();
+  });
+});
+
 app.post('/send-data', (req, res) => {
-  const newTaskData = req.body;
-  const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, 'your_secret_key_here');
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Authorization token is missing' });
+  }
 
-  newTaskData.createdAt = new Date(newTaskData.createdAt);
-  newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
-  newTaskData.userId = userId;
+  const tokenParts = token.split(' ');
 
-  const newTask = new Task(newTaskData);
-  newTask
-    .save()
-    .then((data) => {
-      console.log('Task saved successfully:', data);
-      res.json(data);
-    })
-    .catch((err) => {
-      console.error('Error saving task:', err);
-      res.status(500).send('Error saving task.');
-    });
+  if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
+    return res.status(401).json({ message: 'Invalid authorization header' });
+  }
+
+  const tokenValue = tokenParts[1];
+
+  try {
+    const { userId } = jwt.verify(tokenValue, '7*56:ASDWxc09scniasheb5454');
+
+    const newTaskData = req.body;
+    newTaskData.createdAt = new Date(newTaskData.createdAt);
+    newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
+    newTaskData.userId = userId;
+
+    const newTask = new Task(newTaskData);
+    newTask
+      .save()
+      .then((data) => {
+        console.log('Task saved successfully:', data);
+        res.json(data);
+      })
+      .catch((err) => {
+        console.error('Error saving task:', err);
+        res.status(500).send('Error saving task.');
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: 'Invalid token or token expired' });
+  }
 });
 
 app.get('/send-data', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, 'your_secret_key_here');
+  const { userId } = jwt.verify(token, '7*56:ASDWxc09scniasheb5454');
 
   Task.find({ userId })
     .then((data) => {

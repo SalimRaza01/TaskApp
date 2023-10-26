@@ -4,6 +4,7 @@ import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
 import TaskList from './TaskList';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
@@ -11,6 +12,8 @@ const { width, height } = Dimensions.get('window');
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
 
+  const yourAuthTokenHere = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM4ZjIxMmE3ZDUwODgxMzY2ZjE4MTQiLCJpYXQiOjE2OTgzMTc5NDUsImV4cCI6MTY5OTYxMzk0NX0.S_Q47z4EBwcV4FaAKXTLAo4o-nmZ8ZKEMlU66OqupIE';
+  
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
     title: '',
@@ -30,17 +33,33 @@ const HomeScreen = ({ route }) => {
   const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
+
+    const retrieveAuthToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          yourAuthTokenHere = token;
+          fetchTasks();
+        }
+      } catch (error) {
+        console.error('Error retrieving token:', error);
+      }
+    };
+    retrieveAuthToken();
     if (route.params && route.params.task) {
       setTask(route.params.task);
     }
-
     fetchTasks();
   }, [route.params]);
 
-  // const { username } = route.params;
+  const { username } = route.params;
 
   const fetchTasks = () => {
-    axios.get(`${BASE_URL}/send-data`)
+    axios.get(`${BASE_URL}/send-data`, {
+      headers: {
+        'Authorization': `Bearer ${yourAuthTokenHere}`,
+      },
+    })
       .then(response => {
         const markedDates = response.data.reduce((dates, task) => {
           const date = new Date(task.createdAt).toISOString().split('T')[0];
@@ -72,6 +91,7 @@ const HomeScreen = ({ route }) => {
     axios.post(`${BASE_URL}/send-data`, updatedTaskStringified, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${yourAuthTokenHere}`,
       },
     })
       .then(response => {
@@ -136,16 +156,21 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error deleting task:', error));
   };
+
   const handleCancel = () => {
     if (task._id) {
-
-      setTask({ title: '', description: '', status: 'Pending', deadline: '', createdAt: '' });
+      setTask({
+        title: '',
+        description: '',
+        status: 'Pending',
+        deadline: '',
+        createdAt: '',
+        priority: '',
+      });
     } else {
-
       setModalVisible(false);
       setValidationError(false);
     }
-    navigation.goBack();
   };
 
   const formatDeadline = (deadline) => {
@@ -170,7 +195,7 @@ const HomeScreen = ({ route }) => {
 
       <Text style={styles.WelcomeText}>Welcome,</Text>
 
-      <Text style={styles.UserName}>salim</Text>
+      <Text style={styles.UserName}>{username}</Text>
 
       <TouchableOpacity >
         <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
@@ -193,7 +218,7 @@ const HomeScreen = ({ route }) => {
         {tasks.length === 0 ? (
           <Image
             source={require('../assets/NoTask.png')}
-            style={styles.noTasksImage}/>
+            style={styles.noTasksImage} />
         ) : (
           <TaskList
             tasks={tasks}
@@ -204,7 +229,7 @@ const HomeScreen = ({ route }) => {
         )}
       </ScrollView>
 
-      <TaskModal
+      <TaskModal route={route}
         modalVisible={modalVisible}
         task={task}
         setTask={setTask}
@@ -223,7 +248,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#FFFFFF",
-
   },
   WelcomeText: {
     fontSize: width * 0.04,
@@ -413,7 +437,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    resizeMode:"contain",
+    resizeMode: "contain",
     width: width * 0.75,
     height: width * 0.75,
     marginTop: height * 0.02,
