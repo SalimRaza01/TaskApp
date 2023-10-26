@@ -210,7 +210,7 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-        <Button title="Open Modal" onPress={openModal} />
+          <Button title="Open Modal" onPress={openModal} />
         </View>
         {isCalendarVisible && (
           <Calendar
@@ -241,8 +241,7 @@ const HomeScreen = ({ route }) => {
         handleCancel={handleCancel}
         validationError={validationError}
       />
-
-<Button title="Open Modal" onPress={openModal} />
+      
     </View>
   );
 };
