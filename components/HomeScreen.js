@@ -166,7 +166,7 @@ const HomeScreen = ({ route }) => {
 
       <Text style={styles.WelcomeText}>Welcome,</Text>
 
-      <Text style={styles.UserName}>Salim Raza</Text>
+      <Text style={styles.UserName}>{user.name}</Text>
 
       <TouchableOpacity >
         <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />

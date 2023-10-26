@@ -81,9 +81,9 @@ export default function Login(props) {
             <Text style={{ marginTop: height * 0.02, color: "#007BFF" }} >Create New</Text>
           </TouchableOpacity>
           <View style={styles.divider2} />
-        </View> */}
+        </View> 
 
-        {/* <TouchableOpacity
+      <TouchableOpacity
           style={[styles.button, { backgroundColor: "#FFFFFF" }]}
           onPress={''}>
                <Image style={styles.GoogleImage} source={require('../../assets/GoogleLogin.png')} />
