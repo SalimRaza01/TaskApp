@@ -26,44 +26,37 @@ const HomeScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
 
-
   const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
-
-    const userId = '6538f212a7d50881366f1814';
-
-    const storeUserIdInAsyncStorage = async (userId) => {
-      try {
-        await AsyncStorage.setItem('userId', userId);
-      } catch (error) {
-        console.error('Error storing userId:', error);
-      }
-    }
-    storeUserIdInAsyncStorage(userId);
-
-    const retrieveAuthTokenAndUserId = async () => {
+    const retrieveAuthToken = async () => {
       try {
         const retrievedToken = await AsyncStorage.getItem('authToken');
-        const storedUserId = await AsyncStorage.getItem('userId');
-  
-        console.log('Retrieved Token:', retrievedToken);
-        console.log('Stored UserId:', storedUserId);
-  
-        if (retrievedToken && storedUserId) {
+        if (retrievedToken) {
           setToken(retrievedToken);
-          setUserId(storedUserId);
-          fetchTasks(retrievedToken);
+          axios.get(`${BASE_URL}/send-data`, {
+            headers: {
+              'Authorization': `Bearer ${retrievedToken}`,
+            }
+          })
+            .then(response => {
+              const user = response.data;
+              if (user && user._id) {
+                setUserId(user._id);
+                fetchTasks(retrievedToken);
+              }
+            })
+            .catch(error => console.error('Error fetching user data:', error));
         }
       } catch (error) {
         console.error('Error retrieving token:', error);
       }
     };
-  
-    retrieveAuthTokenAndUserId(); 
+    retrieveAuthToken();
   }, [route.params]);
 
   const { username } = route.params;
+
   const fetchTasks = (token) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {

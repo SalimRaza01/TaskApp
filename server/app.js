@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const taskSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   title: String,
   description: String,
   status: String,
@@ -22,7 +21,6 @@ const taskSchema = new mongoose.Schema({
 const Task = mongoose.model('Task', taskSchema);
 
 const User = mongoose.model('User', {
-  _id: mongoose.Schema.Types.ObjectId,
   email: String,
   password: String,
   username: String,
@@ -69,12 +67,6 @@ app.post('/login', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
-app.get('/user/_id', (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, secretKey);
-  console.log('UserID', userId);
-  res.json({ userId });
 });
 
 app.use((req, res, next) => {

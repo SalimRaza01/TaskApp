@@ -34,6 +34,7 @@ export default function Login(props) {
             await AsyncStorage.setItem('userId', user._id);
           }
           console.log('Login successful. Welcome, ' + user.username);
+          console.log('User ID here, ' + user._id);
           navigation.navigate('Tabs', { username: user.username });
         }
       }
