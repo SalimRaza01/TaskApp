@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const taskSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   title: String,
   description: String,
   status: String,
@@ -17,15 +18,19 @@ const taskSchema = new mongoose.Schema({
     enum: ['High', 'Medium', 'Low'],
   },
 });
+
 const Task = mongoose.model('Task', taskSchema);
 
 const User = mongoose.model('User', {
+  _id: mongoose.Schema.Types.ObjectId,
   email: String,
   password: String,
   username: String,
 });
 
 app.use(bodyParser.json());
+
+const secretKey = '7*56:ASDWxc09scniasheb5454';
 
 const mongURL =
   'mongodb+srv://Salim2017:OeMdsO7TpVBLVrP1@cluster0.apqm1pu.mongodb.net/taskapp?retryWrites=true&w=majority';
@@ -50,8 +55,8 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
     if (user.password === password) {
-      const token = jwt.sign({ userId: user._id }, '7*56:ASDWxc09scniasheb5454', {expiresIn: '15d'});
-      console.log('Generated token:', token);
+      const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '15d' });
+      console.log('Generated token:', token, user._id);
       return res.json({
         message: 'Login successful',
         user: { email: user.email, username: user.username },
@@ -65,23 +70,33 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.get('/user/_id', (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const { userId } = jwt.verify(token, secretKey);
+  console.log('UserID', userId);
+  res.json({ userId });
+});
 
 app.use((req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({ message: 'Authorization token is missing' });
   }
+
   const tokenParts = token.split(' ');
   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
     return res.status(401).json({ message: 'Invalid authorization header' });
   }
+
   const tokenValue = tokenParts[1];
-  jwt.verify(tokenValue, '7*56:ASDWxc09scniasheb5454', (error, decoded) => {
+
+  jwt.verify(tokenValue, secretKey, (error, decoded) => {
     if (error) {
       console.error(error);
       return res.status(401).json({ message: 'Invalid token or token expired' });
     }
     req.userId = decoded.userId;
+    
     next();
   });
 });
@@ -101,7 +116,7 @@ app.post('/send-data', (req, res) => {
   const tokenValue = tokenParts[1];
 
   try {
-    const { userId } = jwt.verify(tokenValue, '7*56:ASDWxc09scniasheb5454');
+    const { userId } = jwt.verify(tokenValue, secretKey);
 
     const newTaskData = req.body;
     newTaskData.createdAt = new Date(newTaskData.createdAt);
@@ -127,7 +142,7 @@ app.post('/send-data', (req, res) => {
 
 app.get('/send-data', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, '7*56:ASDWxc09scniasheb5454');
+  const { userId } = jwt.verify(token, secretKey);
 
   Task.find({ userId })
     .then((data) => {

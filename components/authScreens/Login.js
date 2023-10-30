@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,6 +14,9 @@ export default function Login(props) {
   const handleLogin = async () => {
     console.log('Login button pressed');
     try {
+
+      const userId = await AsyncStorage.getItem('userId');
+
       const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',
         headers: {
@@ -22,17 +25,16 @@ export default function Login(props) {
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('Response:', email, password);
-
       if (response.ok) {
-        const userData = await response.json();
-        if (userData.user) {
-          await AsyncStorage.setItem('authToken', userData.token);
-          if (userData.user._id) {
-            await AsyncStorage.setItem('userId', userData.user._id);
+        const responseJson = await response.json();
+        const { token, user } = responseJson;
+        if (user) {
+          await AsyncStorage.setItem('authToken', token);
+          if (user._id) {
+            await AsyncStorage.setItem('userId', user._id);
           }
-          console.log('Login successful. Welcome, ' + userData.user.username);
-          navigation.navigate('Tabs', { username: userData.user.username });
+          console.log('Login successful. Welcome, ' + user.username);
+          navigation.navigate('Tabs', { username: user.username });
         }
       }
     } catch (error) {
@@ -42,9 +44,7 @@ export default function Login(props) {
 
   return (
     <View style={styles.container}>
-
       <View style={{}}>
-
         <Image style={styles.LoginImage} source={require('../../assets/LoginImage.png')} />
         <Text style={styles.AppName}>TaskApp</Text>
         <Text style={styles.WelcomeText}>Welcome to</Text>
@@ -52,7 +52,6 @@ export default function Login(props) {
 
       <View style={styles.LoginContainer}>
         <Text style={styles.LoginText}>Login</Text>
-
         <View style={styles.divider} />
 
         <Text style={styles.inputLabel}>Email</Text>
@@ -61,7 +60,8 @@ export default function Login(props) {
           placeholderTextColor="#999"
           placeholder="Email"
           value={email}
-          onChangeText={text => setEmail(text)} />
+          onChangeText={text => setEmail(text)}
+        />
 
         <Text style={styles.inputLabel}>Password</Text>
         <TextInput
@@ -70,10 +70,10 @@ export default function Login(props) {
           placeholderTextColor="#999"
           value={password}
           onChangeText={text => setPassword(text)}
-          secureTextEntry />
+          secureTextEntry
+        />
 
         <View style={{ alignContent: "center", alignItems: "center" }}>
-
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "#007BFF" }]}
             onPress={handleLogin}>
@@ -82,7 +82,7 @@ export default function Login(props) {
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

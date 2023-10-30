@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Button } from 'react-native';
-import { Calendar } from 'react-native-calendars';
 import TaskModal from './TaskModal';
 import TaskList from './TaskList';
 import axios from 'axios';
@@ -12,8 +11,7 @@ const { width, height } = Dimensions.get('window');
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
 
-  let yourAuthTokenHere = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM4ZjIxMmE3ZDUwODgxMzY2ZjE4MTQiLCJpYXQiOjE2OTgzMTc5NDUsImV4cCI6MTY5OTYxMzk0NX0.S_Q47z4EBwcV4FaAKXTLAo4o-nmZ8ZKEMlU66OqupIE';
-
+  const [token, setToken] = useState('');
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
     title: '',
@@ -27,42 +25,51 @@ const HomeScreen = ({ route }) => {
   const [userId, setUserId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [markedDates, setMarkedDates] = useState({});
-  const [isCalendarVisible, setCalendarVisible] = useState(false);
+
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
 
-    const retrieveAuthToken = async () => {
+    const userId = '6538f212a7d50881366f1814';
+
+    const storeUserIdInAsyncStorage = async (userId) => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
+        await AsyncStorage.setItem('userId', userId);
+      } catch (error) {
+        console.error('Error storing userId:', error);
+      }
+    }
+    storeUserIdInAsyncStorage(userId);
+
+    const retrieveAuthTokenAndUserId = async () => {
+      try {
+        const retrievedToken = await AsyncStorage.getItem('authToken');
         const storedUserId = await AsyncStorage.getItem('userId');
-        if (token && storedUserId) {
-          yourAuthTokenHere = token;
+  
+        console.log('Retrieved Token:', retrievedToken);
+        console.log('Stored UserId:', storedUserId);
+  
+        if (retrievedToken && storedUserId) {
+          setToken(retrievedToken);
           setUserId(storedUserId);
-          fetchTasks();
+          fetchTasks(retrievedToken);
         }
       } catch (error) {
         console.error('Error retrieving token:', error);
       }
     };
-    retrieveAuthToken();
-    if (route.params && route.params.task) {
-      setTask(route.params.task);
-    }
-    fetchTasks();
+  
+    retrieveAuthTokenAndUserId(); 
   }, [route.params]);
 
   const { username } = route.params;
-
-  const fetchTasks = () => {
+  const fetchTasks = (token) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
-        'Authorization': `Bearer ${yourAuthTokenHere}`,
+        'Authorization': `Bearer ${token}`,
         'UserId': userId,
-      },
+      }
     })
       .then(response => {
         const markedDates = response.data.reduce((dates, task) => {
@@ -90,12 +97,11 @@ const HomeScreen = ({ route }) => {
       ...route.params,
     };
 
-    const updatedTaskStringified = JSON.stringify(updatedTask);
-
-    axios.post(`${BASE_URL}/send-data`, updatedTaskStringified, {
+    axios.post(`${BASE_URL}/send-data`, updatedTask, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${yourAuthTokenHere}`,
+        'Authorization': `Bearer ${token}`,
+        'UserId': userId,
       },
     })
       .then(response => {
@@ -110,32 +116,14 @@ const HomeScreen = ({ route }) => {
         });
         setTasks([...tasks, response.data]);
       })
-      .catch(error => console.error('Error adding data:', error));
-  };
+      .catch(error => {
+        if (error.response && error.response.status === 401) {
+          console.log('Error in API request:', error);
+        } else {
+          console.error('Error adding data:', error);
 
-  const handleEditTask = (taskId) => {
-    console.log('Task being edited:', task);
-    if (!task._id) {
-      console.error('Task ID is missing.');
-      return;
-    }
-
-    const updatedTask = {
-      ...task,
-      _id: task._id,
-    };
-
-    axios.put(`${BASE_URL}/update/${task._id}`, updatedTask, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        setModalVisible(false);
-        const updatedTasks = tasks.map(t => (t._id === task._id ? response.data : t));
-        setTasks(updatedTasks);
-      })
-      .catch(error => console.error('Error updating task:', error));
+        }
+      });
   };
 
   const handleToggleCompletion = (taskId) => {
@@ -181,23 +169,6 @@ const HomeScreen = ({ route }) => {
     setModalVisible(true);
   };
 
-  const formatDeadline = (deadline) => {
-    const date = new Date(deadline);
-    const day = date.getDate().toString().padStart(2, '0');
-    const options = { month: 'short' };
-    const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const formattedDeadline = `${day} ${monthName}`;
-    return { day, monthName, formattedDeadline };
-  };
-
-  const formatCreatedAt = (createdAt) => {
-    const date = new Date(createdAt);
-    const day = date.getDate().toString().padStart(2, '0');
-    const options = { month: 'short' };
-    const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
-    return { day, dayName };
-  };
-
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('authToken');
@@ -230,13 +201,6 @@ const HomeScreen = ({ route }) => {
 
         </View>
 
-        {isCalendarVisible && (
-          <Calendar
-            current={selectedDate}
-            onDayPress={(day) => setSelectedDate(day.dateString)}
-            markedDates={markedDates}
-          />
-        )}
         {tasks.length === 0 ? (
           <Image
             source={require('../assets/NoTask.png')}
@@ -244,7 +208,6 @@ const HomeScreen = ({ route }) => {
         ) : (
           <TaskList
             tasks={tasks}
-            handleEditTask={handleEditTask}
             handleToggleCompletion={handleToggleCompletion}
             handleDeleteTask={handleDeleteTask}
           />

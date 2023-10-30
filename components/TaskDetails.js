@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, Button, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, Image, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import axios from 'axios';
 const { width, height } = Dimensions.get('window');
@@ -116,7 +116,7 @@ const TaskDetails = ({ route }) => {
       />
       <View style={styles.commentBox}>
         <Text style={styles.commentText}>{comment}</Text>
-        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+        {/* <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} /> */}
       </View>
 
       <TextInput
@@ -132,6 +132,7 @@ const TaskDetails = ({ route }) => {
     </View>
   );
 }
+
 export default TaskDetails;
 
 const styles = StyleSheet.create({
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
     width: width * 0.09,
     height: height * 0.045,
-    marginLeft:width * 0.78,
+    marginLeft: width * 0.78,
   },
   SendIcon: {
     width: width * 0.05,

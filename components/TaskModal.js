@@ -61,9 +61,9 @@ const TaskModal = ({
                         setTask({ ...task, deadline: date })
                     } />
                 {validationError && (
-                    <Text style={styles.errorText}>
-                    </Text>
+                    <Text style={styles.errorText}>Error: Please fill in the required fields</Text>
                 )}
+
                 <TouchableOpacity
                     style={[styles.button, { backgroundColor: "#007BFF" }]}
                     onPress={handleAddTask}>
