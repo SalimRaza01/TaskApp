@@ -5,7 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
-export default function Login(props) {
+export default function Login() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,8 +15,6 @@ export default function Login(props) {
   const handleLogin = async () => {
     console.log('Login button pressed');
     try {
-
-      const userId = await AsyncStorage.getItem('userId');
 
       const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',

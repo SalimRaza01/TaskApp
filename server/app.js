@@ -57,15 +57,19 @@ app.post('/login', async (req, res) => {
       console.log('Generated token:', token, user._id);
       return res.json({
         message: 'Login successful',
-        user: { email: user.email, username: user.username },
+        user: { email: user.email, username: user.username, userId: user._id},
         token: token,
+        
       });
+      
     } else {
       return res.status(401).json({ message: 'Incorrect password' });
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+
+
   }
 });
 

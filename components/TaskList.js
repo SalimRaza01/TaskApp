@@ -8,6 +8,7 @@ const TaskList = ({
   tasks,
   handleToggleCompletion,
   handleDeleteTask,
+  response
 }) => {
   return (
     <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}  >
@@ -17,6 +18,7 @@ const TaskList = ({
           task={task}
           handleToggleCompletion={handleToggleCompletion}
           handleDeleteTask={handleDeleteTask}
+          response={response}
         />
       ))}
     </ScrollView>

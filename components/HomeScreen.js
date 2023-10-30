@@ -34,19 +34,16 @@ const HomeScreen = ({ route }) => {
         const retrievedToken = await AsyncStorage.getItem('authToken');
         if (retrievedToken) {
           setToken(retrievedToken);
+          console.log('Retrieved token:', retrievedToken); 
           axios.get(`${BASE_URL}/send-data`, {
             headers: {
               'Authorization': `Bearer ${retrievedToken}`,
             }
           })
-            .then(response => {
-              const user = response.data;
-              if (user && user._id) {
-                setUserId(user._id);
-                fetchTasks(retrievedToken);
-              }
-            })
-            .catch(error => console.error('Error fetching user data:', error));
+          .then(response => {
+            console.log('Response from server:', response.data); 
+          })
+          .catch(error => console.error('Error fetching user data:', error));
         }
       } catch (error) {
         console.error('Error retrieving token:', error);
@@ -54,29 +51,28 @@ const HomeScreen = ({ route }) => {
     };
     retrieveAuthToken();
   }, [route.params]);
-
+  
   const { username } = route.params;
 
   const fetchTasks = (token) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'UserId': userId,
       }
     })
-      .then(response => {
-        const markedDates = response.data.reduce((dates, task) => {
-          const date = new Date(task.createdAt).toISOString().split('T')[0];
-          dates[date] = { selected: true, selectedColor: "#0A79DF" };
-          return dates;
-        }, {});
-
-        setTasks(response.data);
-        setMarkedDates(markedDates);
-      })
-      .catch(error => console.error('Error fetching tasks:', error));
+    .then(response => {
+      const markedDates = response.data.reduce((dates, task) => {
+        const date = new Date(task.createdAt).toISOString().split('T')[0];
+        dates[date] = { selected: true, selectedColor: "#0A79DF" };
+        return dates;
+      });
+  
+      setTasks(response.data);
+      setMarkedDates(markedDates);
+    })
+    .catch(error => console.error('Error fetching tasks:', error));
   };
-
+  
   const handleAddTask = () => {
 
     if (!task.title || !task.deadline) {
@@ -94,7 +90,7 @@ const HomeScreen = ({ route }) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-        'UserId': userId,
+        // 'userId': user._id,
       },
     })
       .then(response => {
@@ -203,6 +199,7 @@ const HomeScreen = ({ route }) => {
             tasks={tasks}
             handleToggleCompletion={handleToggleCompletion}
             handleDeleteTask={handleDeleteTask}
+            response={response.data}
           />
         )}
       </ScrollView>
