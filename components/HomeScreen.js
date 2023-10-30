@@ -12,7 +12,7 @@ const { width, height } = Dimensions.get('window');
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
 
-  const yourAuthTokenHere = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM4ZjIxMmE3ZDUwODgxMzY2ZjE4MTQiLCJpYXQiOjE2OTgzMTc5NDUsImV4cCI6MTY5OTYxMzk0NX0.S_Q47z4EBwcV4FaAKXTLAo4o-nmZ8ZKEMlU66OqupIE';
+  let yourAuthTokenHere = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM4ZjIxMmE3ZDUwODgxMzY2ZjE4MTQiLCJpYXQiOjE2OTgzMTc5NDUsImV4cCI6MTY5OTYxMzk0NX0.S_Q47z4EBwcV4FaAKXTLAo4o-nmZ8ZKEMlU66OqupIE';
 
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({
@@ -24,6 +24,7 @@ const HomeScreen = ({ route }) => {
     priority: '',
   });
 
+  const [userId, setUserId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -37,8 +38,10 @@ const HomeScreen = ({ route }) => {
     const retrieveAuthToken = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        if (token) {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        if (token && storedUserId) {
           yourAuthTokenHere = token;
+          setUserId(storedUserId);
           fetchTasks();
         }
       } catch (error) {
@@ -58,6 +61,7 @@ const HomeScreen = ({ route }) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
         'Authorization': `Bearer ${yourAuthTokenHere}`,
+        'UserId': userId,
       },
     })
       .then(response => {
@@ -194,6 +198,16 @@ const HomeScreen = ({ route }) => {
     return { day, dayName };
   };
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('userId');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
 
@@ -210,6 +224,7 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
+          <Button title="Log out" onPress={handleLogout} />
 
           <Button title="Open Modal" onPress={openModal} />
 

@@ -6,7 +6,6 @@ const { width, height } = Dimensions.get('window');
 
 const TaskList = ({
   tasks,
-  handleEditTask,
   handleToggleCompletion,
   handleDeleteTask,
 }) => {
@@ -16,7 +15,6 @@ const TaskList = ({
         <TaskItem
           key={task._id}
           task={task}
-          handleEditTask={handleEditTask}
           handleToggleCompletion={handleToggleCompletion}
           handleDeleteTask={handleDeleteTask}
         />

@@ -1,4 +1,4 @@
-import React,{ useState} from 'react';
+import React, { useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import HomeScreen from './HomeScreen';
 import Profile from './Profile';
 import TaskDetails from './TaskDetails';
 import Settings from './Settings';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,43 +40,42 @@ const CustonTabBarButton = ({ children, toggleModal }) => {
     );
 };
 
-const Tabs = ({ navigation, route, setTask }) => {
-
+const Tabs = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [activeTab, setActiveTab] = useState('Home');
 
     const toggleModal = (open) => {
         setModalVisible(open);
     };
-    return (
 
+    return (
         <Tab.Navigator
-        screenOptions={{
-            tabBarShowLabel: false,
-            headerShown: false,
-            tabBarStyle: {
-                position: 'absolute',
-                bottom: 25,
-                left: 20,
-                right: 20,
-                elevation: 0,
-                backgroundColor: '#FFFFFF',
-                borderRadius: 15,
-                height: 75,
-                ...styles.shadow
-            }
-        }}
-        tabBarOptions={{
-            activeTintColor: 'rgb(0, 123, 255)',
-            inactiveTintColor: 'black',
-        }}
-        tabBarLabelStyle={{ display: 'none' }}
-        screenListeners={({ navigation, route }) => ({
-            tabPress: e => {
-                setActiveTab(route.name);
-            }
-        })}
-    >
+            screenOptions={{
+                tabBarShowLabel: false,
+                headerShown: false,
+                tabBarStyle: {
+                    position: 'absolute',
+                    bottom: 25,
+                    left: 20,
+                    right: 20,
+                    elevation: 0,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 15,
+                    height: 75,
+                    ...styles.shadow
+                }
+            }}
+            tabBarOptions={{
+                activeTintColor: 'rgb(0, 123, 255)',
+                inactiveTintColor: 'black',
+            }}
+            tabBarLabelStyle={{ display: 'none' }}
+            screenListeners={({ navigation, route }) => ({
+                tabPress: e => {
+                    setActiveTab(route.name);
+                }
+            })}
+        >
             <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
@@ -116,7 +116,7 @@ const Tabs = ({ navigation, route, setTask }) => {
                     />
                 ),
                 tabBarButton: (props) => (
-                    <CustonTabBarButton {...props} toggleModal={toggleModal}  />
+                    <CustonTabBarButton {...props} toggleModal={toggleModal} />
                 )
             }} />
             <Tab.Screen name="Settings" component={Settings} options={{
@@ -133,7 +133,7 @@ const Tabs = ({ navigation, route, setTask }) => {
                     </View>
                 )
             }} />
-            <Tab.Screen name="Splash" component={TaskDetails} options={{
+            <Tab.Screen name="Logout" component={''} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
@@ -142,7 +142,7 @@ const Tabs = ({ navigation, route, setTask }) => {
                                 height: width * 0.06,
                                 tintColor: focused ? 'rgb(0, 123, 255)' : 'black',
                             }}
-                            source={require('../assets/star.png')}
+                            source={require('../assets/bellIcon.png')}
                         />
                     </View>
                 )
@@ -152,6 +152,7 @@ const Tabs = ({ navigation, route, setTask }) => {
 };
 
 export default Tabs;
+
 
 const styles = StyleSheet.create({
     shadow: {

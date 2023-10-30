@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -27,22 +27,19 @@ export default function Login(props) {
       if (response.ok) {
         const userData = await response.json();
         if (userData.user) {
-          console.log('Login successful. Welcome, ' + userData.user.username);
-
           await AsyncStorage.setItem('authToken', userData.token);
-
+          if (userData.user._id) {
+            await AsyncStorage.setItem('userId', userData.user._id);
+          }
+          console.log('Login successful. Welcome, ' + userData.user.username);
           navigation.navigate('Tabs', { username: userData.user.username });
-        } else {
-          console.error('Authentication succeeded, but no username received.');
         }
-      } else {
-        console.error('Authentication failed');
       }
     } catch (error) {
-      console.error('An error occurred: ', error);
+      console.error('An error occurred:', error);
     }
   };
-    
+
   return (
     <View style={styles.container}>
 
