@@ -3,11 +3,9 @@ import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-nat
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import TaskModal from './TaskModal';
-import HomeScreen from './HomeScreen';
-import Profile from './Profile';
-import TaskDetails from './TaskDetails';
-import Settings from './Settings';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomeScreen from './Screens/HomeScreen';
+import Profile from './Screens/Profile';
+import Settings from './Screens/Settings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -47,7 +45,7 @@ const Tabs = ({ route, navigation }) => {
     const toggleModal = (open) => {
         setModalVisible(open);
     };
-
+  
     return (
         <Tab.Navigator
             screenOptions={{

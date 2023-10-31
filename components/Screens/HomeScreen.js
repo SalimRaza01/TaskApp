@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Button } from 'react-native';
-import TaskModal from './TaskModal';
-import TaskList from './TaskList';
+import TaskModal from '../TaskModal';
+import TaskList from '../TaskList';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -167,7 +167,7 @@ const HomeScreen = ({ route }) => {
 
       <Text style={styles.UserName}>{username}</Text>
 
-      <TouchableOpacity >
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')} >
         <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
       </TouchableOpacity>
 
