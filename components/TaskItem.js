@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#f7f7f7",
 
     },
+    responseData:{
+        marginTop: height * -0.019,
+    },
     taskItem: {
         marginLeft: width * 0.015,
         width: width * 0.87,
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
         padding: width * 0.03,
         borderRadius: width * 0.03,
         elevation: 5,
-        marginTop: height * 0.013,
+        marginTop: height * 0.01,
         marginBottom: height * 0.013,
     },
     taskTextContainer: {

@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#FFFFFF",
   },
   ProfileContainer: {
+    marginTop: height * -0.15,
     width: width * 0.8,
     height: width * 1,
     alignItems: 'center',
