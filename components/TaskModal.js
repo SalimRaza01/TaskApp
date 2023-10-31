@@ -46,8 +46,9 @@ const TaskModal = ({
                 <TextInput
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholder="Assign Task to"
-                    placeholderTextColor="#999" />
-
+                    placeholderTextColor="#999"
+                    onChangeText={(email) => setTask({ ...task, assignedTo: email })}
+                />
                 <Text style={styles.inputLabel}>
                     Set Priority:
                 </Text>
