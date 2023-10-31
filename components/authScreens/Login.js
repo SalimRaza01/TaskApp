@@ -34,7 +34,7 @@ export default function Login() {
           }
           console.log('Login successful. Welcome, ' + user.username);
           console.log('User ID here, ' + user._id);
-          navigation.navigate('Tabs', { username: user.username, email: route.params.email });
+          navigation.navigate('Tabs', { username: user.username });
         }
       }
     } catch (error) {

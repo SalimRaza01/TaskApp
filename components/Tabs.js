@@ -88,7 +88,7 @@ const Tabs = ({ route, navigation }) => {
                     </View>
                 )
             }} />
-            <Tab.Screen name="Profile" component={Profile} initialParams={{ username: route.params.username, email: route.params.email }} options={{
+            <Tab.Screen name="Profile" component={Profile} initialParams={{ username: route.params.username}} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image

@@ -15,7 +15,7 @@ const TaskModal = ({
 }) => {
 
     const [tasks, setTasks] = useState([]);
-    const [priority, setPriority] = useState(task && task.priority ? task.priority : " ");
+    const [priority, setPriority] = useState(task && task.priority ? task.priority : '');
 
     return (
         <Modal
@@ -33,33 +33,40 @@ const TaskModal = ({
                 <TextInput
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholderTextColor="#999"
+                    placeholder="Description"
                     value={task && task.description ? task.description : ""}
                     onChangeText={(text) =>
                         setTask({
                             ...task,
                             description: text
-                        })
-                    } />
+                        })} />
+
+                <TextInput
+                    style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
+                    placeholder="Assign Task to"
+                    placeholderTextColor="#999" />
+
                 <Text style={styles.inputLabel}>
-                    Deadline:
+                    Set Deadline:
                 </Text>
                 <Picker
                     selectedValue={priority}
                     onValueChange={(itemValue, itemIndex) =>
                         setTask({ ...task, priority: itemValue })
-                    }
-                >
+                    }>
+
                     <Picker.Item label="High" value="High" />
                     <Picker.Item label="Medium" value="Medium" />
                     <Picker.Item label="Low" value="Low" />
                 </Picker>
+
                 <DatePicker
                     style={styles.datePicker}
                     mode="datepicker"
                     selected={task && task.deadline ? task.deadline : ""}
                     onDateChange={(date) =>
-                        setTask({ ...task, deadline: date })
-                    } />
+                        setTask({ ...task, deadline: date })} />
+
                 {validationError && (
                     <Text style={styles.errorText}>Error: Please fill in the required fields</Text>
                 )}
@@ -154,15 +161,19 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
     },
     input: {
-        borderWidth: 1,
+        marginLeft: width * 0.02,
+        borderWidth: 0.5,
         borderColor: "#ccc",
-        padding: width * 0.03,
-        marginBottom: height * 0.02,
+        padding: width * 0.02,
+        marginBottom: height * 0.01,
         borderRadius: width * 0.02,
-        fontSize: width * 0.04,
-    },
+        fontSize: width * 0.03,
+        width: width * 0.86
+      },
     inputLabel: {
-        fontSize: width * 0.04,
+        marginTop: height * 0.01,
+        marginLeft: width * 0.02,
+        fontSize: width * 0.03,
         fontWeight: "bold",
     },
     errorText: {
