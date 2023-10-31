@@ -24,11 +24,9 @@ const TaskItem = ({
     return (
         <View style={styles.taskItem}>
             <View style={styles.taskTextContainer}>
-
-            <Text style={styles.responseData}>
-          Response Data: {JSON.stringify(response)}
-        </Text>
-
+                <Text style={styles.responseData}>
+                    {JSON.stringify(response)}
+                </Text>
                 <Text
                     style={[
                         styles.taskText,

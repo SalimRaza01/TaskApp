@@ -25,8 +25,9 @@ const HomeScreen = ({ route }) => {
   const [userId, setUserId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
+  const [markedDates, setMarkedDates] = useState({});
 
-  const BASE_URL = 'http://10.0.2.2:3000';
+  const BASE_URL = 'http://10.0.2.2:3000';;
 
   useEffect(() => {
     const retrieveAuthToken = async () => {
@@ -34,16 +35,8 @@ const HomeScreen = ({ route }) => {
         const retrievedToken = await AsyncStorage.getItem('authToken');
         if (retrievedToken) {
           setToken(retrievedToken);
-          console.log('Retrieved token:', retrievedToken); 
-          axios.get(`${BASE_URL}/send-data`, {
-            headers: {
-              'Authorization': `Bearer ${retrievedToken}`,
-            }
-          })
-          .then(response => {
-            console.log('Response from server:', response.data); 
-          })
-          .catch(error => console.error('Error fetching user data:', error));
+          console.log('Retrieved token:', retrievedToken);
+          fetchTasks(retrievedToken);
         }
       } catch (error) {
         console.error('Error retrieving token:', error);
@@ -67,8 +60,8 @@ const HomeScreen = ({ route }) => {
         return dates;
       });
   
-      setTasks(response.data);
-      setMarkedDates(markedDates);
+      setTasks(response.data); 
+      setMarkedDates(markedDates); 
     })
     .catch(error => console.error('Error fetching tasks:', error));
   };
@@ -90,7 +83,6 @@ const HomeScreen = ({ route }) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-        // 'userId': user._id,
       },
     })
       .then(response => {
@@ -199,7 +191,6 @@ const HomeScreen = ({ route }) => {
             tasks={tasks}
             handleToggleCompletion={handleToggleCompletion}
             handleDeleteTask={handleDeleteTask}
-            response={response.data}
           />
         )}
       </ScrollView>
