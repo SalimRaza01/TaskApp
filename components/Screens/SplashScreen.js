@@ -10,7 +10,7 @@ export default function SplashScreen(props) {
       <View style={styles.divider} />
 
       <View>
-        <Image style={styles.logo} source={require('../assets/Splash.png')} />
+        <Image style={styles.logo} source={require('../../assets/Splash.png')} />
       </View>
       <TouchableOpacity style={styles.mybtn} onPress={() => props.navigation.navigate('HomeScreen')}>
         <Text style={styles.btntext}>Get Started</Text>

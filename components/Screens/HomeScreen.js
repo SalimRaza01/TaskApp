@@ -168,7 +168,7 @@ const HomeScreen = ({ route }) => {
       <Text style={styles.UserName}>{username}</Text>
 
       <TouchableOpacity onPress={() => navigation.navigate('Profile')} >
-        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+        <Image style={styles.UserProfileImage} source={require('../../assets/profile.png')} />
       </TouchableOpacity>
 
       <View style={styles.divider} />
@@ -184,7 +184,7 @@ const HomeScreen = ({ route }) => {
 
         {tasks.length === 0 ? (
           <Image
-            source={require('../assets/NoTask.png')}
+            source={require('../../assets/NoTask.png')}
             style={styles.noTasksImage} />
         ) : (
           <TaskList

@@ -49,8 +49,10 @@ export default function App() {
             height: 90,
           },
         }}
-      >
+      > 
+  
         <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+        <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
 
@@ -93,7 +95,7 @@ export default function App() {
         />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Settings" component={Settings} />
-        <Stack.Screen name="Profile" component={Profile} />
+      
         <Stack.Screen name="TaskModal" component={TaskModal} />
         <Stack.Screen
           name="TaskDetails"
