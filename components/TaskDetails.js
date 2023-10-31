@@ -114,10 +114,10 @@ const TaskDetails = ({ route }) => {
         markedDates={rangeDates}
         renderDay={(date) => customDayRenderer(date)}
       />
-      <View style={styles.commentBox}>
+      {/* <View style={styles.commentBox}>
         <Text style={styles.commentText}>{comment}</Text>
-        {/* <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} /> */}
-      </View>
+        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
+      </View> */}
 
       <TextInput
         style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
@@ -127,6 +127,10 @@ const TaskDetails = ({ route }) => {
 
       <TouchableOpacity style={styles.CommentSendBtn} onPress={handleCommentSubmit}>
         <Image style={styles.SendIcon} source={require('../assets/Send.png')} />
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} >
+        <Text style={styles.buttonText}>Completed</Text>
       </TouchableOpacity>
 
     </View>
@@ -140,6 +144,19 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f7f7f7",
+  },
+  button: {
+    width: width * 0.9,
+    padding: width * 0.030,
+    borderRadius: width * 0.03,
+    marginTop: height * 0.02,
+    alignItems: "center",
+    backgroundColor: "#007BFF",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: width * 0.035,
+    fontWeight: "bold",
   },
   CommentSendBtn: {
     alignItems: "center",
@@ -177,7 +194,7 @@ const styles = StyleSheet.create({
   },
   commentText: {
     marginTop: height * 0.008,
-    marginLeft: width * 0.1,
+    // marginLeft: width * 0.1,
   },
 
   divider: {

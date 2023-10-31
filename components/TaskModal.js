@@ -23,6 +23,8 @@ const TaskModal = ({
             animationType="slide"
             transparent={false}>
             <View style={styles.modalContainer}>
+
+                <Text style={styles.WelcomeText}>Create Task</Text>
                 <TextInput
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholderTextColor="#999"
@@ -47,7 +49,7 @@ const TaskModal = ({
                     placeholderTextColor="#999" />
 
                 <Text style={styles.inputLabel}>
-                    Set Deadline:
+                    Set Priority:
                 </Text>
                 <Picker
                     selectedValue={priority}
@@ -60,8 +62,10 @@ const TaskModal = ({
                     <Picker.Item label="Low" value="Low" />
                 </Picker>
 
+                <Text style={styles.inputLabel}>
+                    Set Deadline:
+                </Text>
                 <DatePicker
-                    style={styles.datePicker}
                     mode="datepicker"
                     selected={task && task.deadline ? task.deadline : ""}
                     onDateChange={(date) =>
@@ -70,17 +74,19 @@ const TaskModal = ({
                 {validationError && (
                     <Text style={styles.errorText}>Error: Please fill in the required fields</Text>
                 )}
+                <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
 
-                <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#007BFF" }]}
-                    onPress={handleAddTask}>
-                    <Text style={styles.buttonText}>{task && task._id ? "Update" : "Add"}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#FF3B30" }]}
-                    onPress={handleCancel}>
-                    <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: "#007BFF" }]}
+                        onPress={handleAddTask}>
+                        <Text style={styles.buttonText}>{task && task._id ? "Update" : "Add"}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: "#FF3B30" }]}
+                        onPress={handleCancel}>
+                        <Text style={styles.buttonText}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
 
             </View>
         </Modal>
@@ -94,6 +100,14 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: "#FFFFFF",
+    },
+    WelcomeText: {
+        fontSize: width * 0.04,
+        fontWeight: "bold",
+        marginTop: height * 0.001,
+        marginBottom: height * 0.02,
+        color: "#333",
+        textAlign: "center",
     },
     addButton: {
         alignItems: "center",
@@ -145,9 +159,10 @@ const styles = StyleSheet.create({
         marginVertical: height * 0.001,
     },
     button: {
-        padding: width * 0.040,
+        width: width * 0.44,
+        padding: width * 0.030,
         borderRadius: width * 0.03,
-        marginTop: height * 0.01,
+        marginTop: height * 0.001,
         alignItems: "center",
     },
     buttonText: {
@@ -169,7 +184,7 @@ const styles = StyleSheet.create({
         borderRadius: width * 0.02,
         fontSize: width * 0.03,
         width: width * 0.86
-      },
+    },
     inputLabel: {
         marginTop: height * 0.01,
         marginLeft: width * 0.02,
