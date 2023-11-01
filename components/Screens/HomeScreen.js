@@ -67,46 +67,43 @@ const HomeScreen = ({ route }) => {
   };
   
   const handleAddTask = () => {
-
-    if (!task.title || !task.deadline) {
-      setValidationError(true);
-      return;
+    if (!task.title || !task.deadline || !task.priority) {
+        setValidationError(true);
+        return;
     }
 
     const updatedTask = {
-      ...task,
-      createdAt: new Date().toLocaleString(),
-      ...route.params,
+        ...task,
+        createdAt: new Date().toLocaleString(),
+        ...route.params,
     };
 
     axios.post(`${BASE_URL}/send-data`, updatedTask, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
     })
-      .then(response => {
-        setModalVisible(false);
-        setTask({
-          title: "",
-          description: "",
-          status: "Pending",
-          deadline: "",
-          createdAt: "",
-          priority: "",
+        .then(response => {
+            setModalVisible(false);
+            setTask({
+                title: "",
+                description: "",
+                status: "Pending",
+                deadline: "",
+                priority: "", 
+                createdAt: "",
+            });
+            setTasks([...tasks, response.data]);
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 401) {
+                console.log('Error in API request:', error);
+            } else {
+                console.error('Error adding data:', error);
+            }
         });
-        setTasks([...tasks, response.data]);
-        
-      })
-      .catch(error => {
-        if (error.response && error.response.status === 401) {
-          console.log('Error in API request:', error);
-        } else {
-          console.error('Error adding data:', error);
-
-        }
-      });
-  };
+};
 
   const handleToggleCompletion = (taskId) => {
     const updatedTasks = tasks.map(t => {

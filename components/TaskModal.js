@@ -14,9 +14,6 @@ const TaskModal = ({
     validationError,
 }) => {
 
-    const [tasks, setTasks] = useState([]);
-    const [priority, setPriority] = useState(task && task.priority ? task.priority : 'High');
-
     return (
         <Modal
             visible={modalVisible}
@@ -47,17 +44,15 @@ const TaskModal = ({
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholder="Assign Task to"
                     placeholderTextColor="#999"
-                    onChangeText={(email) => setTask({ ...task, assignedTo: email })}
+                    onChangeText={('')}
                 />
                 <Text style={styles.inputLabel}>
                     Set Priority:
                 </Text>
                 <Picker
-                    selectedValue={priority}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setPriority(itemValue)
-                    }>
-
+                    selectedValue={task && task.priority ? task.priority : ""}
+                    onValueChange={(value) => setTask({ ...task, priority: value })}>
+                    <Picker.Item label="Select Priority" value="" />
                     <Picker.Item label="High" value="High" />
                     <Picker.Item label="Medium" value="Medium" />
                     <Picker.Item label="Low" value="Low" />

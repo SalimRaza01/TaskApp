@@ -8,10 +8,7 @@ const TaskSchema = new mongoose.Schema({
   createdAt: Date,
   comments: [String],
   userId: String,
-  priority: {
-    type: String,
-    enum: ['High', 'Medium', 'Low'],
-  },
+  priority: String, 
 })
 
 mongoose.model("task", TaskSchema)

@@ -12,10 +12,7 @@ const taskSchema = new mongoose.Schema({
   createdAt: Date,
   comments: [String],
   userId: String,
-  priority: {
-    type: String,
-    enum: ['High', 'Medium', 'Low'],
-  },
+  priority: String, 
 });
 
 const Task = mongoose.model('Task', taskSchema);
@@ -102,18 +99,13 @@ app.post('/send-data', (req, res) => {
   if (!token) {
     return res.status(401).json({ message: 'Authorization token is missing' });
   }
-
   const tokenParts = token.split(' ');
 
   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
     return res.status(401).json({ message: 'Invalid authorization header' });
   }
-
-  const tokenValue = tokenParts[1];
-
   try {
-    const { userId } = jwt.verify(tokenValue, secretKey);
-
+    const { userId } = jwt.verify(tokenParts[1], secretKey);
     const newTaskData = req.body;
     newTaskData.createdAt = new Date(newTaskData.createdAt);
     newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
@@ -133,43 +125,9 @@ app.post('/send-data', (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: 'Invalid token or token expired' });
+    
   }
 });
-
-
-// app.post('/send-data', (req, res) => {
-//   const token = req.headers.authorization;
-//   if (!token) {
-//     return res.status(401).json({ message: 'Authorization token is missing' });
-//   }
-//   const tokenParts = token.split(' ');
-
-//   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
-//     return res.status(401).json({ message: 'Invalid authorization header' });
-//   }
-//   try {
-//     const { userId } = jwt.verify(tokenParts[1], secretKey);
-//     const newTaskData = req.body;
-//     newTaskData.createdAt = new Date(newTaskData.createdAt);
-//     newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
-//     newTaskData.userId = userId;
-
-//     const newTask = new Task(newTaskData);
-//     newTask
-//       .save()
-//       .then((data) => {
-//         console.log('Task saved successfully:', data);
-//         res.json(data);
-//       })
-//       .catch((err) => {
-//         console.error('Error saving task:', err);
-//         res.status(500).send('Error saving task.');
-//       });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(401).json({ message: 'Invalid token or token expired' });
-//   }
-// });
 
 app.get('/send-data', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];

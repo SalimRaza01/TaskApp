@@ -104,8 +104,9 @@ const TaskDetails = ({ route }) => {
         justifyContent: "space-between",
         alignItems: "center"
       }}>
+     
         <View style={styles.Prioritybox}>
-          <Text style={styles.TaskPriorityText}>Priority: {task.priority}</Text>
+          <Text style={styles.TaskPriorityText}>Priority:{task.priority} </Text>
         </View>
         <View style={styles.Deadlinebox}>
           <Text style={styles.DeadlineText}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
