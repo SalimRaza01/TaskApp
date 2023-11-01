@@ -18,7 +18,6 @@ const DrawerContent = ({ navigation }) => {
       >
         <Text>Settings</Text>
       </TouchableOpacity>
-      {/* Add more drawer items as needed */}
     </View>
   );
 };
