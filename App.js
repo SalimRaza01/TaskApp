@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Image, StyleSheet, Dimensions, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SplashScreen from './components/Screens/SplashScreen';
 import Profile from './components/Screens/Profile';
 import TaskDetails from './components/TaskDetails';
@@ -11,7 +11,8 @@ import NotifyScreen from './components/Screens/NotifyScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Tabs from './components/Tabs';
+import DrawerNavigator from './components/DrawerNavigator';
+import DrawerContent from './components/DrawerContent';
 
 const { width } = Dimensions.get('window');
 
@@ -26,7 +27,9 @@ export default function App({ navigation }) {
     try {
       const authToken = await AsyncStorage.getItem('authToken');
       if (authToken !== null) {
+        // User is logged in
       } else {
+        // User is not logged in
       }
     } catch (error) {
       console.error('Error checking login status:', error);
@@ -50,73 +53,24 @@ export default function App({ navigation }) {
           },
         }}
       >
-
         <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="DrawerContent" component={DrawerContent} />
         <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
 
         <Stack.Screen
-          name="Tabs"
-          component={Tabs}
-          options={{
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.navigate('')}>
-                <Image
-                  style={styles.Menu}
-                  source={require('./assets/menu.png')}
-                />
-              </TouchableOpacity>
-            ),
-            headerCenter: () => (
-              <View>
-                <Image
-                  style={styles.logo}
-                  source={require('./assets/AgVa.png')}
-                />
-              </View>
-            ),
-            headerTitle: 'AgVa',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {
-              fontSize: 25,
-              fontWeight: 'bold',
-              color: '#cb297b',
-            },
-            headerRight: ({ navigation }) => (
-              <TouchableOpacity onPress={() => navigation.navigate('NotifyScreen')}>
-                <Image
-                  style={styles.BellIcon}
-                  source={require('./assets/bellIcon.png')}
-                />
-              </TouchableOpacity>
-            ),
-          }}
+          name="Drawer"
+          component={DrawerNavigator} options={{ headerShown: false }}
+
         />
+
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="TaskModal" component={TaskModal} />
         <Stack.Screen
           name="TaskDetails"
-          component={TaskDetails}
-          options={{
-            headerCenter: () => (
-              <View>
-                <Image
-                  style={styles.logo}
-                  source={require('./assets/AgVa.png')}
-                />
-              </View>
-            ),
-            headerTitle: 'Task Details',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {
-              fontSize: 25,
-              fontWeight: 'bold',
-              color: '#cb297b',
-            },
-          }}
-        />
+          component={TaskDetails}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -135,5 +89,4 @@ const styles = StyleSheet.create({
     width: width * 0.5,
     height: width * 0.5,
   },
-
 });
