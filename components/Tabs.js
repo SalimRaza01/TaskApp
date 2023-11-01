@@ -45,7 +45,7 @@ const Tabs = ({ route, navigation }) => {
     const toggleModal = (open) => {
         setModalVisible(open);
     };
-  
+
     return (
         <Tab.Navigator
             screenOptions={{
@@ -74,7 +74,7 @@ const Tabs = ({ route, navigation }) => {
                 }
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username }} options={{
+            <Tab.Screen name="Home" component={HomeScreen} initialParams={{ username: route.params.username, email: route.params.email }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
@@ -88,7 +88,7 @@ const Tabs = ({ route, navigation }) => {
                     </View>
                 )
             }} />
-            <Tab.Screen name="Profile" component={Profile} initialParams={{ username: route.params.username}} options={{
+            <Tab.Screen name="Profile" component={Profile} initialParams={{ username: route.params.username, email: route.params.email }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image

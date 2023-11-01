@@ -17,7 +17,7 @@ const { width } = Dimensions.get('window');
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function App({ navigation }) {
   useEffect(() => {
     checkIfUserIsLoggedIn();
   }, []);
@@ -49,8 +49,8 @@ export default function App() {
             height: 90,
           },
         }}
-      > 
-  
+      >
+
         <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
@@ -61,7 +61,7 @@ export default function App() {
           component={Tabs}
           options={{
             headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.navigate('')}> 
+              <TouchableOpacity onPress={() => navigation.navigate('')}>
                 <Image
                   style={styles.Menu}
                   source={require('./assets/menu.png')}
@@ -95,7 +95,6 @@ export default function App() {
         />
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Settings" component={Settings} />
-      
         <Stack.Screen name="TaskModal" component={TaskModal} />
         <Stack.Screen
           name="TaskDetails"

@@ -7,7 +7,6 @@ const { width, height } = Dimensions.get('window');
 const TaskItem = ({
     task,
     handleToggleCompletion,
-    handleDeleteTask,
     response,
 }) => {
     const navigation = useNavigation();
@@ -40,23 +39,13 @@ const TaskItem = ({
                 <Text style={styles.taskStatus}>Status: {task.status}</Text>
                 <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
             </View>
+
             <View style={styles.buttonContainer}>
-                {/* <TouchableOpacity
-            onPress={() => handleToggleCompletion(task._id)}
-            style={[
-              styles.completeButton,
-              task.status === 'Completed' && styles.completedButton,
-            ]}>
-            <Text style={styles.buttonText}>
-              {task.status === 'Completed' ? 'Pending' : 'Completed'}
-            </Text>
-          </TouchableOpacity>*/}
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('TaskDetails', { task: task })}
+                    onPress={() => navigation.navigate('TaskDetails', { task: task, handleToggleCompletion: handleToggleCompletion })}
                     style={[styles.ViewTaskButton]}>
                     <Text style={styles.buttonText}>View Task</Text>
                 </TouchableOpacity>
-
             </View>
         </View>
     );
@@ -71,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f7f7f7",
 
     },
-    responseData:{
+    responseData: {
         marginTop: height * -0.019,
     },
     taskItem: {

@@ -32,9 +32,9 @@ export default function Login() {
           if (user._id) {
             await AsyncStorage.setItem('userId', user._id);
           }
-          console.log('Login successful. Welcome, ' + user.username);
+          console.log('Login successful. Welcome, ' + user.username, user.email);
           console.log('User ID here, ' + user._id);
-          navigation.navigate('Tabs', { username: user.username });
+          navigation.navigate('Tabs', { username: user.username, email: user.email });
         }
       }
     } catch (error) {

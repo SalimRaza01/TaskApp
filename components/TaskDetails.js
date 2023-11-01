@@ -8,7 +8,7 @@ const TaskDetails = ({ route }) => {
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
-  const { task } = route.params;
+  const { task, handleToggleCompletion } = route.params;
   const { deadline, createdAt } = task;
   const [comment, setComment] = useState('');
 
@@ -83,8 +83,20 @@ const TaskDetails = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.Tasktitle}>Task: {task.title}</Text>
+      <Text style={[
+        styles.Tasktitle,
+        task.status === 'Completed' && styles.completedTaskText,
+      ]}>Task: {task.title}</Text>
+
       <Text style={styles.Taskdecription}>Description: {task.description}</Text>
+
+      <TouchableOpacity style={[
+        styles.button,
+        task.status === 'Completed' && styles.completedButton,
+      ]} onPress={() => handleToggleCompletion(task._id)}>
+        <Text style={styles.buttonText}>{task.status === 'Completed' ? 'Pending' : 'Completed'}</Text>
+      </TouchableOpacity>
+
       <View style={styles.divider} />
 
       <View style={{
@@ -98,6 +110,7 @@ const TaskDetails = ({ route }) => {
         <View style={styles.Deadlinebox}>
           <Text style={styles.DeadlineText}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
         </View>
+
       </View>
       <Calendar
         style={{
@@ -125,12 +138,8 @@ const TaskDetails = ({ route }) => {
         placeholder=" Comment"
         onChangeText={handleCommentChange} />
 
-      <TouchableOpacity style={styles.CommentSendBtn} onPress={handleCommentSubmit}>
+      <TouchableOpacity style={styles.CommentSendBtn} onPress={handleCommentSubmit} >
         <Image style={styles.SendIcon} source={require('../assets/Send.png')} />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} >
-        <Text style={styles.buttonText}>Completed</Text>
       </TouchableOpacity>
 
     </View>
@@ -145,18 +154,27 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f7f7f7",
   },
+  completedButton: {
+    backgroundColor: "#808080",
+  },
   button: {
-    width: width * 0.9,
+    marginTop: height * -0.056,
+    width: width * 0.3,
     padding: width * 0.030,
     borderRadius: width * 0.03,
-    marginTop: height * 0.02,
     alignItems: "center",
     backgroundColor: "#007BFF",
+  alignSelf:"flex-end"
   },
   buttonText: {
     color: "#fff",
     fontSize: width * 0.035,
     fontWeight: "bold",
+  },
+  taskStatus: {
+    fontSize: width * 0.035,
+    fontWeight: "bold",
+    color: "#666",
   },
   CommentSendBtn: {
     alignItems: "center",

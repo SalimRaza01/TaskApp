@@ -79,7 +79,7 @@ export default function Profile({ route }) {
         </TouchableOpacity>
         <Text style={styles.UserName}>{username}</Text>
 
-        <Text style={styles.UserEmail}>Salim.Raza@gmail.com</Text>
+        <Text style={styles.UserEmail}>{email}</Text>
 
         <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdateProfile()}>
           <Text style={styles.updateButtonText}  >Update Profile</Text>
