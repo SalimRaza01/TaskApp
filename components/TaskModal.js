@@ -15,7 +15,7 @@ const TaskModal = ({
 }) => {
 
     const [tasks, setTasks] = useState([]);
-    const [priority, setPriority] = useState(task && task.priority ? task.priority : '');
+    const [priority, setPriority] = useState(task && task.priority ? task.priority : 'High');
 
     return (
         <Modal
@@ -55,7 +55,7 @@ const TaskModal = ({
                 <Picker
                     selectedValue={priority}
                     onValueChange={(itemValue, itemIndex) =>
-                        setTask({ ...task, priority: itemValue })
+                        setPriority(itemValue)
                     }>
 
                     <Picker.Item label="High" value="High" />

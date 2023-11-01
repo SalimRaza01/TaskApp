@@ -96,6 +96,7 @@ const HomeScreen = ({ route }) => {
           priority: "",
         });
         setTasks([...tasks, response.data]);
+        
       })
       .catch(error => {
         if (error.response && error.response.status === 401) {
