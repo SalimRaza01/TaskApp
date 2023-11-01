@@ -18,6 +18,7 @@ const DrawerContent = ({ navigation }) => {
       >
         <Text>Settings</Text>
       </TouchableOpacity>
+
     </View>
   );
 };

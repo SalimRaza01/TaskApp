@@ -6,6 +6,7 @@ import TaskModal from './TaskModal';
 import HomeScreen from './Screens/HomeScreen';
 import Profile from './Screens/Profile';
 import Settings from './Screens/Settings';
+import NotifyScreen from './Screens/NotifyScreen';
 
 const { width, height } = Dimensions.get('window');
 
@@ -131,7 +132,7 @@ const Tabs = ({ route, navigation }) => {
                     </View>
                 )
             }} />
-            <Tab.Screen name="Logout" component={''} options={{
+            <Tab.Screen name="Logout" component={NotifyScreen} initialParams={{ token: route.params.token }} options={{
                 tabBarIcon: ({ focused }) => (
                     <View>
                         <Image
