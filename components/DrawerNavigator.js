@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
     height: width * 0.06,
   },
   BellIcon: {
-    width: width * 0.06,
-    height: width * 0.06,
-    marginRight: width * 0.04
+    width: width * 0.05,
+    height: width * 0.055,
+    marginRight: width * 0.045
   },
   logo: {
     width: width * 0.5,

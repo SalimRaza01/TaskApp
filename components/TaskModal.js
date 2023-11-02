@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, TextInput } from 'react-native';
 import DatePicker from "react-native-modern-datepicker";
 import { Picker } from '@react-native-picker/picker';
@@ -12,8 +12,8 @@ const TaskModal = ({
     handleAddTask,
     handleCancel,
     validationError,
-    assignedUserEmail,
-    setAssignedUserEmail,
+    assignedUser,
+    setAssignedUser,
 }) => {
 
     return (
@@ -46,8 +46,8 @@ const TaskModal = ({
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholder="Assign Task to"
                     placeholderTextColor="#999"
-                    value={assignedUserEmail}
-                    onChangeText={text => setAssignedUserEmail(text)}
+                    value={assignedUser}
+                    onChangeText={text => setAssignedUser(text)}
                 />
                 <Text style={styles.inputLabel}>
                     Set Priority:

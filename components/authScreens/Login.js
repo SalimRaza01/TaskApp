@@ -40,7 +40,6 @@ export default function Login() {
           }
   
           console.log('Login successful. Welcome, ' + user.username, user.email, token);
-          console.log('User ID here, ' + user._id);
           navigation.navigate('Drawer', { username: user.username, email: user.email, token});
         }
       }

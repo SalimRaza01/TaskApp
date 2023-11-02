@@ -23,7 +23,7 @@ const HomeScreen = ({ route }) => {
     assignedUser: '',
   });
 
-  const [assignedUserEmail, setAssignedUserEmail] = useState('');
+  const [assignedUser, setAssignedUser] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
@@ -54,7 +54,7 @@ const HomeScreen = ({ route }) => {
         'Authorization': `Bearer ${token}`,
       },
       params: {
-        assignedUserEmail: assignedUserEmail, 
+        assignedUser: assignedUser, 
       }
     })
     .then(response => {
@@ -62,7 +62,7 @@ const HomeScreen = ({ route }) => {
         const date = new Date(task.createdAt).toISOString().split('T')[0];
         dates[date] = { selected: true, selectedColor: "#0A79DF" };
         return dates;
-      });
+      }, {});
   
       setTasks(response.data);
       setMarkedDates(markedDates);
@@ -70,7 +70,6 @@ const HomeScreen = ({ route }) => {
     .catch(error => console.error('Error fetching tasks:', error));
   };
   
-
   const handleAddTask = () => {
     if (!task.title || !task.deadline || !task.priority) {
       setValidationError(true);
@@ -81,7 +80,7 @@ const HomeScreen = ({ route }) => {
       ...task,
       createdAt: new Date().toLocaleString(),
       ...route.params,
-      assignedUser: assignedUserEmail,
+      assignedUser: assignedUser,
     };
 
     axios.post(`${BASE_URL}/send-data`, updatedTask, {
@@ -208,8 +207,8 @@ const HomeScreen = ({ route }) => {
         handleAddTask={handleAddTask}
         handleCancel={handleCancel}
         validationError={validationError}
-        assignedUserEmail={assignedUserEmail}
-         setAssignedUserEmail={setAssignedUserEmail}
+        assignedUser={assignedUser}
+         setAssignedUser={setAssignedUser}
       />
     </View>
   );
