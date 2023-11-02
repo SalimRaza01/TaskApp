@@ -20,9 +20,10 @@ const HomeScreen = ({ route }) => {
     deadline: '',
     createdAt: '',
     priority: '',
+    assignedUser: '',
   });
 
-  const [userId, setUserId] = useState(null);
+  const [assignedUserEmail, setAssignedUserEmail] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [validationError, setValidationError] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
@@ -44,13 +45,16 @@ const HomeScreen = ({ route }) => {
     };
     retrieveAuthToken();
   }, [route.params]);
-  
+
   const { username } = route.params;
 
   const fetchTasks = (token) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
         'Authorization': `Bearer ${token}`,
+      },
+      params: {
+        assignedUserEmail: assignedUserEmail, 
       }
     })
     .then(response => {
@@ -60,50 +64,53 @@ const HomeScreen = ({ route }) => {
         return dates;
       });
   
-      setTasks(response.data); 
-      setMarkedDates(markedDates); 
+      setTasks(response.data);
+      setMarkedDates(markedDates);
     })
     .catch(error => console.error('Error fetching tasks:', error));
   };
   
+
   const handleAddTask = () => {
     if (!task.title || !task.deadline || !task.priority) {
-        setValidationError(true);
-        return;
+      setValidationError(true);
+      return;
     }
 
     const updatedTask = {
-        ...task,
-        createdAt: new Date().toLocaleString(),
-        ...route.params,
+      ...task,
+      createdAt: new Date().toLocaleString(),
+      ...route.params,
+      assignedUser: assignedUserEmail,
     };
 
     axios.post(`${BASE_URL}/send-data`, updatedTask, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     })
-        .then(response => {
-            setModalVisible(false);
-            setTask({
-                title: "",
-                description: "",
-                status: "Pending",
-                deadline: "",
-                priority: "", 
-                createdAt: "",
-            });
-            setTasks([...tasks, response.data]);
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 401) {
-                console.log('Error in API request:', error);
-            } else {
-                console.error('Error adding data:', error);
-            }
+      .then(response => {
+        setModalVisible(false);
+        setTask({
+          title: "",
+          description: "",
+          status: "Pending",
+          deadline: "",
+          priority: "",
+          createdAt: "",
+          assignedUser: "",
         });
-};
+        setTasks([...tasks, response.data]);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 401) {
+          console.log('Error in API request:', error);
+        } else {
+          console.error('Error adding data:', error);
+        }
+      });
+  };
 
   const handleToggleCompletion = (taskId) => {
     const updatedTasks = tasks.map(t => {
@@ -137,6 +144,7 @@ const HomeScreen = ({ route }) => {
         deadline: '',
         createdAt: '',
         priority: '',
+        assignedUser: '',
       });
     } else {
       setModalVisible(false);
@@ -193,15 +201,16 @@ const HomeScreen = ({ route }) => {
         )}
       </ScrollView>
 
-      <TaskModal route={route}
+      <TaskModal
         modalVisible={modalVisible}
         task={task}
         setTask={setTask}
         handleAddTask={handleAddTask}
         handleCancel={handleCancel}
         validationError={validationError}
+        assignedUserEmail={assignedUserEmail}
+         setAssignedUserEmail={setAssignedUserEmail}
       />
-
     </View>
   );
 };

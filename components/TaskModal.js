@@ -12,6 +12,8 @@ const TaskModal = ({
     handleAddTask,
     handleCancel,
     validationError,
+    assignedUserEmail,
+    setAssignedUserEmail,
 }) => {
 
     return (
@@ -44,7 +46,8 @@ const TaskModal = ({
                     style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
                     placeholder="Assign Task to"
                     placeholderTextColor="#999"
-                    onChangeText={('')}
+                    value={assignedUserEmail}
+                    onChangeText={text => setAssignedUserEmail(text)}
                 />
                 <Text style={styles.inputLabel}>
                     Set Priority:

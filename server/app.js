@@ -13,6 +13,8 @@ const taskSchema = new mongoose.Schema({
   comments: [String],
   userId: String,
   priority: String, 
+  assignedUser: String,
+  email: String,
 });
 
 const Task = mongoose.model('Task', taskSchema);
@@ -94,7 +96,7 @@ app.use((req, res, next) => {
   });
 });
 
-app.post('/send-data', (req, res) => {
+app.post('/send-data', async (req, res) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({ message: 'Authorization token is missing' });
@@ -104,12 +106,15 @@ app.post('/send-data', (req, res) => {
   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
     return res.status(401).json({ message: 'Invalid authorization header' });
   }
+  
   try {
     const { userId } = jwt.verify(tokenParts[1], secretKey);
     const newTaskData = req.body;
     newTaskData.createdAt = new Date(newTaskData.createdAt);
     newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
     newTaskData.userId = userId;
+    newTaskData.email = req.body.email; 
+    newTaskData.assignedUser = req.body.assignedUser; 
 
     const newTask = new Task(newTaskData);
     newTask
@@ -125,7 +130,6 @@ app.post('/send-data', (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: 'Invalid token or token expired' });
-    
   }
 });
 

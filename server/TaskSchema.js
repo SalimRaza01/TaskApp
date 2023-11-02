@@ -9,6 +9,8 @@ const TaskSchema = new mongoose.Schema({
   comments: [String],
   userId: String,
   priority: String, 
+  assignedUser: String,
+  email: String,
 })
 
 mongoose.model("task", TaskSchema)
