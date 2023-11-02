@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
@@ -48,11 +48,12 @@ const NotifyScreen = (props) => {
         taskReminders.map((task, index) => (
           <TouchableOpacity key={index}>
             <View style={styles.textbox}>
-              <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
+            <Image style={styles.Taskremindericon} source={require('../../assets/Reminder.png')}/>
+            <View>
+            <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
               <Text style={styles.Timing}>{`Deadline: ${new Date(task.deadline).toLocaleString()}`}</Text>
+            </View> 
             </View>
-            <Text style={{ textAlign: 'center', marginTop: 1, color: '#DDDADA' }}>
-            </Text>
           </TouchableOpacity>
         ))
       )}
@@ -63,7 +64,6 @@ const NotifyScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   BackBtn: {
     marginLeft: width * 0.05,
@@ -84,20 +84,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   textbox: {
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection:"row",
+    padding: 10,
     marginLeft: width * 0.07,
-    marginTop: height * 0.015,
+    marginTop: height * 0.03,
     width: width * 0.85,
-    height: height * 0.075,
+    height: height * 0.078,
+    backgroundColor: '#FFFFFF',
+    borderRadius: width * 0.02,
+    borderWidth: 0.5,
+    borderColor: "#ccc",
   },
   NotifyTitle: {
-    fontSize: 20,
+    fontSize: width * 0.035,
     fontWeight: 'bold',
+    marginLeft: width * 0.035,
+    marginTop: height * 0.003,
   },
   Timing: {
-    fontSize: 14,
-    color: '#999999',
+    fontSize: width * 0.025,
+    color: 'red',
+    marginLeft: width * 0.035,
+    marginTop: height * 0.003,
+  },
+  Taskremindericon: {
+    justifyContent:"flex-start",
+    width: width * 0.1,
+    height: width * 0.1,
+    marginTop: height * 0.001,
   },
 });
 
