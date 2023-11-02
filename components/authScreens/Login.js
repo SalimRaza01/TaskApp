@@ -39,9 +39,9 @@ export default function Login() {
             await AsyncStorage.removeItem('stayLoggedIn');
           }
   
-          console.log('Login successful. Welcome, ' + user.username, user.email);
+          console.log('Login successful. Welcome, ' + user.username, user.email, token);
           console.log('User ID here, ' + user._id);
-          navigation.navigate('Drawer', { username: user.username, email: user.email });
+          navigation.navigate('Drawer', { username: user.username, email: user.email, token});
         }
       }
     } catch (error) {

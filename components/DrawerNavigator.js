@@ -4,7 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './DrawerContent';
 import NotifyScreen from './Screens/NotifyScreen';
 
-import Tabs from './Tabs'; 
+import Tabs from './Tabs';
 
 const { width } = Dimensions.get('window');
 
@@ -12,14 +12,12 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = ({ route, navigation }) => {
 
-  const token = route.params?.token;
-
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Drawer.Screen
         name="AGVA"
         component={Tabs}
-        initialParams={{ username: route.params.username, email: route.params.email }}
+        initialParams={{ username: route.params.username, email: route.params.email, token: route.params?.token }}
         options={{
           headerCenter: () => (
             <View>
@@ -37,7 +35,7 @@ const DrawerNavigator = ({ route, navigation }) => {
             color: '#cb297b',
           },
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('NotifyScreen', { token: token })} >
+            <TouchableOpacity onPress={() => navigation.navigate('NotifyScreen', { token: route.params?.token })} >
               <Image
                 style={styles.BellIcon}
                 source={require('../assets/bellIcon.png')}
@@ -46,7 +44,7 @@ const DrawerNavigator = ({ route, navigation }) => {
           ),
         }}
       />
-      <Drawer.Screen name="NotifyScreen" component={NotifyScreen} />
+      <Drawer.Screen name="NotifyScreen" component={NotifyScreen} initialParams={{ username: route.params.username, email: route.params.email, token: route.params?.token }} />
     </Drawer.Navigator>
   );
 };

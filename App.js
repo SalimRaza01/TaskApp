@@ -26,14 +26,9 @@ export default function App() {
     try {
       const authToken = await AsyncStorage.getItem('authToken');
       const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
-
       if (authToken && stayLoggedIn === 'true') {
         const userId = await AsyncStorage.getItem('userId');
-        // You can navigate to the Drawer or any other screen as needed
-        // Example: navigation.navigate('Drawer', { userId });
       } else {
-        // Navigate to the Login screen or any other screen as needed
-        // Example: navigation.navigate('Login');
       }
     } catch (error) {
       console.error('Error checking login status:', error);

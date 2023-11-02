@@ -51,6 +51,7 @@ app.post('/login', async (req, res) => {
     }
     if (user.password === password) {
       const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '15d' });
+      
       console.log('Generated token:', token, user._id);
       return res.json({
         message: 'Login successful',
@@ -65,7 +66,6 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
-
 
   }
 });

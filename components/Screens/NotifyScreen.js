@@ -1,67 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
 const NotifyScreen = (props) => {
-  const [tasks, setTasks] = useState([]);
   const [taskReminders, setTaskReminders] = useState([]);
-  const token = props.route.params?.token;
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
   useEffect(() => {
+    console.log('Token in NotifyScreen:', props.route.params.token);
     fetchTasks();
   }, []);
-
+  
   const fetchTasks = () => {
+
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
         'Authorization': `Bearer ${props.route.params.token}`,
       },
     })
     .then(response => {
-      setTasks(response.data);
-      calculateTaskReminders(response.data);
+      console.log('Response data:', response.data);
+      setTaskReminders(calculateTaskReminders(response.data));
     })
     .catch(error => console.error('Error fetching tasks:', error));
   };
-
   const calculateTaskReminders = (taskList) => {
     const currentTime = new Date();
     const reminderTime = new Date(currentTime);
-    reminderTime.setHours(currentTime.getHours() + 1); 
-
+    reminderTime.setDate(currentTime.getDate() + 2);
     const taskReminders = taskList.filter((task) => {
       const taskDeadline = new Date(task.deadline);
       return taskDeadline <= reminderTime;
     });
 
-    setTaskReminders(taskReminders);
+    return taskReminders;
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.Header}>
-        Notification
-      </Text>
-
+      <Text style={styles.Header}>Notification</Text>
       {taskReminders.length === 0 ? (
         <Text style={styles.NoReminders}>No task reminders</Text>
       ) : (
         taskReminders.map((task, index) => (
           <TouchableOpacity key={index}>
             <View style={styles.textbox}>
-              <Text style={styles.NotifyTitle}>
-                Task Reminder: {task.title}
-              </Text>
-              <Text style={styles.Timing}>
-                {`Deadline: ${new Date(task.deadline).toLocaleString()}`}
-              </Text>
+              <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
+              <Text style={styles.Timing}>{`Deadline: ${new Date(task.deadline).toLocaleString()}`}</Text>
             </View>
             <Text style={{ textAlign: 'center', marginTop: 1, color: '#DDDADA' }}>
-              ____________________________________________________
             </Text>
           </TouchableOpacity>
         ))
@@ -80,7 +70,7 @@ const styles = StyleSheet.create({
     width: width * 0.07,
     height: width * 0.07,
     marginTop: height * -0.037,
-    
+
   },
   Header: {
     textAlign: 'center',
