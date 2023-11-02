@@ -86,9 +86,9 @@ const styles = StyleSheet.create({
   textbox: {
     flexDirection:"row",
     padding: 10,
-    marginLeft: width * 0.07,
+    marginLeft: width * 0.05,
     marginTop: height * 0.03,
-    width: width * 0.85,
+    width: width * 0.90,
     height: height * 0.078,
     backgroundColor: '#FFFFFF',
     borderRadius: width * 0.02,
