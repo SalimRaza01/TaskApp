@@ -133,26 +133,11 @@ app.post('/send-data', async (req, res) => {
   }
 });
 
-// app.get('/send-data', (req, res) => {
-//   const token = req.headers.authorization.split(' ')[1];
-//   const { userId } = jwt.verify(token, secretKey);
-
-//   Task.find({ userId })
-//     .then((data) => {
-//       res.json(data);
-//     })
-//     .catch((err) => {
-//       console.error('Error fetching tasks:', err);
-//       res.status(500).send('Error fetching tasks.');
-//     });
-// });
-
 app.get('/send-data', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const { userId } = jwt.verify(token, secretKey);
-  const assignedUser = req.body.assignedUser; 
 
-  Task.find({ userId, assignedUser }) 
+  Task.find({ userId })
     .then((data) => {
       res.json(data);
     })
@@ -161,6 +146,21 @@ app.get('/send-data', (req, res) => {
       res.status(500).send('Error fetching tasks.');
     });
 });
+
+// app.get('/send-data', (req, res) => {
+//   const token = req.headers.authorization.split(' ')[1];
+//   const { userId } = jwt.verify(token, secretKey);
+//   const assignedUser = req.body.assignedUser; 
+
+//   Task.find({ userId, assignedUser }) 
+//     .then((data) => {
+//       res.json(data);
+//     })
+//     .catch((err) => {
+//       console.error('Error fetching tasks:', err);
+//       res.status(500).send('Error fetching tasks.');
+//     });
+// });
 
 
 app.put('/update/:id', (req, res) => {

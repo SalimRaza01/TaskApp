@@ -41,7 +41,8 @@ const CustonTabBarButton = ({ children, toggleModal }) => {
 
 const Tabs = ({ route, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    
+    const [activeTab, setActiveTab] = useState('Home');
+
     const toggleModal = (open) => {
         setModalVisible(open);
     };
