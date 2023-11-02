@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
 
 const { width, height } = Dimensions.get('window');
 
@@ -9,13 +10,13 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
   const navigation = useNavigation();
 
   const handleLogin = async () => {
     console.log('Login button pressed');
     try {
-
       const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',
         headers: {
@@ -23,7 +24,7 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       if (response.ok) {
         const responseJson = await response.json();
         const { token, user } = responseJson;
@@ -32,6 +33,12 @@ export default function Login() {
           if (user._id) {
             await AsyncStorage.setItem('userId', user._id);
           }
+          if (stayLoggedIn) {
+            await AsyncStorage.setItem('stayLoggedIn', 'true');
+          } else {
+            await AsyncStorage.removeItem('stayLoggedIn');
+          }
+  
           console.log('Login successful. Welcome, ' + user.username, user.email);
           console.log('User ID here, ' + user._id);
           navigation.navigate('Drawer', { username: user.username, email: user.email });
@@ -41,6 +48,7 @@ export default function Login() {
       console.error('An error occurred:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -72,6 +80,13 @@ export default function Login() {
           onChangeText={text => setPassword(text)}
           secureTextEntry
         />
+        <View style={styles.stayLoggedInContainer}>
+  <CheckBox
+    value={stayLoggedIn}
+    onValueChange={value => setStayLoggedIn(value)}
+  />
+  <Text style={styles.stayLoggedInText}>Stay Logged In</Text>
+</View>
 
         <View style={{ alignContent: "center", alignItems: "center" }}>
           <TouchableOpacity

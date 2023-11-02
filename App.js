@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import SplashScreen from './components/Screens/SplashScreen';
 import Profile from './components/Screens/Profile';
 import TaskDetails from './components/TaskDetails';
 import Settings from './components/Screens/Settings';
 import TaskModal from './components/TaskModal';
-import Login from './components/authScreens/Login';
 import HomeScreen from './components/Screens/HomeScreen';
 import NotifyScreen from './components/Screens/NotifyScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,12 +12,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerNavigator from './components/DrawerNavigator';
 import DrawerContent from './components/DrawerContent';
+import Login from './components/authScreens/Login';
 
 const { width } = Dimensions.get('window');
 
 const Stack = createNativeStackNavigator();
-
-export default function App({ navigation }) {
+export default function App() {
   useEffect(() => {
     checkIfUserIsLoggedIn();
   }, []);
@@ -26,15 +25,20 @@ export default function App({ navigation }) {
   const checkIfUserIsLoggedIn = async () => {
     try {
       const authToken = await AsyncStorage.getItem('authToken');
-      if (authToken !== null) {
-        // User is logged in
+      const stayLoggedIn = await AsyncStorage.getItem('stayLoggedIn');
+
+      if (authToken && stayLoggedIn === 'true') {
+        const userId = await AsyncStorage.getItem('userId');
+        // You can navigate to the Drawer or any other screen as needed
+        // Example: navigation.navigate('Drawer', { userId });
       } else {
-        // User is not logged in
+        // Navigate to the Login screen or any other screen as needed
+        // Example: navigation.navigate('Login');
       }
     } catch (error) {
       console.error('Error checking login status:', error);
     }
-  };
+  }
 
   return (
     <NavigationContainer>
@@ -58,19 +62,15 @@ export default function App({ navigation }) {
         <Stack.Screen name="DrawerContent" component={DrawerContent} />
         <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
-
         <Stack.Screen
           name="Drawer"
-          component={DrawerNavigator} options={{ headerShown: false }}
-
+          component={DrawerNavigator}
+          options={{ headerShown: false }}
         />
-
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="TaskModal" component={TaskModal} />
-        <Stack.Screen
-          name="TaskDetails"
-          component={TaskDetails}/>
+        <Stack.Screen name="TaskDetails" component={TaskDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

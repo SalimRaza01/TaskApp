@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
@@ -74,6 +74,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  BackBtn: {
+    marginLeft: width * 0.05,
+    width: width * 0.07,
+    height: width * 0.07,
+    marginTop: height * -0.037,
+    
   },
   Header: {
     textAlign: 'center',
