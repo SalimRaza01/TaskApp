@@ -64,6 +64,7 @@ const NotifyScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   BackBtn: {
     marginLeft: width * 0.05,
@@ -74,9 +75,9 @@ const styles = StyleSheet.create({
   },
   Header: {
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
-    marginTop: height * 0.03,
+    marginTop: height * 0.025,
   },
   NoReminders: {
     textAlign: 'center',
@@ -87,7 +88,8 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     padding: 10,
     marginLeft: width * 0.05,
-    marginTop: height * 0.03,
+    marginTop: height * 0.025,
+    marginBottom: height * -0.02,
     width: width * 0.90,
     height: height * 0.078,
     backgroundColor: '#FFFFFF',
