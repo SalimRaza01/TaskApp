@@ -52,23 +52,26 @@ const HomeScreen = ({ route }) => {
     axios.get(`${BASE_URL}/send-data`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-      },
-      params: {
-        assignedUser: assignedUser, 
       }
     })
-    .then(response => {
-      const markedDates = response.data.reduce((dates, task) => {
-        const date = new Date(task.createdAt).toISOString().split('T')[0];
-        dates[date] = { selected: true, selectedColor: "#0A79DF" };
-        return dates;
-      }, {});
+      .then(response => {
+        if (response.status === 200 && response.data.statusValue === 'SUCCESS') {
+          const tasksData = response.data.data[0].task_docs;
+          const markedDates = tasksData.reduce((dates, task) => {
+            const date = new Date(task.createdAt).toISOString().split('T')[0];
+            dates[date] = { selected: true, selectedColor: "#0A79DF" };
+            return dates;
+          });
   
-      setTasks(response.data);
-      setMarkedDates(markedDates);
-    })
-    .catch(error => console.error('Error fetching tasks:', error));
+          setTasks(tasksData);
+          setMarkedDates(markedDates);
+        } else {
+          console.error('Error fetching tasks:', response.data.message);
+        }
+      })
+      .catch(error => console.error('Error fetching tasks:', error));
   };
+  
   
   const handleAddTask = () => {
     if (!task.title || !task.deadline || !task.priority) {
