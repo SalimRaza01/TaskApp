@@ -49,47 +49,30 @@ const HomeScreen = ({ route }) => {
   const { username } = route.params;
 
   const fetchTasks = (token) => {
-    axios.get(`${BASE_URL}/send-data`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    })
-      .then(response => {
-        console.log('API Response:', response);
-        if (response.status === 200 && response.data.statusValue === 'SUCCESS' && response.data.data) {
-          const tasksData = response.data.data; 
-          const markedDates = tasksData.reduce((dates, task) => {
+    axios
+      .get(`${BASE_URL}/send-data`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log('API Response:', response.data);
+        if (response.status === 200) {
+          const { assignedTasks, userTasks } = response.data;
+          const markedDates = assignedTasks.concat(userTasks).reduce((dates, task) => {
             const date = new Date(task.createdAt).toISOString().split('T')[0];
             dates[date] = { selected: true, selectedColor: "#0A79DF" };
             return dates;
           });
-          setTasks(tasksData);
+  
+          setTasks(assignedTasks.concat(userTasks));
           setMarkedDates(markedDates);
         } else {
           console.error('Error fetching tasks:', response.data.message);
         }
       })
-      .catch(error => console.error('Error fetching tasks:', error));
+      .catch((error) => console.error('Error fetching tasks:', error));
   };
-  
-  //fetch Assigned task
-  const fetchAssignedTasks = () => {
-    axios.get(`${BASE_URL}/assigned-tasks`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    })
-      .then(response => {
-        console.log('API Response:', response);
-        if (response.status === 200 && response.data.statusValue === 'SUCCESS' && response.data.data) {
-          const assignedTasksData = response.data.data;
-        } else {
-          console.error('Error fetching assigned tasks:', response.data.message);
-        }
-      })
-      .catch(error => console.error('Error fetching assigned tasks:', error));
-  };
-  
   
   const handleAddTask = () => {
     if (!task.title || !task.deadline || !task.priority) {

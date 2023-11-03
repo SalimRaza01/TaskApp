@@ -26,7 +26,7 @@ const NotifyScreen = (props) => {
       .then(response => {
         console.log('Response data:', response.data);
         if (response.data.status === 200) {
-          const taskList = response.data.data;
+          const taskList = response.data;
           console.log('Task List:', taskList);
           const taskReminders = calculateTaskReminders(taskList);
           console.log('Task Reminders:', taskReminders);

@@ -136,70 +136,30 @@ app.post('/send-data', async (req, res) => {
 app.get('/send-data', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const { userId } = jwt.verify(token, secretKey);
-  // console.log(userId)
-  const getUSerEmail = await User.findById({_id:userId})
-  console.log(11,getUSerEmail)
-  const getData = await User.aggregate([
-    {
-      $match:{email:getUSerEmail.email},
-    },
-    {
-      $lookup:
-        {
-          from: "tasks",
-          localField: "email",
-          foreignField: "email",
-          as: "task_docs"
-        }
-    },
-    {
-      $project:{"_id":0,"email":0,"username":0,"password":0},
-    },
-  ])
-  
-  const getOwnedTask = await Task.find({assignedUser:getUSerEmail.email})
-
-  if (!!getData) {
-    return res.status(200).json({
-      status: 200,
-      statusValue: "SUCCESS",
-      message: "Data get successfully!",
-      data:getData[0].task_docs,
-      // data2:getOwnedTask
-    })
-  }
-  return res.status(400).json({
-    status: 400,
-    statusValue: "FAIL",
-    message: "Data not found",
-  })    
-});
-
- //fetch Assigned task
-app.get('/assigned-tasks', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, secretKey);
 
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+    const getUser = await User.findById(userId);
+
+    if (!getUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const assignedTasks = await Task.find({ assignedUser: user.email });
+    const userEmail = getUser.email;
 
-    return res.status(200).json({
-      status: 200,
-      statusValue: 'SUCCESS',
-      message: 'Assigned tasks retrieved successfully!',
-      data: assignedTasks,
-    });
+    const assignedTasks = await Task.find({ assignedUser: userEmail });
+    const userTasks = await Task.find({ userId: userId });
+
+    const responseData = {
+      assignedTasks,
+      userTasks,
+    };
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 
 app.put('/update/:id', (req, res) => {
   const taskId = req.params.id;
