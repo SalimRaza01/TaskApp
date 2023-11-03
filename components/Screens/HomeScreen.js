@@ -189,7 +189,6 @@ const HomeScreen = ({ route }) => {
           <TaskList
             tasks={tasks}
             handleToggleCompletion={handleToggleCompletion}
-            handleDeleteTask={handleDeleteTask}
           />
         )}
       </ScrollView>

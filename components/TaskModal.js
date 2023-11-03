@@ -14,7 +14,6 @@ const TaskModal = ({
     validationError,
     assignedUser,
     setAssignedUser,
-    
 }) => {
 
     return (
