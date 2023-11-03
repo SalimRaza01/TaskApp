@@ -169,7 +169,7 @@ const Tabs = ({ route, handleLogout }) => {
         component={NotifyScreen}
         initialParams={{ token: route.params.token }}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ focused }) => (
             <View>
               <Image
@@ -267,7 +267,37 @@ const DrawerNavigator = ({ route, navigation }) => {
           
         }}
       />
-
+     <Drawer.Screen
+        name="Tabs"
+        component={Tabs}
+        initialParams={{
+          username: route.params.username,
+          email: route.params.email,
+          token: route.params?.token,
+          handleLogout: handleLogout,
+        }}
+        options={{
+          headerCenter: () => (
+            <View>
+              <Image style={styles.logo} source={require('./assets/AgVa.png')} />
+            </View>
+          ),
+          headerTitle: 'AgVa',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 25,
+            fontWeight: 'bold',
+            color: '#cb297b',
+          },
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NotifyScreen', { token: route.params?.token })}
+            >
+              <Image style={styles.BellIcon} source={require('./assets/bellIcon.png')} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
 
     </Drawer.Navigator>
   );
