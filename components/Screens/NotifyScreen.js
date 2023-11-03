@@ -52,7 +52,7 @@ const NotifyScreen = (props) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.Header}>Notification</Text>
+        {/* <Text style={styles.Header}>Notification</Text> */}
         <Text style={styles.Loading}>Loading...</Text>
       </View>
     );
@@ -60,7 +60,7 @@ const NotifyScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.Header}>Notification</Text>
+      {/* <Text style={styles.Header}>Notification</Text> */}
       {error ? (
         <Text style={styles.Error}>{error}</Text>
       ) : taskReminders.length === 0 ? (

@@ -27,14 +27,14 @@ const DrawerContent = ({ navigation, route }) => {
 
         <TouchableOpacity style={styles.addButton}
           onPress={() => {
-            navigation.navigate('Drawer', { username: route.params.username });
+            navigation.navigate('Tabs', { username: route.params.username });
           }}>
           <Image style={styles.DrawerBtn} source={require('../assets/DrawerHome.png')} />
           <Text style={styles.addButtonText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.addButton}
           onPress={() => {
-            navigation.navigate('Settings');
+            navigation.navigate('NotifyScreen');
           }}>
           <Image style={styles.DrawerBtn} source={require('../assets/DrawerNoti.png')} />
           <Text style={styles.addButtonText}>Notificatioon</Text>
@@ -159,5 +159,11 @@ const styles = StyleSheet.create({
   addButtonText: {
     marginLeft: width * 0.03,
     color: "#007BFF",
+  },
+  activeButton: {
+    backgroundColor: "#007BFF",
+  },
+  activeButtonText: {
+    color: "#FFFFFF",
   },
 });

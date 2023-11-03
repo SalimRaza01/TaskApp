@@ -231,7 +231,44 @@ const DrawerNavigator = ({ route, navigation }) => {
         name="NotifyScreen"
         component={NotifyScreen}
         initialParams={{ username: route.params.username, email: route.params.email, token: route.params?.token }}
+        options={{
+          headerCenter: () => (
+            <View>
+              <Image style={styles.logo} source={require('./assets/AgVa.png')} />
+            </View>
+          ),
+          headerTitle: 'Notification',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 25,
+            // fontWeight: 'bold',
+            color: '#cb297b',
+          },
+          
+        }}
       />
+        <Drawer.Screen
+        name="Settings"
+        component={Settings}
+        initialParams={{ username: route.params.username, email: route.params.email, token: route.params?.token }}
+        options={{
+          headerCenter: () => (
+            <View>
+              <Image style={styles.logo} source={require('./assets/AgVa.png')} />
+            </View>
+          ),
+          headerTitle: 'Settings',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 25,
+            // fontWeight: 'bold',
+            color: '#cb297b',
+          },
+          
+        }}
+      />
+
+
     </Drawer.Navigator>
   );
 };
@@ -283,6 +320,7 @@ const StackNavigator = () => {
       }}
     >
       <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+      <Stack.Screen options={{ headerShown: false }} name="Tabs" component={Tabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="DrawerContent" component={DrawerContent}  />
       <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
