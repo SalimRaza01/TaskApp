@@ -175,6 +175,7 @@ app.get('/send-data', async (req, res) => {
   })    
 });
 
+ //fetch Assigned task
 app.get('/assigned-tasks', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const { userId } = jwt.verify(token, secretKey);
@@ -198,6 +199,7 @@ app.get('/assigned-tasks', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 app.put('/update/:id', (req, res) => {
   const taskId = req.params.id;

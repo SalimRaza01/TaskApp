@@ -10,13 +10,11 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Profile({ route }) {
-  const navigation = useNavigation();
   const { username, email } = route.params;
 
   const [profileImage, setProfileImage] = useState(null);

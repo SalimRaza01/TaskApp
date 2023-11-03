@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.02,
     borderWidth: 0.5,
     borderColor: "#ccc",
+    elevation: 50,
   },
   NotifyTitle: {
     fontSize: width * 0.035,

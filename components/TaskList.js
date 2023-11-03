@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
  
     taskList: {
       flex: 1,
-      height: height * 0.58,
+      height: height * 0.62,
     },
    
   });

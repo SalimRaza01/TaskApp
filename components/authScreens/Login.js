@@ -47,7 +47,6 @@ export default function Login() {
       console.error('An error occurred:', error);
     }
   };
-  
 
   return (
     <View style={styles.container}>

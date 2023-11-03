@@ -15,7 +15,7 @@ const DrawerContent = ({ navigation }) => {
 
         <TouchableOpacity style={styles.addButton}
           onPress={() => {
-            navigation.navigate('Profile');
+            navigation.navigate('HomeScreen');
           }}
         ><Image style={styles.DrawerBtn} source={require('../assets/DrawerHome.png')} />
           <Text style={styles.addButtonText}>Home</Text>
@@ -32,16 +32,20 @@ const DrawerContent = ({ navigation }) => {
           onPress={() => {
             navigation.navigate('Settings');
           }} >
-            <Image style={styles.DrawerBtn} source={require('../assets/DrawerSetting.png')} />
+          <Image style={styles.DrawerBtn} source={require('../assets/DrawerSetting.png')} />
           <Text style={styles.addButtonText}>Settings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.LogoutButton}
+        <TouchableOpacity style={styles.addButton}
           onPress={() => {
             navigation.navigate('Settings');
-          }}
+          }} >
+          <Image style={styles.DrawerBtn} source={require('../assets/star.png')} />
+          <Text style={styles.addButtonText}>Rate us</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.LogoutButton}
         >
-     
           <Image style={styles.LogoutIcon} source={require('../assets/DrawerLogout.png')} />
           <Text style={styles.LogoutText}>Logout</Text>
         </TouchableOpacity>
@@ -56,13 +60,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#007BFF",
-
   },
   container2: {
     marginTop: height * 0.2,
     height: height * 1,
     padding: 30,
     backgroundColor: "#FFFFFF",
+    // borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
 
   },
   UserName: {
@@ -74,15 +79,16 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   addButton: {
-    flexDirection:"row",
+    flexDirection: "row",
     backgroundColor: "#FFFFFF",
     paddingVertical: height * 0.015,
     borderRadius: width * 0.02,
     borderBottomColor: 'black',
-    borderBottomWidth: width * 0.001,
+    // borderBottomWidth: width * 0.001,
     width: width * 0.6,
-    marginLeft: width * -0.03,
-    marginTop: height * 0.003,
+    marginLeft: width * -0.0255,
+    marginTop: height * 0.009,
+    elevation: 50,
   },
 
   UserProfileImage: {
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
   },
   LogoutButton: {
-    flexDirection:"row",
+    flexDirection: "row",
     position: 'absolute',
     backgroundColor: "#FFFFFF",
     paddingVertical: height * 0.015,
@@ -122,22 +128,23 @@ const styles = StyleSheet.create({
     width: width * 0.6,
     marginLeft: width * 0.06,
     marginTop: height * 0.7,
+    elevation: 20,
   },
   LogoutText: {
     marginLeft: width * 0.03,
     // marginTop: height * -0.028,
     color: "#007BFF",
   },
- LogoutIcon: {
-  width: width * 0.05,
-  height: width * 0.05,
-    // marginTop: height * -0.02,
-    marginLeft: width * 0.015,
-  },
- DrawerBtn: {
+  LogoutIcon: {
     width: width * 0.05,
     height: width * 0.05,
-    marginLeft: width * 0.015,
+    // marginTop: height * -0.02,
+    marginLeft: width * 0.04,
+  },
+  DrawerBtn: {
+    width: width * 0.05,
+    height: width * 0.05,
+    marginLeft: width * 0.04,
   },
   addButtonText: {
     marginLeft: width * 0.03,

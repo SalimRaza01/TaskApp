@@ -71,6 +71,7 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error fetching tasks:', error));
   };
+  
   //fetch Assigned task
   const fetchAssignedTasks = () => {
     axios.get(`${BASE_URL}/assigned-tasks`, {
@@ -174,17 +175,7 @@ const HomeScreen = ({ route }) => {
   const openModal = () => {
     setModalVisible(true);
   };
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('userId');
-      navigation.navigate('Login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
+  
   return (
     <View style={styles.container}>
 
@@ -201,7 +192,7 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-          <Button title="Log out" onPress={handleLogout} />
+          {/* <Button title="Log out" onPress={handleLogout} /> */}
 
           <Button title="Open Modal" onPress={openModal} />
 
