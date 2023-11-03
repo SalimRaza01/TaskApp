@@ -11,50 +11,42 @@ const NotifyScreen = (props) => {
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
+  const getUpcomingReminders = (tasks) => {
+    const now = new Date();
+    const twoDaysLater = new Date(now);
+    twoDaysLater.setDate(now.getDate() + 2);
+
+    return tasks
+      .filter((task) => new Date(task.deadline) <= twoDaysLater)
+      .map((task) => {
+        const reminderMessage = `Task: ${task.title}, By ${task.email}`;
+        return { ...task, reminderMessage };
+      });
+  };
+
   useEffect(() => {
     console.log('Token in NotifyScreen:', props.route.params.token);
     fetchTasks();
   }, []);
-  
-  const fetchTasks = () => {
-    axios
-      .get(`${BASE_URL}/send-data`, {
-        headers: {
-          'Authorization': `Bearer ${props.route.params.token}`,
-        },
-      })
-      .then(response => {
-        console.log('Response data:', response.data);
-        if (response.data.status === 200) {
-          const taskList = response.data;
-          console.log('Task List:', taskList);
-          const taskReminders = calculateTaskReminders(taskList);
-          console.log('Task Reminders:', taskReminders);
-          setTaskReminders(taskReminders);
-        } else {
-          setError('Failed to fetch tasks: ' + response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching tasks:', error);
-        setError('Failed to fetch tasks. Please check your network connection.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
 
-  const calculateTaskReminders = (taskList) => {
-    const currentTime = new Date();
-    const reminderTime = new Date(currentTime);
-    reminderTime.setDate(currentTime.getDate() + 1); 
-  
-    const taskReminders = taskList.filter((task) => {
-      const taskDeadline = new Date(task.deadline);
-      return taskDeadline <= reminderTime && taskDeadline > currentTime; 
-    });
-  
-    return taskReminders;
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/send-data`, {
+        headers: {
+          Authorization: `Bearer ${props.route.params.token}`,
+        },
+      });
+
+      const tasks = response.data.assignedTasks.concat(response.data.userTasks);
+      const upcomingReminders = getUpcomingReminders(tasks);
+
+      setTaskReminders(upcomingReminders);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to fetch task reminders');
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -72,14 +64,16 @@ const NotifyScreen = (props) => {
       {error ? (
         <Text style={styles.Error}>{error}</Text>
       ) : taskReminders.length === 0 ? (
-        <Text style={styles.NoReminders}>No task reminders</Text>
+        <View style={styles.NoRemindersImageContainer}>
+          <Image style={styles.NoRemindersImage} source={require('../../assets/no_reminders.png')} />
+        </View>
       ) : (
         taskReminders.map((task, index) => (
           <TouchableOpacity key={index}>
             <View style={styles.textbox}>
               <Image style={styles.Taskremindericon} source={require('../../assets/Reminder.png')} />
               <View>
-                <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
+                <Text style={styles.NotifyTitle}>{task.reminderMessage}</Text>
                 <Text style={styles.Timing}>{`Deadline: ${new Date(task.deadline).toLocaleString()}`}</Text>
               </View>
             </View>
@@ -155,6 +149,17 @@ const styles = StyleSheet.create({
     height: width * 0.1,
     marginTop: height * 0.001,
   },
+  NoRemindersImage: {
+    width: width * 0.65,
+    height: width * 0.65,
+  },
+  NoRemindersImageContainer: {
+    flex: 1,
+    alignContent: "center",
+    alignSelf: "center",
+    marginTop: height * 0.2,
+    alignItems: "center",
+  }
 });
 
 export default NotifyScreen;

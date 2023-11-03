@@ -131,6 +131,7 @@ const Tabs = ({ route, handleLogout }) => {
       <Tab.Screen
         name="Add Task"
         component={TaskModal}
+        
         options={{
           tabBarIcon: ({ focused }) => (
             <Image

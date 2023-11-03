@@ -24,7 +24,7 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         const responseJson = await response.json();
         const { token, user } = responseJson;
@@ -38,9 +38,9 @@ export default function Login() {
           } else {
             await AsyncStorage.removeItem('stayLoggedIn');
           }
-  
+
           console.log('Login successful. Welcome, ' + user.username, user.email, token);
-          navigation.navigate('Drawer', { username: user.username, email: user.email, token});
+          navigation.navigate('Drawer', { username: user.username, email: user.email, token });
         }
       }
     } catch (error) {
@@ -79,12 +79,12 @@ export default function Login() {
           secureTextEntry
         />
         <View style={styles.stayLoggedInContainer}>
-  <CheckBox
-    value={stayLoggedIn}
-    onValueChange={value => setStayLoggedIn(value)}
-  />
-  <Text style={styles.stayLoggedInText}>Stay Logged In</Text>
-</View>
+          <CheckBox style={styles.checkbox}
+            value={stayLoggedIn}
+            onValueChange={value => setStayLoggedIn(value)}
+          />
+          <Text style={styles.stayLoggedInText}>Stay Logged In</Text>
+        </View>
 
         <View style={{ alignContent: "center", alignItems: "center" }}>
           <TouchableOpacity
@@ -123,12 +123,6 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.08,
     width: width * 0.45,
     height: width * 0.45,
-    marginTop: height * 0.04,
-  },
-  GoogleImage: {
-    marginLeft: width * 0.05,
-    width: width * 0.07,
-    height: width * 0.07,
     marginTop: height * 0.04,
   },
   LoginContainer: {
@@ -190,5 +184,14 @@ const styles = StyleSheet.create({
     height: 0.6,
     width: width * 0.17
   },
-
+  stayLoggedInContainer: {
+    flexDirection:"row",
+    marginLeft: width * 0.02,
+    marginTop: height * 0.02,
+  },
+  stayLoggedInText: {
+    fontSize: width * 0.035,
+    marginTop: height * 0.007,
+    marginLeft: width * 0.01,
+  },
 })
