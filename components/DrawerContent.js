@@ -1,9 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const { width, height } = Dimensions.get('window');
 
-const DrawerContent = ({ navigation }) => {
+const DrawerContent = ({ navigation, route }) => {
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('authToken');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
 
@@ -15,16 +27,15 @@ const DrawerContent = ({ navigation }) => {
 
         <TouchableOpacity style={styles.addButton}
           onPress={() => {
-            navigation.navigate('HomeScreen');
-          }}
-        ><Image style={styles.DrawerBtn} source={require('../assets/DrawerHome.png')} />
+            navigation.navigate('Drawer', { username: route.params.username });
+          }}>
+          <Image style={styles.DrawerBtn} source={require('../assets/DrawerHome.png')} />
           <Text style={styles.addButtonText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.addButton}
           onPress={() => {
             navigation.navigate('Settings');
-          }}
-        >
+          }}>
           <Image style={styles.DrawerBtn} source={require('../assets/DrawerNoti.png')} />
           <Text style={styles.addButtonText}>Notificatioon</Text>
         </TouchableOpacity>
@@ -44,8 +55,7 @@ const DrawerContent = ({ navigation }) => {
           <Text style={styles.addButtonText}>Rate us</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.LogoutButton}
-        >
+        <TouchableOpacity onPress={handleLogout} style={styles.LogoutButton}>
           <Image style={styles.LogoutIcon} source={require('../assets/DrawerLogout.png')} />
           <Text style={styles.LogoutText}>Logout</Text>
         </TouchableOpacity>

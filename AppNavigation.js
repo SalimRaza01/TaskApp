@@ -283,7 +283,7 @@ const StackNavigator = () => {
     >
       <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="DrawerContent" component={DrawerContent} />
+      <Stack.Screen name="DrawerContent" component={DrawerContent}  />
       <Stack.Screen options={{ headerShown: false }} name="NotifyScreen" component={NotifyScreen} />
       <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
       <Stack.Screen
