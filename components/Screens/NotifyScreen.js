@@ -19,7 +19,8 @@ const NotifyScreen = (props) => {
     return tasks
       .filter((task) => new Date(task.deadline) <= twoDaysLater)
       .map((task) => {
-        const reminderMessage = `Task: ${task.title}, By ${task.email}`;
+        const reminderMessage = `Task: ${task.title}
+By ${task.assignedUser}`;
         return { ...task, reminderMessage };
       });
   };
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.025,
     marginBottom: height * -0.02,
     width: width * 0.90,
-    height: height * 0.078,
+    height: height * 0.1,
     backgroundColor: '#FFFFFF',
     borderRadius: width * 0.02,
     borderWidth: 0.5,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: width * 0.1,
     height: width * 0.1,
-    marginTop: height * 0.001,
+    marginTop: height * 0.006,
   },
   NoRemindersImage: {
     width: width * 0.65,
