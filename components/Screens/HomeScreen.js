@@ -55,14 +55,14 @@ const HomeScreen = ({ route }) => {
       }
     })
       .then(response => {
-        if (response.status === 200 && response.data.statusValue === 'SUCCESS') {
-          const tasksData = response.data.data[0].task_docs;
+        console.log('API Response:', response);
+        if (response.status === 200 && response.data.statusValue === 'SUCCESS' && response.data.data) {
+          const tasksData = response.data.data; 
           const markedDates = tasksData.reduce((dates, task) => {
             const date = new Date(task.createdAt).toISOString().split('T')[0];
             dates[date] = { selected: true, selectedColor: "#0A79DF" };
             return dates;
           });
-  
           setTasks(tasksData);
           setMarkedDates(markedDates);
         } else {

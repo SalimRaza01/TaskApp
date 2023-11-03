@@ -151,8 +151,12 @@ app.get('/send-data', async (req, res) => {
           foreignField: "email",
           as: "task_docs"
         }
-   }
+    },
+    {
+      $project:{"_id":0,"email":0,"username":0,"password":0},
+    },
   ])
+  
   const getOwnedTask = await Task.find({assignedUser:getUSerEmail.email})
 
   if (!!getData) {
@@ -160,7 +164,7 @@ app.get('/send-data', async (req, res) => {
       status: 200,
       statusValue: "SUCCESS",
       message: "Data get successfully!",
-      data:getData,
+      data:getData[0].task_docs,
       // data2:getOwnedTask
     })
   }
@@ -171,21 +175,44 @@ app.get('/send-data', async (req, res) => {
   })    
 });
 
-// app.get('/send-data', (req, res) => {
+// app.get('/send-data', async (req, res) => {
 //   const token = req.headers.authorization.split(' ')[1];
 //   const { userId } = jwt.verify(token, secretKey);
-//   const assignedUser = req.body.assignedUser; 
+//   // console.log(userId)
+//   const getUSerEmail = await User.findById({_id:userId})
+//   console.log(11,getUSerEmail)
+//   const getData = await User.aggregate([
+//     {
+//       $match:{email:getUSerEmail.email},
+//     },
+//     {
+//       $lookup:
+//         {
+//           from: "tasks",
+//           localField: "email",
+//           foreignField: "email",
+//           as: "task_docs"
+//         }
+//    }
+//   ])
+  
+//   const getOwnedTask = await Task.find({assignedUser:getUSerEmail.assignedUser})
 
-//   Task.find({ userId, assignedUser }) 
-//     .then((data) => {
-//       res.json(data);
+//   if (!!getData) {
+//     return res.status(200).json({
+//       status: 200,
+//       statusValue: "SUCCESS",
+//       message: "Data get successfully!",
+//       data:getData,
+//       // data2:getOwnedTask
 //     })
-//     .catch((err) => {
-//       console.error('Error fetching tasks:', err);
-//       res.status(500).send('Error fetching tasks.');
-//     });
+//   }
+//   return res.status(400).json({
+//     status: 400,
+//     statusValue: "FAIL",
+//     message: "Data not found",
+//   })    
 // });
-
 
 app.put('/update/:id', (req, res) => {
   const taskId = req.params.id;

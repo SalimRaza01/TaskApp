@@ -6,6 +6,8 @@ const { width, height } = Dimensions.get('window');
 
 const NotifyScreen = (props) => {
   const [taskReminders, setTaskReminders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const BASE_URL = 'http://10.0.2.2:3000';
 
@@ -15,44 +17,71 @@ const NotifyScreen = (props) => {
   }, []);
   
   const fetchTasks = () => {
-
-    axios.get(`${BASE_URL}/send-data`, {
-      headers: {
-        'Authorization': `Bearer ${props.route.params.token}`,
-      },
-    })
-    .then(response => {
-      console.log('Response data:', response.data);
-      setTaskReminders(calculateTaskReminders(response.data));
-    })
-    .catch(error => console.error('Error fetching tasks:', error));
+    axios
+      .get(`${BASE_URL}/send-data`, {
+        headers: {
+          'Authorization': `Bearer ${props.route.params.token}`,
+        },
+      })
+      .then(response => {
+        console.log('Response data:', response.data);
+        if (response.data.status === 200) {
+          const taskList = response.data.data;
+          console.log('Task List:', taskList);
+          const taskReminders = calculateTaskReminders(taskList);
+          console.log('Task Reminders:', taskReminders);
+          setTaskReminders(taskReminders);
+        } else {
+          setError('Failed to fetch tasks: ' + response.data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching tasks:', error);
+        setError('Failed to fetch tasks. Please check your network connection.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
   const calculateTaskReminders = (taskList) => {
     const currentTime = new Date();
     const reminderTime = new Date(currentTime);
-    reminderTime.setDate(currentTime.getDate() + 2);
+    reminderTime.setDate(currentTime.getDate() + 1); 
+  
     const taskReminders = taskList.filter((task) => {
       const taskDeadline = new Date(task.deadline);
-      return taskDeadline <= reminderTime;
+      return taskDeadline <= reminderTime && taskDeadline > currentTime; 
     });
-
+  
     return taskReminders;
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.Header}>Notification</Text>
+        <Text style={styles.Loading}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.Header}>Notification</Text>
-      {taskReminders.length === 0 ? (
+      {error ? (
+        <Text style={styles.Error}>{error}</Text>
+      ) : taskReminders.length === 0 ? (
         <Text style={styles.NoReminders}>No task reminders</Text>
       ) : (
         taskReminders.map((task, index) => (
           <TouchableOpacity key={index}>
             <View style={styles.textbox}>
-            <Image style={styles.Taskremindericon} source={require('../../assets/Reminder.png')}/>
-            <View>
-            <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
-              <Text style={styles.Timing}>{`Deadline: ${new Date(task.deadline).toLocaleString()}`}</Text>
-            </View> 
+              <Image style={styles.Taskremindericon} source={require('../../assets/Reminder.png')} />
+              <View>
+                <Text style={styles.NotifyTitle}>Task Reminder: {task.title}</Text>
+                <Text style={styles.Timing}>{`Deadline: ${new Date(task.deadline).toLocaleString()}`}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         ))
@@ -71,7 +100,6 @@ const styles = StyleSheet.create({
     width: width * 0.07,
     height: width * 0.07,
     marginTop: height * -0.037,
-
   },
   Header: {
     textAlign: 'center',
@@ -79,13 +107,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: height * 0.025,
   },
+  Loading: {
+    textAlign: 'center',
+    marginTop: height * 0.1,
+    fontSize: 18,
+  },
+  Error: {
+    textAlign: 'center',
+    marginTop: height * 0.1,
+    fontSize: 18,
+    color: 'red',
+  },
   NoReminders: {
     textAlign: 'center',
     marginTop: height * 0.1,
     fontSize: 18,
   },
   textbox: {
-    flexDirection:"row",
+    flexDirection: "row",
     padding: 10,
     marginLeft: width * 0.05,
     marginTop: height * 0.025,
@@ -110,7 +149,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.003,
   },
   Taskremindericon: {
-    justifyContent:"flex-start",
+    justifyContent: "flex-start",
     width: width * 0.1,
     height: width * 0.1,
     marginTop: height * 0.001,
