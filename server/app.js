@@ -175,44 +175,29 @@ app.get('/send-data', async (req, res) => {
   })    
 });
 
-// app.get('/send-data', async (req, res) => {
-//   const token = req.headers.authorization.split(' ')[1];
-//   const { userId } = jwt.verify(token, secretKey);
-//   // console.log(userId)
-//   const getUSerEmail = await User.findById({_id:userId})
-//   console.log(11,getUSerEmail)
-//   const getData = await User.aggregate([
-//     {
-//       $match:{email:getUSerEmail.email},
-//     },
-//     {
-//       $lookup:
-//         {
-//           from: "tasks",
-//           localField: "email",
-//           foreignField: "email",
-//           as: "task_docs"
-//         }
-//    }
-//   ])
-  
-//   const getOwnedTask = await Task.find({assignedUser:getUSerEmail.assignedUser})
+app.get('/assigned-tasks', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const { userId } = jwt.verify(token, secretKey);
 
-//   if (!!getData) {
-//     return res.status(200).json({
-//       status: 200,
-//       statusValue: "SUCCESS",
-//       message: "Data get successfully!",
-//       data:getData,
-//       // data2:getOwnedTask
-//     })
-//   }
-//   return res.status(400).json({
-//     status: 400,
-//     statusValue: "FAIL",
-//     message: "Data not found",
-//   })    
-// });
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    const assignedTasks = await Task.find({ assignedUser: user.email });
+
+    return res.status(200).json({
+      status: 200,
+      statusValue: 'SUCCESS',
+      message: 'Assigned tasks retrieved successfully!',
+      data: assignedTasks,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 app.put('/update/:id', (req, res) => {
   const taskId = req.params.id;

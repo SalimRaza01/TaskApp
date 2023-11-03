@@ -71,6 +71,23 @@ const HomeScreen = ({ route }) => {
       })
       .catch(error => console.error('Error fetching tasks:', error));
   };
+  //fetch Assigned task
+  const fetchAssignedTasks = () => {
+    axios.get(`${BASE_URL}/assigned-tasks`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(response => {
+        console.log('API Response:', response);
+        if (response.status === 200 && response.data.statusValue === 'SUCCESS' && response.data.data) {
+          const assignedTasksData = response.data.data;
+        } else {
+          console.error('Error fetching assigned tasks:', response.data.message);
+        }
+      })
+      .catch(error => console.error('Error fetching assigned tasks:', error));
+  };
   
   
   const handleAddTask = () => {
