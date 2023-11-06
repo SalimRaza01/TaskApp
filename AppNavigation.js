@@ -22,40 +22,8 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const CustomTabBarButton = ({ children, toggleModal }) => {
-
-  return (
-    <TouchableOpacity
-      style={{
-        top: -30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        ...styles.shadow,
-      }}
-      onPress={() => toggleModal(true)}
-    >
-      <View
-        style={{
-          width: width * 0.16,
-          height: width * 0.16,
-          borderRadius: 35,
-          backgroundColor: '#000000',
-          ...styles.shadow,
-        }}
-      >
-        {children}
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 const Tabs = ({ route, handleLogout }) => {
-  const [modalVisible, setModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('Home');
-
-  const toggleModal = (open) => {
-    setModalVisible(open);
-  };
 
   return (
     <Tab.Navigator
@@ -126,24 +94,6 @@ const Tabs = ({ route, handleLogout }) => {
               />
             </View>
           ),
-        }}
-      />
-      <Tab.Screen
-        name="Add Task"
-        component={TaskModal}
-        
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Image
-              style={{
-                width: width * 0.06,
-                height: width * 0.06,
-                tintColor: '#FFFFF',
-              }}
-              source={require('./assets/addtaskwhite.png')}
-            />
-          ),
-          tabBarButton: (props) => <CustomTabBarButton {...props} toggleModal={toggleModal} />,
         }}
       />
       <Tab.Screen
@@ -241,7 +191,6 @@ const DrawerNavigator = ({ route, navigation }) => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontSize: 25,
-            // fontWeight: 'bold',
             color: '#cb297b',
           },
           
@@ -261,7 +210,6 @@ const DrawerNavigator = ({ route, navigation }) => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontSize: 25,
-            // fontWeight: 'bold',
             color: '#cb297b',
           },
           

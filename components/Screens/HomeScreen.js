@@ -64,7 +64,7 @@ const HomeScreen = ({ route }) => {
             dates[date] = { selected: true, selectedColor: "#0A79DF" };
             return dates;
           });
-  
+
           setTasks(assignedTasks.concat(userTasks));
           setMarkedDates(markedDates);
         } else {
@@ -73,7 +73,7 @@ const HomeScreen = ({ route }) => {
       })
       .catch((error) => console.error('Error fetching tasks:', error));
   };
-  
+
   const handleAddTask = () => {
     if (!task.title || !task.deadline || !task.priority) {
       setValidationError(true);
@@ -158,7 +158,7 @@ const HomeScreen = ({ route }) => {
   const openModal = () => {
     setModalVisible(true);
   };
-  
+
   return (
     <View style={styles.container}>
 
@@ -175,10 +175,7 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-          {/* <Button title="Log out" onPress={handleLogout} /> */}
-
-          <Button title="Open Modal" onPress={openModal} />
-
+          {/* <Button title="Open Modal" onPress={openModal} /> */}
         </View>
 
         {tasks.length === 0 ? (
@@ -192,7 +189,9 @@ const HomeScreen = ({ route }) => {
           />
         )}
       </ScrollView>
-
+      <TouchableOpacity style={styles.addButton} onPress={openModal} >
+        <Text style={styles.addButtonText}>Add Task</Text>
+      </TouchableOpacity>
       <TaskModal
         modalVisible={modalVisible}
         task={task}
@@ -201,7 +200,7 @@ const HomeScreen = ({ route }) => {
         handleCancel={handleCancel}
         validationError={validationError}
         assignedUser={assignedUser}
-         setAssignedUser={setAssignedUser}
+        setAssignedUser={setAssignedUser}
       />
     </View>
   );
@@ -242,12 +241,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#007BFF",
     paddingVertical: height * 0.02,
     borderRadius: width * 0.02,
-    marginTop: height * 0.04,
-    marginBottom: height * 0.02,
+    marginTop: height * 0.01,
+    marginBottom: height * 0.12,
+    width: width * 0.3,
+    height: height * 0.056,
+    marginLeft: width * 0.32,
   },
   addButtonText: {
     color: "#fff",
-    fontSize: width * 0.05,
+    fontSize: width * 0.03,
     fontWeight: "bold",
   },
   taskItem: {
