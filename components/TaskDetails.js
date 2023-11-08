@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get('window');
 
 const TaskDetails = ({ route }) => {
 
-  const BASE_URL = 'http://10.0.2.2:3000';
+  const BASE_URL = 'http://115.246.121.146:3000';
 
   const { task, handleToggleCompletion } = route.params;
   const { deadline, createdAt } = task;

@@ -23,6 +23,12 @@ const TaskItem = ({
     return (
         <View style={styles.taskItem}>
             <View style={styles.taskTextContainer}>
+                <View style={styles.taskCompleteView}>
+                <Text style={styles.taskCompleteTag}>
+                   {task.status}
+                </Text>
+                </View>
+
                 <Text style={styles.responseData}>
                     {JSON.stringify(response)}
                 </Text>
@@ -36,7 +42,7 @@ const TaskItem = ({
                 <Text style={styles.taskDescription}>
                     Description: {task.description}
                 </Text>
-                <Text style={styles.taskStatus}>Status: {task.status}</Text>
+                {/* <Text style={styles.taskStatus}>Status: {task.status}</Text> */}
                 <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
             </View>
 
@@ -149,6 +155,21 @@ const styles = StyleSheet.create({
         padding: width * 0.022,
         alignItems: "center",
         width: width * 0.25,
+    },  
+      taskCompleteTag: {
+        fontSize: width * 0.025,
+        color: "#000",
+        marginBottom: height * 0.001,
+        marginTop: height * 0.001,
+    },
+    taskCompleteView: {
+        backgroundColor: "#FF9500",
+        alignItems:"center",
+        width: width * 0.2,
+        marginTop: height * -0.014,
+        marginLeft: width * 0.58,
+        borderBottomLeftRadius:7,
+        borderBottomRightRadius:7
     },
 
 });
