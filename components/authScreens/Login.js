@@ -24,7 +24,6 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
       if (response.ok) {
         const responseJson = await response.json();
         const { token, user } = responseJson;

@@ -28,7 +28,6 @@ const TaskItem = ({
                    {task.status}
                 </Text>
                 </View>
-
                 <Text style={styles.responseData}>
                     {JSON.stringify(response)}
                 </Text>
@@ -45,7 +44,6 @@ const TaskItem = ({
                 {/* <Text style={styles.taskStatus}>Status: {task.status}</Text> */}
                 <Text style={styles.taskDeadline}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
             </View>
-
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('TaskDetails', { task: task, handleToggleCompletion: handleToggleCompletion })}

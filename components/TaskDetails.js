@@ -204,7 +204,6 @@ const styles = StyleSheet.create({
     padding: width * 0.04,
     borderRadius: width * 0.03,
     elevation: 2,
-    
   },
   UserProfileImage: {
     marginLeft: width * 0.001,

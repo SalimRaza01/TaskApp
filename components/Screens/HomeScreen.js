@@ -205,7 +205,6 @@ const HomeScreen = ({ route }) => {
     </View>
   );
 };
-
 export default HomeScreen;
 
 const styles = StyleSheet.create({

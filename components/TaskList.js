@@ -22,7 +22,6 @@ const TaskList = ({
     </ScrollView>
   );
 };
-
 export default TaskList;
 
 const styles = StyleSheet.create({
