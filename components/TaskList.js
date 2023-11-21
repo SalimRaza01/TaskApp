@@ -7,16 +7,24 @@ const { width, height } = Dimensions.get('window');
 const TaskList = ({
   tasks,
   handleToggleCompletion,
-  response
+  response,
+  openTaskDetails
 }) => {
+
+  const completedTasks = tasks.filter((task) => task.status === 'Completed');
+  const pendingTasks = tasks.filter((task) => task.status !== 'Completed');
+
+  const arrangedTasks = pendingTasks.concat(completedTasks);
+
   return (
-    <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}  >
-      {tasks.map((task) => (
+    <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
+      {arrangedTasks.map((task, index) => (
         <TaskItem
-          key={task._id}
+          key={index}
           task={task}
           handleToggleCompletion={handleToggleCompletion}
           response={response}
+          openTaskDetails={openTaskDetails}
         />
       ))}
     </ScrollView>

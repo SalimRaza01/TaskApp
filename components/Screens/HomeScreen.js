@@ -115,21 +115,26 @@ const HomeScreen = ({ route }) => {
       });
   };
 
-  const handleToggleCompletion = (taskId) => {
-    const updatedTasks = tasks.map(t => {
-      if (t._id === taskId) {
-        return { ...t, status: t.status === 'Pending' ? 'Completed' : 'Pending' };
-      }
-      return t;
-    });
-
-    axios.put(`${BASE_URL}/update/${taskId}`, updatedTasks.find(t => t._id === taskId))
-      .then(() => {
-        setTasks(updatedTasks);
+  const handleToggleCompletion = taskId => {
+    axios
+      .put(
+        `${BASE_URL}/update/${taskId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then(response => {
+        console.log('Task status updated:', response.data);
       })
-      .catch(error => console.error('Error toggling task completion:', error));
+      .catch(error => {
+        console.error('Error updating task status:', error);
+      });
   };
-
+  
   const handleDeleteTask = (taskId) => {
     axios.delete(`${BASE_URL}/delete/${taskId}`)
       .then(() => {
@@ -159,6 +164,18 @@ const HomeScreen = ({ route }) => {
     setModalVisible(true);
   };
 
+  const openTaskDetails = (task) => {
+    navigation.navigate('TaskDetails', {
+      task: task,
+      handleToggleCompletion: handleToggleCompletion,
+      token: token,
+    });
+  };
+  const handleUpdateTaskStatus = (updatedTask) => {
+
+    console.log('Task status updated in HomeScreen:', updatedTask);
+  };
+  
   return (
     <View style={styles.container}>
 
@@ -175,7 +192,6 @@ const HomeScreen = ({ route }) => {
       <ScrollView showsVerticalScrollIndicator={false} >
 
         <View style={{ marginBottom: width * 0.03 }}>
-          {/* <Button title="Open Modal" onPress={openModal} /> */}
         </View>
 
         {tasks.length === 0 ? (
@@ -186,6 +202,7 @@ const HomeScreen = ({ route }) => {
           <TaskList
             tasks={tasks}
             handleToggleCompletion={handleToggleCompletion}
+            openTaskDetails={openTaskDetails}
           />
         )}
       </ScrollView>

@@ -1,78 +1,198 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, Image, TouchableOpacity } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 import axios from 'axios';
-const { width, height } = Dimensions.get('window');
 
-const TaskDetails = ({ route }) => {
+const {width, height} = Dimensions.get('window');
 
-  const BASE_URL = 'http://115.246.121.146:3000';
+const TaskDetails = ({route}) => {
+  const BASE_URL = 'http://10.0.2.2:3000';
 
-  const { task, handleToggleCompletion } = route.params;
-  const { deadline, createdAt } = task;
+  const [highlightedDates, setHighlightedDates] = useState({});
+  const [task, setTask] = useState({...route.params.task, status: 'Pending'});
+  const {token} = route.params;
+  const {deadline, createdAt} = task;
+  const [comments, setComments] = useState(task.comments || []);
   const [comment, setComment] = useState('');
 
-  const handleCommentChange = (text) => {
+  useEffect(() => {
+    setComments(task.comments || []);
+
+    const updatedHighlightedDates = {};
+    let currentDate = new Date(createdAt);
+
+    while (currentDate <= endDate) {
+      const date = currentDate.toISOString().split('T')[0];
+      updatedHighlightedDates[date] = {color: '#43BE31'};
+
+      if (date === createdAt.split('T')[0]) {
+        updatedHighlightedDates[date].startingDay = true;
+      } else if (date === deadline.split('T')[0]) {
+        updatedHighlightedDates[date].endingDay = true;
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    setHighlightedDates(updatedHighlightedDates);
+  }, [task.comments]);
+
+  useEffect(() => {
+    setComments(task.comments || []);
+  }, [task.comments, task.status]);
+
+  const handleCommentChange = text => {
     setComment(text);
   };
+
   const handleCommentSubmit = () => {
     const commentData = {
       taskId: task._id,
-      comments: comment,
+      comments: [comment],
     };
 
-    task.comments = task.comments || [];
-    task.comments.push(comment);
-
-    axios.post(`${BASE_URL}/save-comment`, commentData)
+    axios
+      .post(`${BASE_URL}/save-comment`, commentData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
       .then(response => {
         console.log('Comment saved:', response.data);
-
+        setComments(response.data.comments || []);
         setComment('');
       })
       .catch(error => {
         console.error('Error saving comment:', error);
       });
   };
-
+  const handleToggleCompletion = taskId => {
+    const newStatus = task.status === 'Pending' ? 'Completed' : 'Pending';
+  
+    axios
+      .put(
+        `${BASE_URL}/update/${taskId}`,
+        {status: newStatus},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        console.log('Task status updated:', response.data);
+        setTask(response.data);
+        if (route.params.handleUpdateTaskStatus) {
+          route.params.handleUpdateTaskStatus(response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating task status:', error);
+      });
+  };
+  
   const rangeDates = {};
-  let currentDate = new Date(createdAt);
+  const currentDate = new Date(createdAt);
   const endDate = new Date(deadline);
 
   LocaleConfig.locales['en'] = {
-    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    monthNamesShort: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'],
-    dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    monthNames: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ],
+    monthNamesShort: [
+      'Jan.',
+      'Feb.',
+      'Mar.',
+      'Apr.',
+      'May.',
+      'Jun.',
+      'Jul.',
+      'Aug.',
+      'Sep.',
+      'Oct.',
+      'Nov.',
+      'Dec.',
+    ],
+    dayNames: [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ],
     dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   };
 
   LocaleConfig.defaultLocale = 'en';
   while (currentDate <= endDate) {
     const date = currentDate.toISOString().split('T')[0];
-    rangeDates[date] = { color: "#43BE31" };
-    currentDate.setDate(currentDate.getDate() + 1);
+    rangeDates[date] = {color: '#43BE31'};
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
   }
 
-  const formatDeadline = (deadline) => {
+  const formatDeadline = deadline => {
     const date = new Date(deadline);
     const day = date.getDate().toString().padStart(2, '0');
-    const options = { month: 'short' };
+    const options = {month: 'short'};
     const monthName = new Intl.DateTimeFormat('en-US', options).format(date);
     const formattedDeadline = `${day} ${monthName}`;
-    return { day, monthName, formattedDeadline };
+    return {day, monthName, formattedDeadline};
   };
 
-  const formatCreatedAt = (createdAt) => {
+  const formatCreatedAt = createdAt => {
     const date = new Date(createdAt);
     const day = date.getDate().toString().padStart(2, '0');
-    const options = { month: 'short' };
+    const options = {month: 'short'};
     const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
-    return { day, dayName };
+    return {day, dayName};
   };
 
-  const customDayRenderer = (date) => {
+  const customDayRenderer = (date, item) => {
     const dateString = date.dateString;
-    if (rangeDates[dateString]) {
+    if (highlightedDates[dateString]) {
+      const cornerStyle = {
+        borderTopLeftRadius: highlightedDates[dateString].startingDay
+          ? 17.5
+          : 0,
+        borderBottomLeftRadius: highlightedDates[dateString].startingDay
+          ? 17.5
+          : 0,
+        borderTopRightRadius: highlightedDates[dateString].endingDay ? 17.5 : 0,
+        borderBottomRightRadius: highlightedDates[dateString].endingDay
+          ? 17.5
+          : 0,
+      };
+
+      return (
+        <View style={[styles.customDayContainer, cornerStyle]}>
+          <Text style={styles.customDayText}>{date.day}</Text>
+        </View>
+      );
+    } else {
       return (
         <View style={styles.customDayContainer}>
           <Text style={styles.customDayText}>{date.day}</Text>
@@ -83,69 +203,82 @@ const TaskDetails = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[
-        styles.Tasktitle,
-        task.status === 'Completed' && styles.completedTaskText,
-      ]}>Task: {task.title}</Text>
+      <Text style={[styles.Tasktitle]}>Task: {task.title}</Text>
 
       <Text style={styles.Taskdecription}>Description: {task.description}</Text>
 
-      <TouchableOpacity style={[
-        styles.button,
-        task.status === 'Completed' && styles.completedButton,
-      ]} onPress={() => handleToggleCompletion(task._id)}>
-        <Text style={styles.buttonText}>{task.status === 'Completed' ? 'Pending' : 'Completed'}</Text>
-      </TouchableOpacity>
-
       <View style={styles.divider} />
 
-      <View style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}>
-     
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
         <View style={styles.Prioritybox}>
-          <Text style={styles.TaskPriorityText}>Priority:{task.priority} </Text>
+          <Text style={styles.TaskPriorityText}>
+            Priority: {task.priority}{' '}
+          </Text>
         </View>
         <View style={styles.Deadlinebox}>
-          <Text style={styles.DeadlineText}>Deadline: {formatDeadline(task.deadline).formattedDeadline}</Text>
+          <Text style={styles.DeadlineText}>
+            Deadline: {formatDeadline(task.deadline).formattedDeadline}
+          </Text>
         </View>
 
+        <TouchableOpacity
+          style={[
+            styles.StatusBox,
+            task.status === 'Completed' && styles.completedButton,
+          ]}
+          onPress={() => handleToggleCompletion(task._id)}>
+          <Text style={styles.buttonText}>
+            {task.status === 'Pending' ? 'Completed' : 'Pending'}
+          </Text>
+        </TouchableOpacity>
       </View>
+
       <Calendar
-        style={{
-          backgroundColor: "#fff",
-          marginTop: height * 0.015,
-          marginBottom: height * 0.006,
-          borderRadius: width * 0.03,
-          height: height * 0.42,
-          elevation: 5,
-          shadowColor: '#000000',
-        }}
+        style={styles.datePicker}
         current={deadline}
         markingType={'period'}
-        markedDates={rangeDates}
-        renderDay={(date) => customDayRenderer(date)}
+        markedDates={{
+          ...rangeDates,
+          ...highlightedDates,
+          [deadline]: {color: 'red'},
+        }}
+        renderDay={(date, item) => customDayRenderer(date, item)}
       />
-      {/* <View style={styles.commentBox}>
-        <Text style={styles.commentText}>{comment}</Text>
-        <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
-      </View> */}
+
+      <ScrollView
+        style={styles.commentContainer}
+        showsVerticalScrollIndicator={false}>
+        {comments.map((comment, index) => (
+          <View key={index} style={styles.commentBox}>
+            <Text style={styles.commentText}>{comment.message}</Text>
+          </View>
+        ))}
+      </ScrollView>
 
       <TextInput
-        style={[styles.input, { color: '#000', backgroundColor: '#fff' }]}
+        style={[
+          styles.input,
+          {color: '#000', backgroundColor: '#fff', ...styles.shadow},
+        ]}
         placeholderTextColor="#999"
         placeholder=" Comment"
-        onChangeText={handleCommentChange} />
+        onChangeText={handleCommentChange}
+        value={comment}
+      />
 
-      <TouchableOpacity style={styles.CommentSendBtn} onPress={handleCommentSubmit} >
+      <TouchableOpacity
+        style={styles.CommentSendBtn}
+        onPress={handleCommentSubmit}>
         <Image style={styles.SendIcon} source={require('../assets/Send.png')} />
       </TouchableOpacity>
-
     </View>
   );
-}
+};
 
 export default TaskDetails;
 
@@ -153,34 +286,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: '#f7f7f7',
   },
   completedButton: {
-    backgroundColor: "#808080",
-  },
-  button: {
-    marginTop: height * -0.056,
-    width: width * 0.3,
-    padding: width * 0.030,
-    borderRadius: width * 0.03,
-    alignItems: "center",
-    backgroundColor: "#007BFF",
-  alignSelf:"flex-end"
+    backgroundColor: '#808080',
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: width * 0.035,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   taskStatus: {
     fontSize: width * 0.035,
-    fontWeight: "bold",
-    color: "#666",
+    fontWeight: 'bold',
+    color: '#666',
   },
   CommentSendBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#007BFF",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#007BFF',
     paddingVertical: height * 0.02,
     borderRadius: width * 1,
     marginTop: height * -0.075,
@@ -193,97 +317,84 @@ const styles = StyleSheet.create({
     width: width * 0.05,
     height: width * 0.05,
   },
-  commentBox: {
-    backgroundColor: "#FFFFFF",
-    paddingVertical: height * 0.01,
-    borderRadius: width * 0.02,
-    width: width * 0.9,
-    height: height * 0.06,
-    marginTop: height * 0.02,
-    marginBottom: height * 0.01,
-    padding: width * 0.04,
-    borderRadius: width * 0.03,
-    elevation: 2,
-  },
   UserProfileImage: {
     marginLeft: width * 0.001,
     width: width * 0.08,
     height: width * 0.08,
     marginTop: height * -0.033,
   },
-  commentText: {
-    marginTop: height * 0.008,
-    // marginLeft: width * 0.1,
-  },
-
   divider: {
     marginTop: height * 0.02,
-    backgroundColor: "#007BFF",
+    backgroundColor: '#007BFF',
     height: 2,
   },
   DeadlineText: {
     fontSize: width * 0.03,
     color: '#FFF',
-    fontWeight: "600",
-    textAlign: "right",
+    fontWeight: '600',
+    textAlign: 'right',
   },
   TaskPriorityText: {
     fontSize: width * 0.03,
-    fontWeight: "600",
+    fontWeight: '600',
     color: '#FFF',
-    textAlign: "left",
+    textAlign: 'left',
   },
   Deadlinebox: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "red",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'red',
     paddingVertical: height * 0.01,
-    borderRadius: width * 0.02,
-    width: width * 0.43,
+    borderRadius: width * 0.015,
+    width: width * 0.28,
     height: height * 0.05,
     marginTop: height * 0.02,
     marginBottom: height * 0.02,
   },
   Prioritybox: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF9500",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF9500',
     paddingVertical: height * 0.01,
-    borderRadius: width * 0.02,
-    width: width * 0.43,
+    borderRadius: width * 0.015,
+    width: width * 0.28,
     height: height * 0.05,
     marginTop: height * 0.02,
     marginBottom: height * 0.02,
   },
+  StatusBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: height * 0.01,
+    borderRadius: width * 0.015,
+    width: width * 0.28,
+    height: height * 0.05,
+    marginTop: height * 0.02,
+    marginBottom: height * 0.02,
+    backgroundColor: '#007BFF',
+    alignSelf: 'flex-end',
+  },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     padding: width * 0.025,
     marginTop: height * 0.03,
     marginBottom: height * 0.02,
-    borderRadius: width * 0.02,
+    borderRadius: width * 1,
     fontSize: width * 0.04,
-  },
-  datePicker: {
-    backgroundColor: "#fff",
-    marginTop: height * 0.015,
-    marginBottom: height * 0.006,
-    borderRadius: width * 0.03,
-    elevation: 5,
-    shadowColor: '#000000',
   },
   Taskdecription: {
     fontSize: width * 0.03,
-    color: "#333",
-    textAlign: "left",
+    color: '#333',
+    textAlign: 'left',
   },
   Tasktitle: {
     fontSize: width * 0.05,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 7,
     marginTop: 2,
-    color: "#333",
-    textAlign: "left",
+    color: '#333',
+    textAlign: 'left',
   },
   customDayContainer: {
     flex: 1,
@@ -298,4 +409,36 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-})
+  commentBox: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: width * 0.02,
+    width: width * 0.9,
+    height: height * 0.08,
+    marginTop: height * 0.02,
+    marginBottom: height * 0.01,
+    padding: width * 0.04,
+    borderRadius: width * 1,
+    elevation: 0,
+  },
+  commentText: {
+    fontSize: width * 0.04,
+  },
+  shadow: {
+    shadowOffset: {
+      width: width * 0,
+      height: height * 1,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.5,
+    elevation: 20,
+  },
+  datePicker: {
+    backgroundColor: '#fff',
+    marginTop: height * 0.015,
+    marginBottom: height * 0.006,
+    borderRadius: width * 0.03,
+    elevation: 20,
+    shadowColor: '#000000',
+    overflow: 'hidden',
+  },
+});
