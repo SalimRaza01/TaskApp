@@ -17,7 +17,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log('Login button pressed');
     try {
-      const response = await fetch('https://0ed7-115-246-121-146.ngrok-free.app/login', {
+      const response = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
