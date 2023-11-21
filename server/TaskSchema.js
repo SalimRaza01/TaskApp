@@ -5,7 +5,6 @@ const TaskSchema = new mongoose.Schema({
   description: String,
   status: String,
   deadline: Date,
-  createdAt: Date,
   comments: [
     {
       commenterEmail: String,
@@ -17,6 +16,6 @@ const TaskSchema = new mongoose.Schema({
   priority: String, 
   assignedUser: String,
   email: String,
-})
+},{timestamps:true})
 
 mongoose.model("task", TaskSchema)
