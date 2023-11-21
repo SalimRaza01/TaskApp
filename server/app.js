@@ -21,7 +21,7 @@ const taskSchema = new mongoose.Schema({
   priority: String,
   assignedUser: String,
   email: String,
-},{timestamps:true});
+});
 
 const Task = mongoose.model('Task', taskSchema);
 
