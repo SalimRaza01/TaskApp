@@ -115,11 +115,11 @@ const Tabs = ({ route, handleLogout }) => {
         }}
       />
       <Tab.Screen
-        name="Logout"
+        name=" "
         component={NotifyScreen}
         initialParams={{ token: route.params.token }}
         options={{
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View>
               <Image

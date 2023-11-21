@@ -9,7 +9,7 @@ const NotifyScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = 'http://10.0.2.2:3000';
+  const BASE_URL = 'https://0ed7-115-246-121-146.ngrok-free.app';
 
   const getUpcomingReminders = (tasks) => {
     const now = new Date();

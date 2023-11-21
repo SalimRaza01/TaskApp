@@ -18,8 +18,6 @@ const DrawerContent = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-    <Image style={styles.DrawerBG} source={require('../assets/DrawerBG.jpg')} />
-
     <TouchableOpacity onPress={() => navigation.navigate('Profile')} >
       <Image style={styles.UserProfileImage} source={require('../assets/profile.png')} />
     </TouchableOpacity>
@@ -73,15 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007BFF",
     position: 'relative',
   },
-  DrawerBG: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: width * 0.71, 
-    height: height * 1, 
-    resizeMode: 'cover',
-    opacity: 0.3,
-  },
+
   container2: {
     marginTop: height * 0.2,
     height: height * 1,
