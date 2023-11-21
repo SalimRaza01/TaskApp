@@ -28,7 +28,7 @@ const HomeScreen = ({ route }) => {
   const [validationError, setValidationError] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
 
-  const BASE_URL = 'http://10.0.2.2:3000';;
+  const BASE_URL = 'https://taskapp-service.onrender.com';
 
   useEffect(() => {
     const retrieveAuthToken = async () => {
@@ -60,7 +60,8 @@ const HomeScreen = ({ route }) => {
         if (response.status === 200) {
           const { assignedTasks, userTasks } = response.data;
           const markedDates = assignedTasks.concat(userTasks).reduce((dates, task) => {
-            const date = new Date(task.createdAt).toISOString().split('T')[0];
+            // const date = new Date(task.createdAt).toISOString().split('T')[0];
+            const date = new Date(task.createdAt);
             dates[date] = { selected: true, selectedColor: "#0A79DF" };
             return dates;
           });

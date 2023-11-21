@@ -15,7 +15,7 @@ import axios from 'axios';
 const {width, height} = Dimensions.get('window');
 
 const TaskDetails = ({route}) => {
-  const BASE_URL = 'http://10.0.2.2:3000';
+  const BASE_URL = 'https://taskapp-service.onrender.com';
 
   const [highlightedDates, setHighlightedDates] = useState({});
   const [task, setTask] = useState({...route.params.task, status: 'Pending'});
