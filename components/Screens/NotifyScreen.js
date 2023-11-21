@@ -9,7 +9,7 @@ const NotifyScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = 'http://10.0.2.2:3000';
 
   const getUpcomingReminders = (tasks) => {
     const now = new Date();
