@@ -28,7 +28,7 @@ const HomeScreen = ({ route }) => {
   const [validationError, setValidationError] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
 
-  const BASE_URL = 'https://0ed7-115-246-121-146.ngrok-free.app';;
+  const BASE_URL = 'https://localhost:3000';;
 
   useEffect(() => {
     const retrieveAuthToken = async () => {
