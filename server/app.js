@@ -9,7 +9,6 @@ const taskSchema = new mongoose.Schema({
   description: String,
   status: String,
   deadline: Date,
-  createdAt: Date.now(),
   comments: [
     {
       commenterEmail: String,
@@ -21,7 +20,7 @@ const taskSchema = new mongoose.Schema({
   priority: String,
   assignedUser: String,
   email: String,
-});
+},{timestamps:true});
 
 const Task = mongoose.model('Task', taskSchema);
 
