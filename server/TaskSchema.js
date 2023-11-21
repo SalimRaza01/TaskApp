@@ -5,7 +5,7 @@ const TaskSchema = new mongoose.Schema({
   description: String,
   status: String,
   deadline: Date,
-  createdAt: Date,
+  createdAt: {type: Date, default: Date.now()},
   comments: [
     {
       commenterEmail: String,
