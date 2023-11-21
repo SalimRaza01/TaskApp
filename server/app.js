@@ -8,8 +8,8 @@ const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
   status: String,
-  deadline: Date,
-  createdAt: {type: Date, default: Date.now()},
+  deadline: String,
+  createdAt: String,
   comments: [
     {
       commenterEmail: String,
