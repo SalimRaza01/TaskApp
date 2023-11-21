@@ -17,7 +17,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log('Login button pressed');
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch('http://10.0.2.2:3000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
