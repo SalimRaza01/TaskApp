@@ -28,7 +28,7 @@ const HomeScreen = ({ route }) => {
   const [validationError, setValidationError] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
 
-  const BASE_URL = 'http://localhost:3000';;
+  const BASE_URL = 'http://10.0.2.2:3000';;
 
   useEffect(() => {
     const retrieveAuthToken = async () => {
