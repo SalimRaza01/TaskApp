@@ -114,8 +114,8 @@ app.post('/send-data', async (req, res) => {
     console.log(req.body)
     const {userId} = jwt.verify(tokenParts[1], secretKey);
     const newTaskData = req.body;
-    newTaskData.createdAt = new Date(newTaskData.createdAt);
-    newTaskData.deadline = new Date(newTaskData.deadline + 'Z');
+    newTaskData.createdAt = req.body.createdAt;
+    newTaskData.deadline = req.body.deadline;
 
     newTaskData.userId = userId;
     newTaskData.email = req.body.email;
