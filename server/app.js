@@ -229,17 +229,20 @@ app.post('/save-comment', async (req, res) => {
 
     task.comments = task.comments || [];
 
-    const newComment = {
-      commenter,
-      message: comment,
-      createdAt: new Date(),
-    };
+const newComment = {
+  commenter,
+  message: comment,
+  createdAt: new Date(),
+};
 
-    task.comments.push(newComment);
+console.log('New comment:', newComment);
 
-    await task.save();
+task.comments.push(newComment);
 
-    res.json(task);
+await task.save();
+
+res.json(task);
+
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: 'Invalid token or token expired' });
