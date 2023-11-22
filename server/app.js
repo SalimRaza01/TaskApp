@@ -222,15 +222,18 @@ app.post('/save-comment', async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    const commenter = {
-      email: user.email,
-      username: user.username,
-    };
+
+    if (!user) {
+      return res.status(404).send('User not found.');
+    }
 
     task.comments = task.comments || [];
 
     const newComment = {
-      commenter: commenter,
+      commenter: {
+        email: user.email,
+        username: user.username,
+      },
       message: comment,
       createdAt: new Date(),
     };
@@ -247,6 +250,7 @@ app.post('/save-comment', async (req, res) => {
     res.status(401).json({ message: 'Invalid token or token expired' });
   }
 });
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
