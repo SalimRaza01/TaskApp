@@ -176,7 +176,7 @@ app.put('/update/:id', (req, res) => {
         return res.status(404).send('Task not found.');
       }
 
-      task.status = task.status === 'Completed' ? 'Pending' : 'Completed';
+      task.status = task.status === 'Pending' ? 'Completed' : 'Pending';
 
       task.save()
         .then(updatedTask => {
