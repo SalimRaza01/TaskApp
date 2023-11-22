@@ -114,29 +114,6 @@ app.post('/send-data', async (req, res) => {
     console.log(req.body)
     const {userId} = jwt.verify(tokenParts[1], secretKey);
     const newTaskData = req.body;
-//     newTaskData.createdAt = req.body.createdAt;
-//     newTaskData.deadline = req.body.deadline;
-
-//     newTaskData.userId = userId;
-//     newTaskData.email = req.body.email;
-//     newTaskData.assignedUser = req.body.assignedUser;
-
-//     const newTask = new Task(newTaskData);
-//     newTask
-//       .save()
-//       .then(data => {
-//         console.log('Task saved successfully:', data);
-//         res.json(data);
-//       })
-//       .catch(err => {
-//         console.error('Error saving task:', err);
-//         res.status(500).send('Error saving task.');
-//       });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(401).json({message: 'Invalid token or token expired'});
-//   }
-// });
 
 newTaskData.createdAt = new Date().toISOString();
     newTaskData.deadline = new Date(newTaskData.deadline).toISOString();
