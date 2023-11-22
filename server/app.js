@@ -211,9 +211,9 @@ app.delete('/delete/:id', (req, res) => {
 app.post('/save-comment', async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    const {userId} = jwt.verify(token, secretKey);
+    const { userId } = jwt.verify(token, secretKey);
 
-    const {taskId, comments} = req.body;
+    const { taskId, comment } = req.body;
 
     const task = await Task.findById(taskId);
 
@@ -222,28 +222,30 @@ app.post('/save-comment', async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    const userEmail = user.email;
+    const commenter = {
+      email: user.email,
+      username: user.username,
+    };
 
     task.comments = task.comments || [];
 
-    comments.forEach(comment => {
-      const newComment = {
-        commenterEmail: userEmail,
-        message: comment,
-        createdAt: new Date(),
-      };
+    const newComment = {
+      commenter,
+      message: comment,
+      createdAt: new Date(),
+    };
 
-      task.comments.push(newComment);
-    });
+    task.comments.push(newComment);
 
     await task.save();
 
     res.json(task);
   } catch (error) {
     console.error(error);
-    res.status(401).json({message: 'Invalid token or token expired'});
+    res.status(401).json({ message: 'Invalid token or token expired' });
   }
 });
+
 app.get('/get-user-by-email', async (req, res) => {
   const { email } = req.query;
 
