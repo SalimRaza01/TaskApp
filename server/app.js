@@ -249,28 +249,6 @@ res.json(task);
   }
 });
 
-app.get('/get-user-by-email', async (req, res) => {
-  const { email } = req.query;
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    const userInfo = {
-      username: user.username,
-
-    };
-
-    res.status(200).json(userInfo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
