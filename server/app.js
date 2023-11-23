@@ -168,29 +168,28 @@ app.get('/send-data', async (req, res) => {
   }
 });
 
-app.put('/update/:id', (req, res) => {
+app.put('/update/:id', async (req, res) => {
   const taskId = req.params.id;
-  Task.findById(taskId)
-    .then(task => {
-      if (!task) {
-        return res.status(404).send('Task not found.');
-      }
 
-      task.status = task.status === 'Pending' ? 'Completed' : 'Pending';
+  try {
+    const task = await Task.findById(taskId);
 
-      task.save()
-        .then(updatedTask => {
-          res.json(updatedTask);
-        })
-        .catch(err => {
-          console.error('Error updating task:', err);
-          res.status(500).send('Error updating task.');
-        });
-    })
-    .catch(err => {
-      console.error('Error finding task:', err);
-      res.status(500).send('Error finding task.');
-    });
+    if (!task) {
+      return res.status(404).send('Task not found.');
+    }
+    if (task.status === 'Completed') {
+      console.log('Task is already completed. Skipping update.');
+      return res.status(400).json({ message: 'Task is already completed.' });
+    }
+    task.status = 'Completed';
+
+    const updatedTask = await task.save();
+
+    res.json(updatedTask);
+  } catch (error) {
+    console.error('Error updating task status:', error);
+    res.status(500).send('Error updating task status.');
+  }
 });
 
 app.delete('/delete/:id', (req, res) => {
