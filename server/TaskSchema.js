@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
 const TaskSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   title: String,
@@ -6,18 +7,21 @@ const TaskSchema = new mongoose.Schema({
   status: String,
   deadline: String,
   createdAt: String,
-    comments: [
+  comments: [
     {
       email: String,
       username: String,
       message: String,
-      createdAt: new Date(),
+      createdAt: {
+        type: Date,
+        default: new Date(),
+      },
     },
   ],
   userId: String,
   priority: String, 
   assignedUser: String,
   email: String,
-})
+});
 
-mongoose.model("task", TaskSchema)
+mongoose.model("Task", TaskSchema);
