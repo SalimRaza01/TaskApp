@@ -6,11 +6,12 @@ const TaskSchema = new mongoose.Schema({
   status: String,
   deadline: String,
   createdAt: String,
-  comments: [
+    comments: [
     {
-      commenterEmail: String,
-      message: String,
-      createdAt: Date,
+      email: String,
+      username: String,
+      message: comment,
+      createdAt: new Date(),
     },
   ],
   userId: String,
