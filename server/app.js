@@ -12,9 +12,10 @@ const taskSchema = new mongoose.Schema({
   createdAt: String,
   comments: [
     {
-      commenterEmail: String,
-      message: String,
-      createdAt: Date,
+      email: user.email,
+      username: user.username,
+      message: comment,
+      createdAt: new Date(),
     },
   ],
   userId: String,
