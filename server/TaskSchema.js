@@ -10,7 +10,7 @@ const TaskSchema = new mongoose.Schema({
     {
       email: String,
       username: String,
-      message: comment,
+      message: String,
       createdAt: new Date(),
     },
   ],
