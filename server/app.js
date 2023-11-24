@@ -3,9 +3,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const http = require('http'); 
-const server = http.createServer(app); 
-const io = require('socket.io')(server);
 
 const taskSchema = new mongoose.Schema({
   title: String,
@@ -215,21 +212,16 @@ app.post('/save-comment', async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const { userId } = jwt.verify(token, secretKey);
-
     const { taskId, comment } = req.body;
-
     const task = await Task.findById(taskId);
-
+    
     if (!task) {
       return res.status(404).send('Task not found.');
     }
-
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).send('User not found.');
     }
-
     task.comments = task.comments || [];
 
     const newComment = {
@@ -239,52 +231,15 @@ app.post('/save-comment', async (req, res) => {
     };
 
     console.log('New comment:', newComment);
-
     task.comments.push(newComment);
-
-    await task.save();
-    io.emit('newComment', newComment);
-    res.json(task);
     
+    await task.save();
+    res.json(task);
   } catch (error) {
-    console.error('Error saving comment:', error);
-    res.status(500).send('Internal Server Error');
+    console.error(error);
+    res.status(401).json({ message: 'Invalid token or token expired' });
   }
 });
-
-
-// app.post('/save-comment', async (req, res) => {
-//   try {
-//     const token = req.headers.authorization.split(' ')[1];
-//     const { userId } = jwt.verify(token, secretKey);
-//     const { taskId, comment } = req.body;
-//     const task = await Task.findById(taskId);
-    
-//     if (!task) {
-//       return res.status(404).send('Task not found.');
-//     }
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send('User not found.');
-//     }
-//     task.comments = task.comments || [];
-
-//     const newComment = {
-//       email: user.email,
-//       username: user.username,
-//       message: comment,
-//     };
-
-//     console.log('New comment:', newComment);
-//     task.comments.push(newComment);
-    
-//     await task.save();
-//     res.json(task);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(401).json({ message: 'Invalid token or token expired' });
-//   }
-// });
 
 app.get('/fetch-comments/:taskId', async (req, res) => {
   const taskId = req.params.taskId;
