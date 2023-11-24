@@ -12,10 +12,6 @@ const TaskSchema = new mongoose.Schema({
       email: String,
       username: String,
       message: String,
-      createdAt: {
-        type: Date,
-        default: new Date(),
-      },
     },
   ],
   userId: String,
