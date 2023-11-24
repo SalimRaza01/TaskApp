@@ -12,8 +12,8 @@ const taskSchema = new mongoose.Schema({
   createdAt: String,
   comments: [
     {
-      email: user.email,
-      username: user.username,
+      email: String,
+      username: String,
       message: comment,
       createdAt: new Date(),
     },
