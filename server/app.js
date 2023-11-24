@@ -15,7 +15,6 @@ const taskSchema = new mongoose.Schema({
       email: String,
       username: String,
       message: String,
-      createdAt: new Date(),
     },
   ],
   userId: String,
@@ -233,7 +232,6 @@ app.post('/save-comment', async (req, res) => {
       email: user.email,
       username: user.username,
       message: comment,
-      createdAt: new Date(),
     };
 
     console.log('New comment:', newComment);
