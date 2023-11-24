@@ -98,7 +98,6 @@ app.use((req, res, next) => {
     next();
   });
 });
-
 app.post('/send-data', async (req, res) => {
   const token = req.headers.authorization;
   if (!token) {
@@ -137,7 +136,73 @@ newTaskData.createdAt = new Date().toISOString();
     console.error(error);
     res.status(401).json({ message: 'Invalid token or token expired' });
   }
+  if (req.body._id) {
+    const taskId = req.body._id;
+
+    try {
+      const existingTask = await Task.findById(taskId);
+
+      if (!existingTask) {
+        return res.status(404).json({ message: 'Task not found.' });
+      }
+
+      existingTask.title = req.body.title;
+      existingTask.description = req.body.description;
+      existingTask.priority = req.body.priority;
+      existingTask.deadline = new Date(req.body.deadline).toISOString();
+      existingTask.assignedUser = req.body.assignedUser;
+
+      const updatedTask = await existingTask.save();
+
+      return res.json(updatedTask);
+    } catch (error) {
+      console.error('Error updating task:', error);
+      return res.status(500).json({ message: 'Error updating task.' });
+    }
+  } else {
+  }
 });
+
+// app.post('/send-data', async (req, res) => {
+//   const token = req.headers.authorization;
+//   if (!token) {
+//     return res.status(401).json({message: 'Authorization token is missing'});
+//   }
+//   const tokenParts = token.split(' ');
+
+//   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
+//     return res.status(401).json({message: 'Invalid authorization header'});
+//   }
+
+//   try {
+//     console.log(req.body)
+//     const {userId} = jwt.verify(tokenParts[1], secretKey);
+//     const newTaskData = req.body;
+
+// newTaskData.createdAt = new Date().toISOString();
+//     newTaskData.deadline = new Date(newTaskData.deadline).toISOString();
+
+//     newTaskData.userId = userId;
+//     newTaskData.email = req.body.email;
+//     newTaskData.assignedUser = req.body.assignedUser;
+
+//     const newTask = new Task(newTaskData);
+//     newTask
+//       .save()
+//       .then(data => {
+//         console.log('Task saved successfully:', data);
+//         res.json(data);
+//       })
+//       .catch(err => {
+//         console.error('Error saving task:', err);
+//         res.status(500).send('Error saving task.');
+//       });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(401).json({ message: 'Invalid token or token expired' });
+//   }
+  
+// });
 
 
 app.get('/send-data', async (req, res) => {
