@@ -161,6 +161,27 @@ newTaskData.createdAt = new Date().toISOString();
     }
   } else {
   }
+   try {
+    const { userId } = jwt.verify(tokenParts[1], secretKey);
+    const newTaskData = req.body;
+
+    newTaskData.createdAt = new Date().toISOString();
+    newTaskData.deadline = new Date(newTaskData.deadline).toISOString();
+
+    newTaskData.userId = userId;
+    newTaskData.email = req.body.email;
+    newTaskData.assignedUser = req.body.assignedUser;
+
+    const newTask = new Task(newTaskData);
+    const savedTask = await newTask.save();
+
+    console.log('Task saved successfully:', savedTask);
+    res.json(savedTask);
+  } catch (error) {
+    console.error('Error saving task:', error);
+    res.status(500).json({ message: 'Error saving task.' });
+  }
+});
 });
 
 // app.post('/send-data', async (req, res) => {
