@@ -3,7 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const io = require('socket.io')(httpServer);
+const http = require('http'); 
+const server = http.createServer(app); 
+const io = require('socket.io')(server);
 
 const taskSchema = new mongoose.Schema({
   title: String,
