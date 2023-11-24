@@ -3,6 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const http = require('http'); 
+const server = http.createServer(app); 
+const io = require('socket.io')(server);
 
 const taskSchema = new mongoose.Schema({
   title: String,
@@ -98,6 +101,7 @@ app.use((req, res, next) => {
     next();
   });
 });
+
 app.post('/send-data', async (req, res) => {
   const token = req.headers.authorization;
   if (!token) {
@@ -182,49 +186,6 @@ newTaskData.createdAt = new Date().toISOString();
     res.status(500).json({ message: 'Error saving task.' });
   }
 });
-});
-
-// app.post('/send-data', async (req, res) => {
-//   const token = req.headers.authorization;
-//   if (!token) {
-//     return res.status(401).json({message: 'Authorization token is missing'});
-//   }
-//   const tokenParts = token.split(' ');
-
-//   if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
-//     return res.status(401).json({message: 'Invalid authorization header'});
-//   }
-
-//   try {
-//     console.log(req.body)
-//     const {userId} = jwt.verify(tokenParts[1], secretKey);
-//     const newTaskData = req.body;
-
-// newTaskData.createdAt = new Date().toISOString();
-//     newTaskData.deadline = new Date(newTaskData.deadline).toISOString();
-
-//     newTaskData.userId = userId;
-//     newTaskData.email = req.body.email;
-//     newTaskData.assignedUser = req.body.assignedUser;
-
-//     const newTask = new Task(newTaskData);
-//     newTask
-//       .save()
-//       .then(data => {
-//         console.log('Task saved successfully:', data);
-//         res.json(data);
-//       })
-//       .catch(err => {
-//         console.error('Error saving task:', err);
-//         res.status(500).send('Error saving task.');
-//       });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(401).json({ message: 'Invalid token or token expired' });
-//   }
-  
-// });
-
 
 app.get('/send-data', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
