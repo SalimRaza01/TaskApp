@@ -140,52 +140,8 @@ newTaskData.createdAt = new Date().toISOString();
     console.error(error);
     res.status(401).json({ message: 'Invalid token or token expired' });
   }
-  if (req.body._id) {
-    const taskId = req.body._id;
-
-    try {
-      const existingTask = await Task.findById(taskId);
-
-      if (!existingTask) {
-        return res.status(404).json({ message: 'Task not found.' });
-      }
-
-      existingTask.title = req.body.title;
-      existingTask.description = req.body.description;
-      existingTask.priority = req.body.priority;
-      existingTask.deadline = new Date(req.body.deadline).toISOString();
-      existingTask.assignedUser = req.body.assignedUser;
-
-      const updatedTask = await existingTask.save();
-
-      return res.json(updatedTask);
-    } catch (error) {
-      console.error('Error updating task:', error);
-      return res.status(500).json({ message: 'Error updating task.' });
-    }
-  } else {
-  }
-   try {
-    const { userId } = jwt.verify(tokenParts[1], secretKey);
-    const newTaskData = req.body;
-
-    newTaskData.createdAt = new Date().toISOString();
-    newTaskData.deadline = new Date(newTaskData.deadline).toISOString();
-
-    newTaskData.userId = userId;
-    newTaskData.email = req.body.email;
-    newTaskData.assignedUser = req.body.assignedUser;
-
-    const newTask = new Task(newTaskData);
-    const savedTask = await newTask.save();
-
-    console.log('Task saved successfully:', savedTask);
-    res.json(savedTask);
-  } catch (error) {
-    console.error('Error saving task:', error);
-    res.status(500).json({ message: 'Error saving task.' });
-  }
 });
+
 
 app.get('/send-data', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
@@ -254,6 +210,7 @@ app.delete('/delete/:id', (req, res) => {
       res.status(500).send('Error deleting task.');
     });
 });
+
 
 app.post('/save-comment', async (req, res) => {
   try {
