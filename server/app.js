@@ -229,52 +229,8 @@ app.post('/save-comment', async (req, res) => {
     task.comments = task.comments || [];
 
     const newComment = {
-      commenter: {
-        email: user.email,
-        username: user.username,
-      },
-      message: comment,
-      createdAt: new Date(),
-    };
-
-    console.log('New comment:', newComment);
-
-    task.comments.push(newComment);
-
-    await task.save();
-
-    res.json(task);
-  } catch (error) {
-    console.error(error);
-    res.status(401).json({ message: 'Invalid token or token expired' });
-  }
-});
-
-// ... (your existing code)
-
-app.post('/save-comment', async (req, res) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const { userId } = jwt.verify(token, secretKey);
-
-    const { taskId, comment } = req.body;
-
-    const task = await Task.findById(taskId);
-
-    if (!task) {
-      return res.status(404).send('Task not found.');
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).send('User not found.');
-    }
-
-    task.comments = task.comments || [];
-
-    const newComment = {
-      commenterEmail: user.email, 
+      email: user.email,
+      username: user.username,
       message: comment,
       createdAt: new Date(),
     };
