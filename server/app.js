@@ -169,9 +169,9 @@ app.get('/send-data', async (req, res) => {
     return res.status(500).json({message: 'Internal server error'});
   }
 });
+
 app.put('/update/:id', async (req, res) => {
   const taskId = req.params.id;
-  const updatedTaskData = req.body; 
 
   try {
     const task = await Task.findById(taskId);
@@ -179,11 +179,19 @@ app.put('/update/:id', async (req, res) => {
     if (!task) {
       return res.status(404).send('Task not found.');
     }
+    if (req.body.deadline) {
+      const deadlineDate = new Date(req.body.deadline);
+      if (!isNaN(deadlineDate.getTime())) {
+        task.deadline = deadlineDate.toISOString();
+      } else {
+        return res.status(400).json({ message: 'Invalid deadline date format' });
+      }
+    }
     task.title = updatedTaskData.title || task.title;
     task.description = updatedTaskData.description || task.description;
     task.status = updatedTaskData.status || task.status;
     task.deadline = updatedTaskData.deadline || task.deadline;
-
+    task.assignedUser = updatedTaskData.assignedUser || task.assignedUser;
     const updatedTask = await task.save();
 
     res.json(updatedTask);
