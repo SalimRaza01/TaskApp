@@ -142,7 +142,6 @@ newTaskData.createdAt = new Date().toISOString();
   }
 });
 
-
 app.get('/send-data', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const {userId} = jwt.verify(token, secretKey);
@@ -170,9 +169,9 @@ app.get('/send-data', async (req, res) => {
     return res.status(500).json({message: 'Internal server error'});
   }
 });
-
 app.put('/update/:id', async (req, res) => {
   const taskId = req.params.id;
+  const updatedTaskData = req.body; 
 
   try {
     const task = await Task.findById(taskId);
@@ -180,20 +179,43 @@ app.put('/update/:id', async (req, res) => {
     if (!task) {
       return res.status(404).send('Task not found.');
     }
-    if (task.status === 'Completed') {
-      console.log('Task is already completed. Skipping update.');
-      return res.status(400).json({ message: 'Task is already completed.' });
-    }
-    task.status = 'Completed';
+    task.title = updatedTaskData.title || task.title;
+    task.description = updatedTaskData.description || task.description;
+    task.status = updatedTaskData.status || task.status;
+    task.deadline = updatedTaskData.deadline || task.deadline;
 
     const updatedTask = await task.save();
 
     res.json(updatedTask);
   } catch (error) {
-    console.error('Error updating task status:', error);
-    res.status(500).send('Error updating task status.');
+    console.error('Error updating task:', error);
+    res.status(500).send('Error updating task.');
   }
 });
+
+// app.put('/update/:id', async (req, res) => {
+//   const taskId = req.params.id;
+
+//   try {
+//     const task = await Task.findById(taskId);
+
+//     if (!task) {
+//       return res.status(404).send('Task not found.');
+//     }
+//     if (task.status === 'Completed') {
+//       console.log('Task is already completed. Skipping update.');
+//       return res.status(400).json({ message: 'Task is already completed.' });
+//     }
+//     task.status = 'Completed';
+
+//     const updatedTask = await task.save();
+
+//     res.json(updatedTask);
+//   } catch (error) {
+//     console.error('Error updating task status:', error);
+//     res.status(500).send('Error updating task status.');
+//   }
+// });
 
 app.delete('/delete/:id', (req, res) => {
   const taskId = req.params.id;
