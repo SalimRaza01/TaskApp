@@ -179,6 +179,7 @@ app.put('/update/:id', async (req, res) => {
     if (!task) {
       return res.status(404).send('Task not found.');
     }
+    
     if (req.body.deadline) {
       const deadlineDate = new Date(req.body.deadline);
       if (!isNaN(deadlineDate.getTime())) {
@@ -187,11 +188,13 @@ app.put('/update/:id', async (req, res) => {
         return res.status(400).json({ message: 'Invalid deadline date format' });
       }
     }
-    task.title = updatedTaskData.title || task.title;
-    task.description = updatedTaskData.description || task.description;
-    task.status = updatedTaskData.status || task.status;
-    task.deadline = updatedTaskData.deadline || task.deadline;
-    task.assignedUser = updatedTaskData.assignedUser || task.assignedUser;
+
+    task.title = req.body.title || task.title;
+    task.description = req.body.description || task.description;
+    task.status = req.body.status || task.status;
+    task.deadline = req.body.deadline || task.deadline;
+    task.assignedUser = req.body.assignedUser || task.assignedUser;
+
     const updatedTask = await task.save();
 
     res.json(updatedTask);
